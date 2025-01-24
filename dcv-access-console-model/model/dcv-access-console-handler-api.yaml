@@ -1,0 +1,2541 @@
+openapi: "3.0.0"
+info:
+  description: "DCV Session Manager UI Handler API"
+  version: "2023.0"
+  title: "DCV Session Manager UI Handler"
+tags:
+  - name: "sessions"
+    description: "Session Handling APIs"
+    externalDocs:
+      description: "Find out more"
+      url: "https://docs.aws.amazon.com/dcv/latest/adminguide/managing-sessions.html"
+servers:
+  - url: "/smuihandler"
+paths:
+  /describeSessions:
+    post:
+      tags:
+        - "sessions"
+      summary: "Find sessions based on filters"
+      description: "Returns sessions based on filters, returns all sessions if no filters are provided"
+      operationId: "describeSessions"
+      requestBody:
+        description: "Describe sessions UI request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DescribeSessionsUIRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeSessionsUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /getSessionScreenshots:
+    post:
+      tags:
+        - "sessions"
+      summary: "Gets session screenshots"
+      description: "Gets session screenshots"
+      operationId: "getSessionScreenshots"
+      requestBody:
+        description: "GetSessionScreenshots request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetSessionScreenshotsUIRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSessionScreenshotsUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeServers:
+    post:
+      tags:
+        - "servers"
+      summary: "Finds all servers"
+      description: "Finds all servers data"
+      operationId: "describeServers"
+      requestBody:
+        description: "Describe servers request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DescribeServersUIRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeServersUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /validateSessionTemplate:
+    post:
+      tags:
+        - "session templates"
+      summary: "Validates a SessionTemplate"
+      description: "Validates a SessionTemplate"
+      operationId: "validateSessionTemplate"
+      requestBody:
+        description: "Validate session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateSessionTemplateRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /createSessionTemplate:
+    post:
+      tags:
+        - "session templates"
+      summary: "Creates a SessionTemplate"
+      description: "Creates a SessionTemplate on the datastore"
+      operationId: "createSessionTemplate"
+      requestBody:
+        description: "Create session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionTemplateRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /editSessionTemplate:
+    put:
+      tags:
+        - "session templates"
+      summary: "Edits a SessionTemplate"
+      description: "Edits a SessionTemplate on the datastore"
+      operationId: "editSessionTemplate"
+      requestBody:
+        description: "Edit session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditSessionTemplateRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeSessionTemplates:
+    post:
+      tags:
+        - "session templates"
+      summary: "Find SessionTemplates based on filters"
+      description: "Returns SessionTemplates based on filters, returns all SessionTemplates if no filters are provided"
+      operationId: "describeSessionTemplates"
+      requestBody:
+        description: "Describe session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DescribeSessionTemplatesRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeSessionTemplatesResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /deleteSessionTemplates:
+    delete:
+      tags:
+        - "session templates"
+      summary: "Delete SessionTemplates based on ids"
+      description: "Deletes SessionTemplates based on ids provided"
+      operationId: "deleteSessionTemplates"
+      requestBody:
+        description: "Delete session templates request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteSessionTemplatesRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteSessionTemplatesResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /publishSessionTemplate:
+    put:
+      tags:
+        - "session templates"
+      summary: "Publishes a SessionTemplate"
+      description: "Publishes a SessionTemplate to a list of users and groups"
+      operationId: "publishSessionTemplate"
+      requestBody:
+        description: "Publish session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublishSessionTemplateRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /unpublishSessionTemplate:
+    put:
+      tags:
+        - "session templates"
+      summary: "Unpublishes a SessionTemplate"
+      description: "Unpublishes a SessionTemplate to a list of users and groups"
+      operationId: "unpublishSessionTemplate"
+      requestBody:
+        description: "Unpublish session template request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnpublishSessionTemplateRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnpublishSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /createSessions:
+    post:
+      tags:
+        - "sessions"
+      summary: "Creates new Sessions"
+      description: "Creates new Sessions on the broker"
+      operationId: "createSessions"
+      requestBody:
+        description: "Create sessions request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/CreateSessionUIRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionsUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUserInfo:
+    get:
+      tags:
+        - "users"
+      summary: "Returns information on the current user"
+      description: "Returns the display name and role of the current user"
+      operationId: "describeUserInfo"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUserInfoResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /getSessionConnectionData/{sessionId}:
+    post:
+      tags:
+        - "sessions"
+      summary: "Gets session connection data"
+      description: "Gets session connection data"
+      operationId: "getSessionConnectionData"
+      parameters:
+        - name: "sessionId"
+          in: "path"
+          description: "Session id to get connection details for"
+          required: true
+          schema:
+            type: "string"
+        - name: "user"
+          in: "query"
+          description: "User for the session"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSessionConnectionDataUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /deleteSessions:
+    delete:
+      tags:
+        - "sessions"
+      summary: "Deletes the specified sessions"
+      description: "Deletes the sessions defined by the list of sessionIDs"
+      operationId: "deleteSessions"
+      requestBody:
+        description: "Delete sessions request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/DeleteSessionUIRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteSessionsUIResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUserGroups:
+    post:
+      tags:
+        - "user groups"
+      summary: "Describe the User Groups"
+      description: "Returns User Groups based on filter tokens, or all User Groups if no filter tokens are specified."
+      operationId: "describeUserGroups"
+      requestBody:
+        description: "Describe User Groups request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DescribeUserGroupsRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUserGroupsResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /editUserGroup:
+    put:
+      tags:
+        - "user groups"
+      summary: "Edit the User Group"
+      description: "Edits the display name, users, and session templates of the specified User Group."
+      operationId: "editUserGroup"
+      requestBody:
+        description: "Edit User Group data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditUserGroupRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EditUserGroupResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /createUserGroup:
+    post:
+      tags:
+        - "user groups"
+      summary: "Creates a User Group"
+      description: "Creates a User Group with the specified Display Name, Users, and Session Templates"
+      operationId: "createUserGroup"
+      requestBody:
+        description: "Create User Group Request Data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserGroupRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUserGroupResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /addToUserGroup:
+    put:
+      tags:
+        - "user groups"
+      summary: "Add the specified Users and Groups to the User Group"
+      description: "Adds the specified Users and Groups to the User Group. Ignores Users and Groups already present in the User Group"
+      operationId: "addUsersToUserGroup"
+      requestBody:
+        description: "Add Users and Groups to User Group data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToUserGroupRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddToUserGroupResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /removeFromUserGroup:
+    put:
+      tags:
+        - "user groups"
+      summary: "Remove the specified Users and Groups from the User Group"
+      description: "Removes the specified Users and Groups from the User Group. Ignores Users and Groups not present in the User Group"
+      operationId: "removeFromUserGroup"
+      requestBody:
+        description: "Remove Users and Groups from User Group data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveFromUserGroupRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemoveFromUserGroupResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /deleteUserGroups:
+    delete:
+      tags:
+        - "user groups"
+      summary: "Delete the specified User Groups"
+      description: "Deletes the specified User Groups. Won't delete non-empty User Groups unless DeleteIfNotEmpty is true"
+      operationId: "deleteUserGroups"
+      requestBody:
+        description: "Delete User Groups data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserGroupsRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteUserGroupsResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUsers:
+    post:
+      tags:
+        - "users"
+      summary: "Find Users based on filters"
+      description: "Returns Users based on filters, returns all Users if no filters are provided"
+      operationId: "describeUsers"
+      requestBody:
+        description: "Describe users request data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DescribeUsersRequestData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUsersResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUsersSharedWithSession:
+    post:
+      tags:
+        - "users"
+      summary: "Describe the Users shared with a Session"
+      description: "Describes all the users that have had a particular Session shared with them"
+      operationId: "describeUsersSharedWithSession"
+      requestBody:
+        description: "Describe Users Shared With Session data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DescribeUsersSharedWithSessionRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUsersSharedWithSessionResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUserGroupsSharedWithSession:
+    post:
+      tags:
+        - "user groups"
+      summary: "Describe the User Groups shared with a Session"
+      description: "Describes all the User Groups that have had a particular Session shared with them"
+      operationId: "describeUserGroupsSharedWithSession"
+      requestBody:
+        description: "Describe User Groups Shared With Session data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DescribeUserGroupsSharedWithSessionRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUserGroupsSharedWithSessionResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUsersSharedWithSessionTemplate:
+    post:
+      tags:
+        - "users"
+      summary: "Describe the Users shared with a Session Template"
+      description: "Describes all the users that have had a particular Session Template shared with them"
+      operationId: "describeUsersSharedWithSessionTemplate"
+      requestBody:
+        description: "Describe Users Shared With Session Template data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DescribeUsersSharedWithSessionTemplateRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUsersSharedWithSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /describeUserGroupsSharedWithSessionTemplate:
+    post:
+      tags:
+        - "user groups"
+      summary: "Describe the User Groups shared with a Session Template"
+      description: "Describes all the User Groups that have had a particular Session Template shared with them"
+      operationId: "describeUserGroupsSharedWithSessionTemplate"
+      requestBody:
+        description: "Describe User Groups Shared With Session Template data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DescribeUserGroupsSharedWithSessionTemplateRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DescribeUserGroupsSharedWithSessionTemplateResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+  /importUsers:
+    post:
+      tags:
+        - "users"
+      summary: "Import User information from a .csv file."
+      description: "Imports User information from a .csv file."
+      operationId: "importUsers"
+      requestBody:
+        description: "Import User data"
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportUsersRequestData'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportUsersResponse"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthenticated'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "500":
+          $ref: '#/components/responses/Unexpected'
+components:
+  responses:
+    BadRequest:
+      description: Bad Request, please check input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthenticated:
+      description: Authentication information is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: User is not authorized to make this request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    User:
+      type: object
+      properties:
+        UserId:
+          description: "The ID of the User"
+          type: string
+        DisplayName:
+          description: "The display name of the User"
+          type: string
+        Role:
+          description: "The User's role. Possible default values: [Admin, User, Guest]"
+          type: string
+        IsDisabled:
+          description: "The property that specifies if the User is disabled"
+          type: boolean
+        DisabledReason:
+          description: "The reason why the User is disabled"
+          type: string
+        IsImported:
+          description: "The property that specifies if the User is imported"
+          type: boolean
+        CreationTime:
+          description: "The User creation time"
+          type: string
+          format: date-time
+        LastModifiedTime:
+          description: "The User last modification time"
+          type: string
+          format: date-time
+        LastLoggedInTime:
+          description: "The User last logged in time"
+          type: string
+          format: date-time
+    UserGroup:
+      type: object
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: string
+        DisplayName:
+          description: "The display name of the User Group"
+          type: string
+        UserIds:
+          description: "The IDs of the Users in the User Group"
+          type: array
+          items:
+            type: string
+        GroupIds:
+          description: "The IDs of the other Groups in the User Group"
+          type: array
+          items:
+            type: string
+        IsImported:
+          description: "The property that specifies if the UserGroup is imported"
+          type: boolean
+        CreationTime:
+          description: "The User Group creation time"
+          type: string
+          format: date-time
+        LastModifiedTime:
+          description: "The User Group last modification time"
+          type: string
+          format: date-time
+    SessionWithPermissions:
+      allOf:
+        - $ref: "dcv-session-manager-api.yaml#/components/schemas/Session"
+        - type: object
+          properties:
+            LevelOfAccess:
+              description: "The level of access that the User or User Group has with the Session"
+              type: string
+            PublishedTime:
+              description: "The time that the Session was published to the User or User Group"
+              type: string
+              format: date-time
+    UserWithPermissions:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            LevelOfAccess:
+              description: "The level of access that the User has with the Session"
+              type: string
+            PublishedTime:
+              description: "The time that the Session was published to the User"
+              type: string
+              format: date-time
+    UserGroupWithPermissions:
+      allOf:
+        - $ref: "#/components/schemas/UserGroup"
+        - type: object
+          properties:
+            LevelOfAccess:
+              description: "The level of access that the User Group has with the Session"
+              type: string
+            PublishedTime:
+              description: "The time that the Session was published to the User Group"
+              type: string
+              format: date-time
+    SessionTemplate:
+      type: object
+      properties:
+        Id:
+          description: "The id of the SessionTemplate"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Id'
+          x-extra-annotation: '@software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey'
+        Name:
+          description: "The descriptive name of the SessionTemplate"
+          type: string
+        Description:
+          description: "The description of the session template"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        OsFamily:
+          description: "The OS family"
+          type: string
+        OsVersions:
+          description: "The OS versions"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        InstanceIds:
+          description: "The AWS Host Instance Ids"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        InstanceTypes:
+          description: "The AWS Host Instance Types"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        InstanceRegions:
+          description: "The AWS Host Instance Regions"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        HostNumberOfCpus:
+          description: "The AWS Host NumberOfCpus"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        HostMemoryTotalBytes:
+          description: "The AWS Host Memory TotalBytes"
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        CreatedBy:
+          description: "The creator of the SessionTemplate"
+          type: string
+        CreationTime:
+          description: "The SessionTemplate creation time"
+          type: string
+          format: date-time
+        LastModifiedBy:
+          description: "The last modifier of the SessionTemplate"
+          type: string
+        LastModifiedTime:
+          description: "The SessionTemplate last modification time"
+          type: string
+          format: date-time
+        Type:
+          description: "The session type (Virtual or Console)"
+          type: string
+        DcvGlEnabled:
+          description: "The property that specifies if dcv-gl is enabled"
+          type: boolean
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "boolean")'
+        MaxConcurrentClients:
+          description: "The number of max concurrent clients that can log to a session"
+          type: integer
+          format: int64
+        InitFile:
+          description: "File on the DCV host to be used to initialize the session instead of the default. If it is not a simple filename, it must be a relative path to the init directory configured on the DCV host."
+          type: string
+        AutorunFile:
+          description: "File on the DCV host to be automatically executed within the session. If it is not a simple filename, it must be a relative path to the autorun directory configured on the DCV host."
+          type: string
+        AutorunFileArguments:
+          description: "Command-line arguments to be passed to the file defined in AutorunFile when it is executed."
+          type: array
+          items:
+            type: string
+        PermissionsFile:
+          description: "The permissions file"
+          type: string
+        Requirements:
+          description: "The required tags for the session. Example: ram_gb = '4' and software='my software'. The escape char is ', example irish_name='o''neil' "
+          type: string
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "TEXT")'
+        EnqueueRequest:
+          description: "The request is enqueued if no DCV server are available for placement. If this field is not set, the default is false."
+          type: boolean
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "boolean")'
+        DisableRetryOnFailure:
+          description: "Disable automatic retry of the request if session creation fails. If this field is not set, the default is false."
+          type: boolean
+          x-field-extra-annotation: '@jakarta.persistence.Column(columnDefinition = "boolean")'
+        StorageRoot:
+          description: "Specifies the path to the folder used for session storage."
+          type: string
+        LevelOfAccess:
+          description: "The level of access that the User or User Group has with the SessionTemplate"
+          type: string
+        PublishedTime:
+          description: "The time that the SessionTemplate was published to the User or User Group"
+          type: string
+          format: date-time
+      x-class-extra-annotation: "@software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean\n@jakarta.persistence.Entity"
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+        Message:
+          type: string
+    Type:
+      description: "Type of session"
+      type: "string"
+      enum: [ 'CONSOLE', 'VIRTUAL']
+    State:
+      description: "State of the session"
+      type: "string"
+      enum: ['CREATING', 'READY', 'DELETING', 'DELETED', 'UNKNOWN']
+    Protocol:
+      description: "The protocol of the DCV endpoint"
+      type: "string"
+      enum: [ HTTP, QUIC ]
+    Availability:
+      description: "Availabilities of a host"
+      type: "string"
+      enum: [ 'AVAILABLE', 'UNAVAILABLE' ]
+    UnavailabilityReason:
+      description: "Unavailability reasons of a host"
+      type: "string"
+      enum: [ 'SERVER_FULL', 'SERVER_CLOSED', 'UNREACHABLE_AGENT', 'UNHEALTHY_DCV_SERVER', 'EXISTING_LOGGED_IN_USER', 'UNKNOWN' ]
+    OsFamily:
+      description: "OS family"
+      type: "string"
+      enum: [ 'windows', 'linux' ]
+    SortToken:
+      type: "object"
+      description: "A sort key/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the sort"
+          type: "string"
+          enum: ['ASC', 'DESC']
+        Key:
+          description: "The key of the sort"
+          type: "string"
+    FilterToken:
+      type: "object"
+      description: "A string value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['CONTAINS', 'NOT_CONTAINS', '=', '!=']
+        Value:
+          description: "The value of the filter"
+          type: "string"
+    FilterNumberToken:
+      type: "object"
+      description: "A number value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['<', '<=', '>', '>=', '=', '!=']
+        Value:
+          description: "The value of the filter"
+          type: "integer"
+          format: "int64"
+    FilterDateToken:
+      type: "object"
+      description: "A date value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['<', '<=', '>', '>=', '=', '!=']
+        Value:
+          description: "The value of the filter"
+          type: "string"
+          format: offset-date-time
+    FilterTypeToken:
+      type: "object"
+      description: "A session type value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          $ref: "#/components/schemas/Type"
+    FilterStateToken:
+      type: "object"
+      description: "A state value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          $ref: "#/components/schemas/State"
+    FilterProtocolToken:
+      type: "object"
+      description: "A protocol value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: [ '=', '!=' ]
+        Value:
+          $ref: "#/components/schemas/Protocol"
+    FilterAvailabilityToken:
+      type: "object"
+      description: "An availability value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          $ref: "#/components/schemas/Availability"
+    FilterUnavailabilityReasonToken:
+      type: "object"
+      description: "A unavailability value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          $ref: "#/components/schemas/UnavailabilityReason"
+    FilterOsFamilyToken:
+      type: "object"
+      description: "An unavailability value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          $ref: "#/components/schemas/OsFamily"
+    FilterBooleanToken:
+      type: "object"
+      description: "A boolean value/operator pair"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: [ '=', '!=' ]
+        Value:
+          description: "The value of the filter"
+          type: boolean
+    FilterTokenStrict:
+      type: "object"
+      description: "A string value/operator pair that only supports Equals and Not Equals"
+      properties:
+        Operator:
+          description: "The operator of the filter"
+          type: "string"
+          enum: ['=', '!=']
+        Value:
+          description: "The value of the filter"
+          type: "string"
+    DescribeSessionsUIRequestData:
+      description: "The entity that represents the data that the user pass for describing the sessions"
+      properties:
+        SessionIds:
+          description: "FilterTokens to apply for SessionId, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        SessionNames:
+          description: "FilterTokens to apply for SessionName, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Owners:
+          description: "FilterTokens to apply for Owner, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Types:
+          description: "FilterTypeToken to apply for Type of session, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTypeToken"
+        States:
+          description: "FilterStateToken to apply for State of the Session, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterStateToken"
+        Ips:
+          description: "FilterTokens to apply for Ip of the Host, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Hostnames:
+          description: "FilterTokens to apply for Hostname, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CreationTimes:
+          description: "FilterDateToken to apply CreationTime of the Session, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        LastDisconnectionTimes:
+          description: "FilterDateToken to apply LastDisconnectionTime of the Session, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        NumOfConnections:
+          description: "FilterIntToken to apply Number of Connections of the Session, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        UserSharedWith:
+          description: "FilterTokens to apply for a User that the Session has been shared with, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTokenStrict"
+        GroupSharedWith:
+          description: "FilterTokens to apply for a Group that the Session has been shared with, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTokenStrict"
+        Tags:
+          description: "'tag:key' The key/value combination of a tag assigned to the server. Use the tag key in the filter name and the tag value as the filter value. For example, to find all sessions that have a tag with the key City and the value London , specify tag:City for the filter name and London for the filter value."
+          type: "array"
+          items:
+            $ref: "dcv-session-manager-api.yaml#/components/schemas/KeyValuePair"
+        UserId:
+          description: "The User ID to evaluate the Session's permissions for. If not specified, defaults to the user making the request."
+          type: "string"
+        UserGroupId:
+          description: "The User Group ID to evaluate the Session's permissions for. Cannot be used with the 'UserId' field"
+          type: "string"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeSessionsUIResponse:
+      description: "The response to a describeSession request"
+      type: "object"
+      properties:
+        RequestId:
+          description: "DescribeSessions request id"
+          type: "string"
+        Sessions:
+          type: "array"
+          description: "The array of sessions described"
+          items:
+            $ref: "#/components/schemas/SessionWithPermissions"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    GetSessionScreenshotsUIRequestData:
+      description: "The entity that represents the data that the user pass for getting the session screenshot"
+      required:
+        - SessionIds
+      properties:
+        SessionIds:
+          description: "The array of session ids requested"
+          type: "array"
+          items:
+            type: "string"
+        MaxWidth:
+          description: "Screenshot maximum width in pixels"
+          type: "integer"
+          format: "int64"
+          nullable: true
+        MaxHeight:
+          description: "Screenshot maximum height in pixels"
+          type: "integer"
+          format: "int64"
+          nullable: true
+    GetSessionScreenshotsUIResponse:
+      description: "The response to a getSessionScreenshots request"
+      type: "object"
+      properties:
+        RequestId:
+          description: "GetSessionScreenshots request id"
+          type: "string"
+        SuccessfulList:
+          type: "array"
+          description: "The array of session screenshots successfully retrieved"
+          items:
+            $ref: "dcv-session-manager-api.yaml#/components/schemas/GetSessionScreenshotSuccessfulResponse"
+        UnsuccessfulList:
+          type: "array"
+          description: "The array of session screenshots that cannot be retrieved"
+          items:
+            $ref: "dcv-session-manager-api.yaml#/components/schemas/GetSessionScreenshotUnsuccessfulResponse"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeServersUIRequestData:
+      description: "The entity that represents the data that the user pass for describing the servers"
+      properties:
+        Ids:
+          description: "FilterTokens to apply for the server Id, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Ips:
+          description: "FilterTokens to apply for Ip of the Host, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Hostnames:
+          description: "FilterTokens to apply for the server hostname, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        EndpointIpAddresses:
+          description: "FilterTokens to apply for the server endpoint ip address, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Ports:
+          description: "FilterNumberToken to apply for the server endpoint port, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        WebUrlPaths:
+          description: "FilterTokens to apply for the server endpoint web url paths, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Protocols:
+          description: "FilterTokens to apply for the server endpoint protocols, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterProtocolToken"
+        DefaultDnsNames:
+          description: "FilterTokens to apply for the server default dns names, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Versions:
+          description: "FilterTokens to apply for the version of the server, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        SessionManagerAgentVersions:
+          description: "FilterTokens to apply for the session manager agent version default dns names, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Availabilities:
+          description: "FilterAvailabilityToken to apply for the server availability, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterAvailabilityToken"
+        UnavailabilityReasons:
+          description: "FilterUnavailabilityToken to apply for the server unavailability reason, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterUnavailabilityReasonToken"
+        ConsoleSessionCounts:
+          description: "FilterNumberToken to apply for the number of console sessions connected, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        VirtualSessionCounts:
+          description: "FilterNumberToken to apply for the number of virtual sessions connected, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        OsFamilies:
+          description: "FilterTokens to apply for OS Families, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterOsFamilyToken"
+        OsNames:
+          description: "FilterTokens to apply for OS Names, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        OsVersions:
+          description: "FilterTokens to apply for OS Versions, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        OsKernelVersions:
+          description: "(Linux Only) FilterTokens to apply for Linux Kernel Version, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        OsBuildNumbers:
+          description: "(Windows Only) FilterTokens to apply for the build number of the OS, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        MemoryTotalBytes:
+          description: "FilterTokens to apply for the total memory available in bytes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        MemoryUsedBytes:
+          description: "FilterTokens to apply for the total memory used in bytes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        SwapTotalBytes:
+          description: "FilterTokens to apply for the total swap file size in bytes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        SwapUsedBytes:
+          description: "FilterTokens to apply for the total swap file size used in bytes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        AwsRegions:
+          description: "(Amazon EC2 instance Only) FilterTokens to apply for the region of the host, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        AwsEc2InstanceTypes:
+          description: "(Amazon EC2 instance Only) FilterTokens to apply for the type of instance, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        AwsEc2InstanceIds:
+          description: "(Amazon EC2 instance Only) FilterTokens to apply for instance id, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        AwsEc2ImageIds:
+          description: "(Amazon EC2 instance Only) FilterTokens to apply for EC2 image id, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CpuVendors:
+          description: "FilterTokens to apply for host CPU vendor, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CpuModelNames:
+          description: "FilterTokens to apply for CPU Model name, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CpuArchitectures:
+          description: "FilterTokens to apply for the CPU architecture, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        NumberOfCpus:
+          description: "FilterNumberToken to apply for the number of CPUs, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        PhysicalCoresPerCpus:
+          description: "FilterNumberToken to apply for the number of cores per CPU, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        CpuLoadOneMinuteAverages:
+          description: "FilterNumberToken to apply for the load on the average CPU load over the last 1-minute period, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        CpuLoadFiveMinutesAverages:
+          description: "FilterNumberToken to apply for the load on the average CPU load over the last 5-minute period, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        CpuLoadFifteenMinutesAverages:
+          description: "FilterNumberToken to apply for the load on the average CPU load over the last 15-minute period, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        GpuVendors:
+          description: "FilterTokens to apply for the GPU Vendor, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        GpuModelName:
+          description: "FilterTokens to apply for the GPU Model Name, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        LoggedInUsers:
+          description: "FilterTokens to apply for the logged in users, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Tags:
+          description: "The key/value combination of a tag assigned to the server. Use the tag key in the filter name and the tag value as the filter value."
+          type: "array"
+          items:
+            $ref: "dcv-session-manager-api.yaml#/components/schemas/KeyValuePair"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeServersUIResponse:
+      description: "The response to a describeServers request"
+      type: "object"
+      properties:
+        RequestId:
+          description: "DescribeServers request id"
+          type: "string"
+        Servers:
+          type: "array"
+          description: "The array of servers described"
+          items:
+            $ref: "dcv-session-manager-api.yaml#/components/schemas/Server"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    CreateSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for creating the session template"
+      required:
+        - "Name"
+      properties:
+        Name:
+          description: "The descriptive name of the session template"
+          type: string
+        Description:
+          description: "The description of the session template"
+          type: string
+        OsFamily:
+          $ref: "#/components/schemas/OsFamily"
+        OsVersions:
+          description: "The OS versions"
+          type: string
+        InstanceIds:
+          description: "The AWS Host Instance Ids"
+          type: string
+        InstanceTypes:
+          description: "The AWS Host Instance Types"
+          type: string
+        InstanceRegions:
+          description: "The AWS Host Instance Regions"
+          type: string
+        HostNumberOfCpus:
+          description: "The AWS Host NumberOfCpus"
+          type: string
+        HostMemoryTotalBytes:
+          description: "The AWS Host Memory TotalBytes"
+          type: string
+        Type:
+          $ref: "#/components/schemas/Type"
+        DcvGlEnabled:
+          description: "The property that specifies if dcv-gl is enabled"
+          type: boolean
+        MaxConcurrentClients:
+          description: "The number of max concurrent clients that can log to a session"
+          type: integer
+          format: int64
+        InitFile:
+          description: "File on the DCV host to be used to initialize the session instead of the default. If it is not a simple filename, it must be a relative path to the init directory configured on the DCV host."
+          type: string
+        AutorunFile:
+          description: "File on the DCV host to be automatically executed within the session. If it is not a simple filename, it must be a relative path to the autorun directory configured on the DCV host."
+          type: string
+        AutorunFileArguments:
+          description: "Command-line arguments to be passed to the file defined in AutorunFile when it is executed."
+          type: array
+          items:
+            type: string
+        PermissionsFile:
+          description: "The permissions file"
+          type: string
+        Requirements:
+          description: "The required tags for the session. Example: ram_gb = '4' and software='my software'. The escape char is ', example irish_name='o''neil' "
+          type: string
+        EnqueueRequest:
+          description: "The request is enqueued if no DCV server are available for placement. If this field is not set, the default is false."
+          type: boolean
+        DisableRetryOnFailure:
+          description: "Disable automatic retry of the request if session creation fails. If this field is not set, the default is false."
+          type: boolean
+        StorageRoot:
+          description: "Specifies the path to the folder used for session storage."
+          type: string
+    CreateSessionTemplateResponse:
+      description: "The response to a createSessionTemplate request"
+      properties:
+        SessionTemplate:
+          $ref: "#/components/schemas/SessionTemplate"
+        Error:
+          $ref: "#/components/schemas/Error"
+    EditSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for editing the session template"
+      required:
+        - "TemplateId"
+        - "CreateSessionTemplateRequestData"
+      properties:
+        TemplateId:
+          description: "The session template ID"
+          type: string
+        CreateSessionTemplateRequestData:
+          $ref: "#/components/schemas/CreateSessionTemplateRequestData"
+    ValidateSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for validating the session template"
+      required:
+        - "CreateSessionTemplateRequestData"
+      properties:
+        CreateSessionTemplateRequestData:
+          $ref: "#/components/schemas/CreateSessionTemplateRequestData"
+        IgnoreExisting:
+          description: "If true, the validation that checks if the session template already exists will be ignored. Default: False"
+          type: boolean
+          default: false
+    ValidateSessionTemplateResponse:
+      description: "The response to a validateSessionTemplate request"
+      properties:
+        FailureReasons:
+          description: "The failure reasons"
+          type: object
+          additionalProperties:
+            type: string
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeSessionTemplatesRequestData:
+      description: "The entity that represents the data that the user passes for describing the session templates"
+      properties:
+        Ids:
+          description: "FilterTokens to apply for the SessionTemplate Id, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CreatedBy:
+          description: "FilterTokens to apply for the SessionTemplate CreatedBy, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        CreationTimes:
+          description: "FilterTokens to apply for the SessionTemplate CreationTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        Names:
+          description: "FilterTokens to apply for the SessionTemplate Name, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Descriptions:
+          description: "FilterTokens to apply for the SessionTemplate Description, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        OsFamilies:
+          description: "FilterTokens to apply for the SessionTemplate OsFamily, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterOsFamilyToken"
+        OsVersions:
+          description: "FilterTokens to apply for the SessionTemplate OsVersions, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        InstanceIds:
+          description: "FilterTokens to apply for the SessionTemplate InstanceIds, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        InstanceTypes:
+          description: "FilterTokens to apply for the SessionTemplate InstanceTypes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        InstanceRegions:
+          description: "FilterTokens to apply for the SessionTemplate InstanceRegions, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        HostNumberOfCpus:
+          description: "FilterTokens to apply for the SessionTemplate HostNumberofCpus, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        HostMemoryTotalBytes:
+          description: "FilterTokens to apply for the SessionTemplate HostMemoryTotalBytes, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        LastModifiedTimes:
+          description: "FilterTokens to apply for the SessionTemplate LastModifiedTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        LastModifiedBy:
+          description: "FilterTokens to apply for the SessionTemplate ModifiedBy, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Types:
+          description: "FilterTokens to apply for the SessionTemplate Type, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTypeToken"
+        DcvGlEnabled:
+          description: "FilterTokens to apply for the SessionTemplate DcvGlEnabled, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        AutorunFiles:
+          description: "FilterTokens to apply for the SessionTemplate AutorunFile, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        MaxConcurrentClients:
+          description: "FilterTokens to apply for the SessionTemplate MaxConcurrentClients, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterNumberToken"
+        InitFiles:
+          description: "FilterTokens to apply for the SessionTemplate InitFile, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        StorageRoots:
+          description: "FilterTokens to apply for the SessionTemplate StorageRoot, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        PermissionsFiles:
+          description: "FilterTokens to apply for the SessionTemplate PermissionsFile, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Requirements:
+          description: "FilterTokens to apply for the SessionTemplate Requirements, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        AutorunFileArguments:
+          description: "FilterTokens to apply for the SessionTemplate AutorunFileArguments, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        EnqueueRequest:
+          description: "FilterTokens to apply for the SessionTemplate EnqueueRequest, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        DisableRetryOnFailure:
+          description: "FilterTokens to apply for the SessionTemplate DisableRetryOnFailure, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        UsersSharedWith:
+          description: "FilterTokens to apply for a User that the SessionTemplate has been shared with, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTokenStrict"
+        GroupsSharedWith:
+          description: "FilterTokens to apply for a Group that the SessionTemplate has been shared with, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTokenStrict"
+        UserId:
+          description: "The User ID to evaluate the Session Template's permissions for. If not specified, defaults to the user making the request."
+          type: string
+        UserGroupId:
+          description: "The User Group ID to evaluate the Session Template's permissions for. Cannot be used with the 'UserId' parameter."
+          type: string
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeSessionTemplatesResponse:
+      description: "The response to a describeSessionTemplates request"
+      type: "object"
+      properties:
+        SessionTemplates:
+          type: "array"
+          description: "The array of SessionTemplates described"
+          items:
+            $ref: "#/components/schemas/SessionTemplate"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DeleteSessionTemplatesRequestData:
+      description: "The entity that represents the data that the user passes for deleting session templates"
+      required:
+        - "Ids"
+      properties:
+        Ids:
+          description: "The Ids of the session templates"
+          type: array
+          items:
+            type: string
+    DeleteSessionTemplatesResponse:
+      description: "The response to a deleteSessionTemplates request"
+      type: object
+      properties:
+        SuccessfulList:
+          type: array
+          items:
+            type: string
+        UnsuccessfulList:
+          type: array
+          items:
+            type: string
+        Error:
+          $ref: "#/components/schemas/Error"
+    PublishSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for publishing a session template"
+      required:
+        - "Id"
+      properties:
+        Id:
+          description: "The Id of the session template"
+          type: string
+        UserIds:
+          description: "The Ids of users"
+          type: array
+          items:
+            type: string
+        GroupIds:
+          description: "The Ids of groups"
+          type: array
+          items:
+            type: string
+    PublishSessionTemplateResponse:
+      description: "The response to a publishSessionTemplate request"
+      type: object
+      properties:
+        SuccessfulUsersList:
+          type: array
+          items:
+            type: string
+        UnsuccessfulUsersList:
+          type: array
+          items:
+            type: string
+        SuccessfulGroupsList:
+          type: array
+          items:
+            type: string
+        UnsuccessfulGroupsList:
+          type: array
+          items:
+            type: string
+        Error:
+          $ref: "#/components/schemas/Error"
+    UnpublishSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for unpublishing a session template"
+      required:
+        - "Id"
+      properties:
+        Id:
+          description: "The Id of the session template"
+          type: string
+        UserIds:
+          description: "The Ids of users"
+          type: array
+          items:
+            type: string
+        GroupIds:
+          description: "The Ids of groups"
+          type: array
+          items:
+            type: string
+    UnpublishSessionTemplateResponse:
+      description: "The response to an unpublishSessionTemplate request"
+      type: object
+      properties:
+        SuccessfulUsersList:
+          type: array
+          items:
+            type: string
+        UnsuccessfulUsersList:
+          type: array
+          items:
+            type: string
+        SuccessfulGroupsList:
+          type: array
+          items:
+            type: string
+        UnsuccessfulGroupsList:
+          type: array
+          items:
+            type: string
+        Error:
+          $ref: "#/components/schemas/Error"
+    CreateSessionUIRequestData:
+      description: "The entity that represents the data that the user passes for creating a new session"
+      required:
+        - "SessionTemplateId"
+        - "Owner"
+      properties:
+        SessionTemplateId:
+          description: "The Id of the session template"
+          type: string
+        Name:
+          description: "The descriptive name of the session"
+          type: "string"
+        Owner:
+          description: "The owner of the session"
+          type: "string"
+    UnsuccessfulCreateSessionUIRequestData:
+      description: "Data representing an unsuccessful request"
+      type: "object"
+      properties:
+        CreateSessionRequestData:
+          $ref: "dcv-session-manager-api.yaml#/components/schemas/CreateSessionRequestData"
+        FailureReasons:
+          description: "The failure reasons"
+          type: object
+          additionalProperties:
+            type: string
+    CreateSessionsUIResponse:
+      description: "The response to a createSessions request"
+      type: "object"
+      properties:
+        RequestId:
+          description: "CreateSessions request id"
+          type: "string"
+        SuccessfulList:
+          type: "array"
+          description: "The array of sessions that are in process of being created"
+          items:
+            $ref: "#/components/schemas/SessionWithPermissions"
+        UnsuccessfulList:
+          type: "array"
+          description: "The array of sessions that cannot be created"
+          items:
+            $ref: "#/components/schemas/UnsuccessfulCreateSessionUIRequestData"
+        Error:
+          $ref: "#/components/schemas/Error"
+    GetSessionConnectionDataUIResponse:
+      description: "The get session connection data response"
+      type: "object"
+      properties:
+        Session:
+          $ref: "#/components/schemas/SessionWithPermissions"
+        ConnectionToken:
+          description: "The token used to connect to the session"
+          type: "string"
+        WebConnectionUrl:
+          description: "The connection url to use for the web client"
+          type: "string"
+        NativeConnectionUrl:
+          description: "The connection url to use for a native client"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUserInfoResponse:
+      description: "The response to a describeUserInfo request"
+      type: "object"
+      properties:
+        Id:
+          description: "Id of the user"
+          type: "string"
+        DisplayName:
+          description: "The display name of the current user"
+          type: "string"
+        Role:
+          description: "The role of the current user"
+          type: "string"
+    DeleteSessionUIRequestData:
+      description: "The entity the contains the data on which Sessions to delete"
+      type: "object"
+      required:
+        - "SessionId"
+        - "Owner"
+      properties:
+        SessionId:
+          description: "The ID of the session to delete"
+          type: string
+        Owner:
+          description: "The owner of the session to delete"
+          type: string
+    DeleteSessionsUIResponse:
+      description: "The response to a deleteSession request"
+      type: "object"
+      properties:
+        SuccessfulList:
+          type: "array"
+          description: "The array of data for the successfully created sessions"
+          items:
+            $ref: "#/components/schemas/SuccessfulDeleteSessionResponse"
+        UnsuccessfulList:
+          type: "array"
+          description: "The array of data for the unsuccessfully created sessions"
+          items:
+            $ref: "#/components/schemas/UnsuccessfulDeleteSessionResponse"
+        Error:
+          $ref: "#/components/schemas/Error"
+    SuccessfulDeleteSessionResponse:
+      description: "Data representing a successful delete session request"
+      type: "object"
+      properties:
+        SessionId:
+          description: "The ID of the session that was deleted"
+          type: "string"
+        State:
+          $ref: "#/components/schemas/State"
+    UnsuccessfulDeleteSessionResponse:
+      description: "Data representing an unsuccessful delete session request"
+      type: "object"
+      properties:
+        SessionId:
+          description: "The ID of the session that failed to be deleted"
+          type: "string"
+        FailureReasons:
+          description: "The failure reasons"
+          type: "object"
+          additionalProperties:
+            type: "string"
+    DescribeUsersRequestData:
+      description: "The entity that represents the data that the user passes for describing the users"
+      properties:
+        UserIds:
+          description: "FilterTokens to apply for the UserId, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        DisplayNames:
+          description: "FilterTokens to apply for the DisplayName, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        Roles:
+          description: "FilterTokens to apply for the Role, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        UserGroupIds:
+          description: "FilterTokens to apply for User Group membership, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterTokenStrict"
+        IsDisabled:
+          description: "FilterTokens to apply for IsDisabled, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        DisabledReasons:
+          description: "FilterTokens to apply for the DisabledReason, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        IsImported:
+          description: "FilterTokens to apply for the IsImported, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        CreationTimes:
+          description: "FilterTokens to apply for the CreationTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        LastModifiedTimes:
+          description: "FilterTokens to apply for the LastModifiedTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        LastLoggedInTimes:
+          description: "FilterTokens to apply for the LastLoggedInTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUsersResponse:
+      description: "The response to a describeUsers request"
+      type: "object"
+      properties:
+        Users:
+          type: "array"
+          description: "The array of Users described"
+          items:
+            $ref: "#/components/schemas/User"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUserGroupsRequestData:
+      description: "The entity that represents the data that the user passes for describing the User Groups"
+      type: "object"
+      properties:
+        UserGroupIds:
+          description: "FilterTokens to apply for the Group Id, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        DisplayNames:
+          description: "FilterTokens to apply for the Group Display Names, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        UserIds:
+          description: "FilterTokens to apply for the Users Ids in the User Groups, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        IsImported:
+          description: "FilterTokens to apply for the User Group IsImported, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterBooleanToken"
+        CreationTimes:
+          description: "FilterToken to apply for the User Group CreationTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "object"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        LastModifiedTimes:
+          description: "FilterToken to apply for the User Group LastModifiedTime, 'OR' operator is applied for the specified tokens in the array"
+          type: "object"
+          items:
+            $ref: "#/components/schemas/FilterDateToken"
+        SessionId:
+          description: "FilterToken to apply to filter User Groups that have had the Session shared with them, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        SessionTemplateId:
+          description: "FilterToken to apply to filter User Groups that have had the Session Template hared with them, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUserGroupsResponse:
+      description: "The response to a DescribeUserGroups request"
+      type: "object"
+      properties:
+        UserGroups:
+          description: "The array of User Groups described"
+          items:
+            $ref: "#/components/schemas/UserGroup"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    EditUserGroupRequestData:
+      description: "The entity that represents the data that the user passes for editing the User Group Display Name"
+      type: "object"
+      required:
+        - "UserGroupId"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: "string"
+        DisplayName:
+          description: "The new Display Name of the User Group"
+          type: "string"
+        UserIdsToAdd:
+          description: "The list of User IDs to add to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UserIdsToRemove:
+          description: "The list of User IDs to remove from the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UserGroupIdsToAdd:
+          description: "The list of User Group IDs to add to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UserGroupIdsToRemove:
+          description: "The list of User Group IDs to remove from the User Group"
+          type: "array"
+          items:
+            type: "string"
+        SessionTemplateIdsToAdd:
+          description: "The list of Session Template IDs to publish to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        SessionTemplateIdsToRemove:
+          description: "The list of Session Template IDs to unpublish from the User Group"
+          type: "array"
+          items:
+            type: "string"
+    EditUserGroupResponse:
+      description: "The response to an EditUserGroupDisplayName request"
+      type: "object"
+      properties:
+        UserGroup:
+          description: "The User Group that was edited"
+          $ref: "#/components/schemas/UserGroup"
+        Error:
+          $ref: "#/components/schemas/Error"
+    CreateUserGroupRequestData:
+      description: "The entity that represents the data that the user passes for create a User Group"
+      type: "object"
+      required:
+        - "UserGroupId"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: "string"
+        DisplayName:
+          description: "The Display Name of the User Group"
+          type: "string"
+        UserIds:
+          description: "The list of User IDs for the User Group to contain"
+          type: "array"
+          items:
+            type: "string"
+        UserGroupIds:
+          description: "The list of User Group IDs for the User Group to contain"
+          type: array
+          items:
+            type: "string"
+        SessionTemplateIds:
+          description: "The list of Session Template IDs to share with the User Group"
+          type: "array"
+          items:
+            type: "string"
+    CreateUserGroupResponse:
+      description: "The response to an Add User Group request"
+      type: "object"
+      properties:
+        UserGroup:
+          description: "The User Group that was created."
+          $ref: "#/components/schemas/UserGroup"
+        SuccessfulUsersList:
+          description: "The Users that were successfully added to the group"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulUsersList:
+          description: "The Users that were not successfully added to the group"
+          type: "array"
+          items:
+            type: "string"
+        SuccessfulSessionTemplateList:
+          description: "The Session Templates that were successfully published to the Group"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulSessionTemplateList:
+          description: "The Session Templates that were not successfully published to the Group"
+          type: "array"
+          items:
+            type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    AddToUserGroupRequestData:
+      description: "The entity that represents the data that the user passes for adding Users and Groups to the User Group"
+      type: "object"
+      required:
+        - "UserGroupId"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group to add to."
+          type: "string"
+        UserIdsToAdd:
+          description: "The IDs of the Users to add to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UserGroupsIdsToAdd:
+          description: "The IDs of the Groups to add to the User Group"
+          type: "array"
+          items:
+            type: "string"
+    AddToUserGroupResponse:
+      description: "The response to an AddToUserGroup request"
+      type: "object"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: "string"
+        SuccesssfulUsersList:
+          description: "The array of Users that were successfully added to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        SuccesssfulUserGroupsList:
+          description: "The array of User Groups that were successfully added to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulUsersList:
+          description: "The array of Users that were not successfully added to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulUserGroupsList:
+          description: "The array of User Groups that were not successfully added to the User Group"
+          type: "array"
+          items:
+            type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    RemoveFromUserGroupRequestData:
+      description: "The entity that represents the data that the user passes for removing Users from the User Group"
+      type: "object"
+      required:
+        - "UserGroupId"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: "string"
+        UserIdsToRemove:
+          description: "The IDs of the Users to remove from the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UserGroupIdsToRemove:
+          description: "The IDs of the User Groups to remove from the User Group"
+          type: "array"
+          items:
+            type: "string"
+    RemoveFromUserGroupResponse:
+      description: "The response to a RemoveUsersFromUserGroup request"
+      type: "object"
+      properties:
+        UserGroupId:
+          description: "The ID of the User Group"
+          type: "string"
+        SuccessfulList:
+          description: "The array of Users that were successfully removed from the User Group"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulList:
+          description: "The array of Users that were unsuccessfully removed from the User Group"
+          type: "array"
+          items:
+            type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DeleteUserGroupsRequestData:
+      description: "The entity that represents the data that the user passes for deleting User Groups"
+      type: "object"
+      required:
+        - "UserGroupIds"
+      properties:
+        UserGroupIds:
+          description: "The IDs of the User Groups to delete"
+          type: "array"
+          items:
+            type: "string"
+        DeleteIfNotEmpty:
+          description: "Whether to delete the User Group if it is not empty. Default: false"
+          default: false
+          type: "boolean"
+    DeleteUserGroupsResponse:
+      description: "The response to a DeleteUserGroup request"
+      type: "object"
+      properties:
+        SuccessfulList:
+          description: "The array of User Group IDs that were successfully deleted"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulList:
+          description: "The array of User Group IDs that were not successfully deleted"
+          type: "array"
+          items:
+            type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUsersSharedWithSessionRequestData:
+      description: "The entity that represents the data that the user passes for describing the Users that have been shared with a Session"
+      type: "object"
+      required:
+        - "SessionId"
+      properties:
+        SessionId:
+          description: "The Session ID to return the shared Users for"
+          type: "string"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUsersSharedWithSessionResponse:
+      description: "The response to a DescribeUsersSharedWithSession request"
+      type: "object"
+      properties:
+        Users:
+          type: "array"
+          description: "The list of Users that the Session has been shared with. Includes permission information."
+          items:
+            $ref: "#/components/schemas/UserWithPermissions"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUsersSharedWithSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for describing the Users that have been shared with a Session Template"
+      type: "object"
+      required:
+        - "SessionTemplateId"
+      properties:
+        SessionTemplateId:
+          description: "The Session Template ID to return the shared Users for"
+          type: "string"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUsersSharedWithSessionTemplateResponse:
+      description: "The response to a DescribeUsersSharedWithSessionTemplate request"
+      type: "object"
+      properties:
+        Users:
+          type: "array"
+          description: "The list of Users that the Session Template has been shared with. Includes permission information."
+          items:
+            $ref: "#/components/schemas/UserWithPermissions"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUserGroupsSharedWithSessionRequestData:
+      description: "The entity that represents the data that the user passes for describing the User Groups that have been shared with a Session"
+      type: "object"
+      required:
+        - "SessionId"
+      properties:
+        SessionId:
+          description: "The Session ID to return the shared User Groups for"
+          type: "string"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUserGroupsSharedWithSessionResponse:
+      description: "The response to a DescribeUserGroupsSharedWithSession request"
+      type: "object"
+      properties:
+        UserGroups:
+          type: "array"
+          description: "The list of User Groups that the Session has been shared with. Includes permission information."
+          items:
+            $ref: "#/components/schemas/UserGroupWithPermissions"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    DescribeUserGroupsSharedWithSessionTemplateRequestData:
+      description: "The entity that represents the data that the user passes for describing the User Groups that have been shared with a Session Template"
+      type: "object"
+      required:
+        - "SessionTemplateId"
+      properties:
+        SessionTemplateId:
+          description: "The Session Template ID to return the shared User Groups for"
+          type: "string"
+        SortToken:
+          $ref: "#/components/schemas/SortToken"
+        MaxResults:
+          description: "Number of results to show, if provided must be between 1 and 1000"
+          type: "integer"
+        NextToken:
+          description: "the pagination token"
+          type: "string"
+    DescribeUserGroupsSharedWithSessionTemplateResponse:
+      description: "The response to a DescribeUserGroupsSharedWithSessionTemplate request"
+      type: "object"
+      properties:
+        UserGroups:
+          type: "array"
+          description: "The list of User Groups that the Session Template has been shared with. Includes permission information."
+          items:
+            $ref: "#/components/schemas/UserGroupWithPermissions"
+        NextToken:
+          description: "The token used for pagination"
+          type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"
+    ImportUsersRequestData:
+      description: "The entity that represents the data that the user passes for importing Users"
+      type: "object"
+      required:
+        - "File"
+      properties:
+        File:
+          description: "The .csv file to import the Users from"
+          type: "string"
+          format: "binary"
+        OverwriteExistingUsers:
+          description: "If true, the Users that already exist will be overwritten. If false, the duplicates will be ignored. Default: true"
+          type: "boolean"
+          default: true
+        OverwriteGroups:
+          description: "If true, the Groups for each User will be set exactly to the values specified. If false, the specified Groups will be added to the existing list of Groups for each User. Default: false"
+          type: "boolean"
+          default: false
+    ImportUsersResponse:
+      description: "The response to an ImportUsers request"
+      type: "object"
+      properties:
+        SuccessfulUsersList:
+          description: "The array of Users that were successfully added"
+          type: "array"
+          items:
+            type: "string"
+        UnsuccessfulUsersList:
+          description: "The array of Users that were not added"
+          type: "array"
+          items:
+            type: "string"
+        Error:
+          $ref: "#/components/schemas/Error"

@@ -1,0 +1,120 @@
+# This file uses the standard pyproject.toml format to configure your project.
+#
+# There is no need to create or manage a setup.py or setup.cfg file.
+#
+# For details, see:
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+
+[build-system]
+requires = [
+    "setuptools >= 61",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcv_access_console_config_wizard"
+version = "1.0"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+# Uncomment this line and add relevant keywords.
+# keywords = [ "peru" ]
+
+# Uncomment these lines and add contributors.
+# authors = [
+#  { name = "Example User", email = "example-user@amazon.com" }
+# ]
+
+# Specify your dependencies here.
+dependencies = [
+    "pyyaml",
+    "click",
+    "distro",
+    "boto3",
+    "botocore",
+    "requests"
+]
+[tool.setuptools]
+include-package-data = true
+
+[project.optional-dependencies]
+testing = [
+    "coverage[toml]",
+    "pytest >= 7",
+    "pytest-cov",
+    "pytest-xdist <= 3.5.0"
+]
+dev = [
+    "black",
+    "coverage[toml]",
+    "flake8",
+    "isort",
+#    "mypy",
+    "tox >= 4",
+    "twine == 5.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dcv_access_console_config_wizard = ["py.typed"]
+
+[tool.mypy]
+check_untyped_defs = true
+show_error_codes = true
+pretty = true
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = [ "dcv_access_console_config_wizard" ]
+src_paths = [
+    "src",
+    "test",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--durations=5",
+    "--color=yes",
+    "--cov=dcv_access_console_config_wizard",
+]
+testpaths = [ "test" ]
+looponfailroots = [
+    "src",
+    "test",
+]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+
+[tool.coverage.paths]
+source =  [
+    "src/",
+    ".tox/*/lib/*/site-packages/"
+]
+
+[tool.coverage.report]
+show_missing = true
+omit = []
+
+# Uncomment the following line to fail to build when the coverage is too low.
+# fail_under = 99
+
+[tool.coverage.xml]
+output = "build/coverage/coverage.xml"
+
+[tool.coverage.html]
+directory = "build/coverage/"

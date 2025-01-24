@@ -1,0 +1,50 @@
+'use client';
+
+import * as React from "react";
+import TopNavigation from "@cloudscape-design/components/top-navigation";
+import {service} from "@/constants/service-constants";
+import {topNavBarConstants} from "@/constants/top-nav-bar-constants";
+import {getCsrfToken, signOut} from "next-auth/react";
+import {Session} from "next-auth";
+
+export default function TopNavBar({session}: { session: Session }) {
+    return (
+        <TopNavigation
+            identity={{
+                href: "/sessions",
+                logo: {
+                    src: service.nameImage.src,
+                    alt: service.nameImage.alt
+                }
+            }}
+            utilities={[
+                {
+                    type: "menu-dropdown",
+                    text: session?.user?.name,
+                    description: session?.user?.id,
+                    iconName: "user-profile",
+                    items: [
+                        {id: "signout", text: topNavBarConstants.utilities.signOut}
+                    ],
+                    onItemClick: async (event) => {
+                        if (event.detail.id === "signout") {
+                            await signOut()
+                            await fetch("/api/auth/postSignOut", {
+                                method: "POST",
+                            });
+                            await getCsrfToken()
+                        }
+                    }
+                }
+            ]}
+            i18nStrings={{
+                searchIconAriaLabel: topNavBarConstants.i18nStrings.searchIconAriaLabel,
+                searchDismissIconAriaLabel: topNavBarConstants.i18nStrings.searchDismissIconAriaLabel,
+                overflowMenuTriggerText: topNavBarConstants.i18nStrings.overflowMenuTriggerText,
+                overflowMenuTitleText: topNavBarConstants.i18nStrings.overflowMenuTitleText,
+                overflowMenuBackIconAriaLabel: topNavBarConstants.i18nStrings.overflowMenuBackIconAriaLabel,
+                overflowMenuDismissIconAriaLabel: topNavBarConstants.i18nStrings.overflowMenuDismissIconAriaLabel,
+            }}
+        />
+    );
+}

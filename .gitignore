@@ -1,0 +1,11 @@
+release
+build
+
+.gradle
+*.jar
+
+.idea
+*.iml
+.vscode
+
+.DS_Store

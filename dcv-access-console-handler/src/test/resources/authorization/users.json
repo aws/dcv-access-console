@@ -1,0 +1,38 @@
+[
+  {
+    "userID" : "admin1",
+    "displayName" : "admin1",
+    "userRole" : "Admin",
+    "userGroups" : [ ]
+  },
+  {
+    "userID" : "user1",
+    "displayName" : "user1",
+    "userRole" : "User",
+    "userGroups" : [ "developers", "project1" ]
+  },
+  {
+    "userID" : "user2",
+    "displayName" : "user2",
+    "userRole" : "User",
+    "userGroups" : [ "developers", "project2" ]
+  },
+  {
+    "userID" : "user3",
+    "displayName" : "user3",
+    "userRole" : "User",
+    "userGroups" : [ "developers", "project3" ]
+  },
+  {
+    "userID" : "user4",
+    "displayName" : "user4",
+    "userRole" : "User",
+    "userGroups" : [ "developers", "project4" ]
+  },
+  {
+    "userID" : "guest1",
+    "displayName" : "UserDisplayName",
+    "userRole" : "Guest",
+    "userGroups" : [ "developers" ]
+  }
+]

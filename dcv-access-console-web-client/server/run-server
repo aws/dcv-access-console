@@ -1,0 +1,28 @@
+#!/bin/bash
+
+cwd=$(dirname $0)
+
+cd $cwd
+cp /etc/dcv-access-console-web-client/access-console-web-client.properties ./.env
+cat /etc/dcv-access-console-web-client/access-console-web-client-*.properties >> ./.env
+
+# Translating properties file into format used by NodeJS
+sed -Ei "s/handler-base-url/SM_UI_HANDLER_BASE_URL/g" ./.env
+sed -Ei "s/handler-api-prefix/SM_UI_HANDLER_API_PREFIX/g" ./.env
+sed -Ei "s/auth-server-well-known-uri/SM_UI_AUTH_WELL_KNOWN_URI/g" ./.env
+sed -Ei "s/auth-server-client-id/SM_UI_AUTH_CLIENT_ID/g" ./.env
+sed -Ei "s/auth-server-client-secret/SM_UI_AUTH_CLIENT_SECRET/g" ./.env
+sed -Ei "s/web-client-url/NEXTAUTH_URL/g" ./.env
+sed -Ei "s/webclient-log-dir/SM_UI_WEBCLIENT_LOG_DIR/g" ./.env
+sed -Ei "s/cookie-secret/NEXTAUTH_SECRET/g" ./.env
+sed -Ei "s/extra-ca-certs/NODE_EXTRA_CA_CERTS/g" ./.env
+
+#Reading <PATH-TO-CERT> from access-console-web-client.properties
+certs_file=$(grep -v '^\s*#' ./.env | grep NODE_EXTRA_CA_CERTS | cut -d '=' -f2 | sed 's/^[ \t"'\'']*//;s/[ \t"'\'']*$//')
+if [ -n "$certs_file" ]; then
+    echo "Setting NODE_EXTRA_CA_CERTS='$certs_file'"
+    declare -x NODE_EXTRA_CA_CERTS="$certs_file"
+fi
+
+npm install
+npm run start

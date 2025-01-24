@@ -1,0 +1,66 @@
+[
+  {
+    "roleName": "Admin",
+    "permissions": [
+      "describeSessions",
+      "describeSessionsForOthers",
+      "getSessionScreenshots",
+      "describeServers",
+      "describeSessionTemplates",
+      "describeSessionTemplatesForOthers",
+      "validateSessionTemplate",
+      "createSessionTemplate",
+      "editSessionTemplate",
+      "editSpecificSessionTemplate",
+      "publishSessionTemplate",
+      "unpublishSessionTemplate",
+      "createSessions",
+      "deleteSessions",
+      "deleteSessionTemplates",
+      "createSessionsForOthers",
+      "getSessionConnectionData",
+      "getSessionConnectionDataForOther",
+      "describeUsers",
+      "describeUserGroups",
+      "createUserGroup",
+      "deleteUserGroups",
+      "createUsers",
+      "importUsers",
+      "deleteUser",
+      "editUser",
+      "assignUserRole",
+      "addUserToGroup",
+      "removeUserFromGroup",
+      "describeUserInfo",
+      "describeGroups",
+      "describePermissions",
+      "createRole",
+      "deleteRole",
+      "editRole",
+      "describeUsersSharedWithSessionTemplate",
+      "describeUserGroupsSharedWithSessionTemplate"
+    ]
+  },
+  {
+    "roleName": "User",
+    "permissions": [
+      "describeSessions",
+      "getSessionScreenshots",
+      "describeSessionTemplates",
+      "createSessions",
+      "deleteSessions",
+      "describeUserInfo",
+      "getSessionConnectionData",
+      "describeGroups"
+    ]
+  },
+  {
+    "roleName": "Guest",
+    "permissions": [
+      "describeSessions",
+      "getSessionScreenshots",
+      "describeUserInfo",
+      "describeGroups"
+    ]
+  }
+]

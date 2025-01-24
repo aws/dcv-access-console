@@ -1,0 +1,3 @@
+include src/dcv_access_console_config_wizard/assets/default_configs/*
+include src/dcv_access_console_config_wizard/assets/scripts/*
+include src/dcv_access_console_config_wizard/requirements.txt

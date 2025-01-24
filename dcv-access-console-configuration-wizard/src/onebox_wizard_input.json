@@ -1,0 +1,23 @@
+{
+    "onebox-address": "<change me>",
+    "broker-address": "<change me>",
+    "broker-port": 8443,
+    "broker-client-id": "<change me>",
+    "broker-client-password": "<change me>",
+    "show-cookie-link": false,
+    "cookie-link-target": "<change me>",
+    "show-privacy-link": false,
+    "privacy-link-target": "<change me>",
+    "generate-cert": true,
+    "use-pam-authentication": true,
+    "install-mariadb": true,
+    "mariadb-username": "<change me>",
+    "mariadb-password": "<change me>",
+    "install-nginx": true,
+    "install-components": true,
+    "admin-user": "<change me>",
+    "enable-connection-gateway": false,
+    "connection-gateway-host": "example.com",
+    "connection-gateway-port": 8443,
+    "quiet": true
+}

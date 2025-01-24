@@ -1,0 +1,7 @@
+"userId","displayName","role","groups"
+"user1","User 1","user",
+"user2","User 2","admin","group1|group2|group3"
+"user3","User 3","guest","group1"
+"user4","User 4","user","group2|group3"
+"user5","User 5","user","group3"
+"user6","User 6","user","group4"

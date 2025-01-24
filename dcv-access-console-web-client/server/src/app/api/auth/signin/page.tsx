@@ -1,0 +1,7 @@
+import DcvHorizontalSplitLayout from "@/components/common/dcv-horizontal-split-layout/DcvHorizontalSplitLayout";
+
+export default async function SignIn() {
+    return (
+        <DcvHorizontalSplitLayout addUsernamePassword={false}/>
+    )
+}

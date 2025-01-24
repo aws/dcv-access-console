@@ -1,0 +1,33 @@
+.sessions-card-screenshot {
+  display: flex;
+  top:0;
+  left:0
+}
+
+.sessions-card-screenshot-non-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  object-fit: contain;
+  overflow: hidden;
+  aspect-ratio: 946/488;
+  background: #000000
+}
+
+.sessions-card-screenshot-success {
+  background: #000000
+}
+
+.preview-loading-text {
+  color: #ffffff;
+}
+img,
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
+.sessions-card-right-section > * {
+  flex-direction: row-reverse !important;
+}

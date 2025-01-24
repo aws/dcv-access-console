@@ -1,0 +1,380 @@
+// This file will be unused for now until this GitHub issue is implemented: https://github.com/cedar-policy/cedar/issues/304
+// Currently, Cedar Schema validation does not support Actions inside Entities, like how the Role is defined below. We
+// will just use this schema as a reference, and if that feature request is implemented, we can use it for validation.
+
+{
+  "": {
+    "entityTypes": {
+      "User": {
+        "memberOfTypes": [
+          "UserGroup"
+        ],
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "role": {
+              "required": true,
+              "type": "Entity",
+              "name": "Role"
+            }
+          }
+        }
+      },
+      "UserGroup": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "owner": {
+              "required": true,
+              "type": "Entity",
+              "name": "User"
+            }
+          }
+        }
+      },
+      "Role": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "actions": {
+              "type": "Set",
+              "element": {
+                "type": "Entity",
+                "name": "Action"
+              }
+            }
+          }
+        }
+      },
+      "Session": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "owner": {
+              "required": true,
+              "type": "Entity",
+              "name": "User"
+            },
+            "collaboratorUsers": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "User"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            },
+            "collaboratorGroups": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "UserGroup"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SessionTemplate": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "owner": {
+              "required": true,
+              "type": "Entity",
+              "name": "User"
+            },
+            "usersPublishedTo": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "User"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            },
+            "groupsPublishedTo": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "UserGroup"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Server": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "usersSharedWith": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "User"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            },
+            "groupsSharedWith": {
+              "required": false,
+              "type": "Set",
+              "element": {
+                "type": "Record",
+                "attributes": {
+                  "user": {
+                    "required": true,
+                    "type": "Entity",
+                    "name": "UserGroup"
+                  },
+                  "sharedTime": {
+                    "required": true,
+                    "type": "Long"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "actions": {
+      "describeSessions": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "getSessionScreenshots": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "viewSessionDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup"],
+          "resourceTypes": [ "Session" ]
+        }
+      },
+      "viewSessionScreenshotDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup"],
+          "resourceTypes": [ "Session" ]
+        }
+      },
+      "deleteSession": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Session" ]
+        }
+      },
+      "editSession": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Session" ]
+        }
+      },
+      "connectToSession": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Session" ]
+        }
+      },
+      "describeServers": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "viewServerDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Server" ]
+        }
+      },
+      "openServer": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Server" ]
+        }
+      },
+      "closeServer": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "Server" ]
+        }
+      },
+      "describeSessionTemplates": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "viewSessionTemplateDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "SessionTemplate" ]
+        }
+      },
+      "createSessionTemplate": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "deleteSessionTemplate": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "SessionTemplate" ]
+        }
+      },
+      "editSessionTemplate": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "SessionTemplate" ]
+        }
+      },
+      "useSessionTemplate": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "SessionTemplate" ]
+        }
+      },
+      "useSessionTemplateForOther": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": [ "SessionTemplate" ]
+        }
+      },
+      "publishSessionTemplate": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "describeUsers": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "viewUserDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup"]
+        }
+      },
+      "createUser": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "deleteUser": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "editUser": {
+        "appliesTo": {
+          "principalTypes": [ "User" ],
+          "resourceTypes": [ "User" ]
+        }
+      },
+      "assignUserRole": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "addUserToGroup": {
+        "appliesTo": {
+          "principalTypes": [ "User" ],
+          "resourceTypes": [ "UserGroup" ]
+        }
+      },
+      "removeUserFromGroup": {
+        "appliesTo": {
+          "principalTypes": [ "User" ],
+          "resourceTypes": [ "UserGroup" ]
+        }
+      },
+      "describeGroups": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "viewGroupDetails": {
+        "appliesTo": {
+          "principalTypes": [ "User", "UserGroup" ],
+          "resourceTypes": ["UserGroup"]
+        }
+      },
+      "describePermissions": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "createRole": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "deleteRole": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "editRole": {
+        "appliesTo": {
+          "principalTypes": [ "User" ]
+        }
+      },
+      "getPermissionForUser": {
+        "appliesTo": {
+          "principalTypes": [ "User" ],
+          "resourceTypes": [ "User" ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.make-hidden {
+    display: none;
+}
+
+.make-shown {
+    display: inline;
+}
+div:has(>div.make-hidden) {
+    display: none;
+}
+div:has(>p.make-hidden) {
+    display: none;
+}
+img.footer-logo {
+    margin: 5px;
+}

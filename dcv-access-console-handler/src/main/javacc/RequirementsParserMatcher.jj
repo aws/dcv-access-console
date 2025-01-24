@@ -1,0 +1,223 @@
+PARSER_BEGIN(JavaccRequirementsParserMatcher)
+package handler.utils.requirements;
+
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+import handler.exceptions.BadRequestException;
+import handler.utils.requirements.JavaccRequirementsParserMatcherConstants;
+import handler.utils.requirements.JavaccRequirementsParserMatcherTokenManager;
+import handler.utils.requirements.ParseException;
+import handler.utils.requirements.TokenMgrError;
+import handler.utils.requirements.Token;
+import handler.utils.requirements.SimpleCharStream;
+import org.apache.commons.lang3.StringUtils;
+
+public class JavaccRequirementsParserMatcher {
+
+    static final Set<String> ALLOWED_PROPERTIES = ImmutableSet.<String>builder()
+                .add("server:Id", "server:Hostname", "server:Version", "server:SessionManagerAgentVersion")
+                .add("server:Host.Os.BuildNumber", "server:Host.Os.Family", "server:Host.Os.KernelVersion", "server:Host.Os.Name",
+                        "server:Host.Os.Version")
+                .add("server:Host.Memory.TotalBytes", "server:Host.Memory.UsedBytes")
+                .add("server:Host.Swap.TotalBytes", "server:Host.Swap.UsedBytes")
+                .add("server:Host.CpuLoadAverage.OneMinute", "server:Host.CpuLoadAverage.FiveMinutes",
+                        "server:Host.CpuLoadAverage.FifteenMinutes")
+                .add("server:Host.Aws.Ec2InstanceId", "server:Host.Aws.Ec2InstanceType", "server:Host.Aws.Region", "server:Host.Aws.Ec2ImageId")
+                .add("server:Host.CpuInfo.Architecture", "server:Host.CpuInfo.ModelName", "server:Host.CpuInfo.NumberOfCpus",
+                        "server:Host.CpuInfo.PhysicalCoresPerCpu", "server:Host.CpuInfo.Vendor")
+                .build();
+
+    public static void parseAndMatch(String str) throws BadRequestException {
+        if (StringUtils.strip(str).isEmpty()) {
+            return;
+        }
+        InputStream stream = new ByteArrayInputStream(str.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        JavaccRequirementsParserMatcher parserMatcher = new JavaccRequirementsParserMatcher(stream);
+        try {
+            parserMatcher.requirementsParseAndMatch();
+        } catch (ParseException | TokenMgrError | UnsupportedOperationException e) {
+            throw new BadRequestException(e);
+        }
+    }
+
+}
+
+PARSER_END(JavaccRequirementsParserMatcher)
+
+SKIP :
+{
+  < WHITESPACE: (" ") | ("\t") | ("\n") | ("\r") >
+}
+
+TOKEN [IGNORE_CASE]:
+{
+  < AND: ("AND") >
+|
+  < OR: ("OR") >
+|
+  < NOT: ("NOT") >
+}
+
+TOKEN :
+{
+  < TAG_KEY: "tag" [":"] (["A"-"Z", "a"-"z", "_"] (["A"-"Z", "a"-"z", "_", "0"-"9"])* | "dcv" [":"] (["A"-"Z", "a"-"z", "0"-"9", "_", "-"])+) >
+|
+  < SERVER_KEY: "server" [":"] ["A"-"Z", "a"-"z"] (["A"-"Z", "a"-"z", "0"-"9"])* (["."] ["A"-"Z", "a"-"z"] (["A"-"Z", "a"-"z", "0"-"9"])*)* >
+|
+  < PROPERTY_VALUE: ("'") ( (~["'"])* (["'"] ["'"])* )* ("'") >
+|
+  < NUMBER: ( (["-", "+"])? (["0"-"9"])+ ( (["."] (["0"-"9"])+)? ( ["e", "E"] (["+", "-"])? (["0"-"9"])+ )? )? ) >
+|
+  < EQ: ("=") >
+|
+  < NOT_EQ: ("!=") >
+|
+  < CONTAINS: (":=") >
+|
+  < GT: (">") >
+|
+  < GTE: (">=") >
+|
+  < LT: ("<") >
+|
+  < LTE: ("<=") >
+|
+  < OPEN_P: ("(") >
+|
+  < CLOSE_P: (")") >
+}
+
+void requirementsParseAndMatch() :
+{
+	boolean result;
+}
+{
+  result=Requirements()
+  <EOF>
+}
+
+boolean Requirements() :
+{
+    boolean currentResult;
+    boolean result;
+}
+{
+  currentResult=AndExpression() {
+    result = currentResult;
+  }
+  (
+    <OR> currentResult=AndExpression() {
+        result = result || currentResult;
+    }
+  )*
+  {
+    return result;
+  }
+}
+
+boolean AndExpression() :
+{
+    boolean currentResult;
+	boolean result;
+}
+{
+  currentResult=Expression() {
+    result = currentResult;
+  }
+  (
+    <AND> currentResult=Expression() {
+        result = result && currentResult;
+    }
+  )*
+  {
+    return result;
+  }
+
+}
+
+boolean Expression() :
+{
+	boolean result;
+	boolean currentResult;
+}
+{
+
+  (
+    (<OPEN_P> result=Requirements() <CLOSE_P>)
+    |
+    LOOKAHEAD(2) <NOT> <OPEN_P> result=Requirements() <CLOSE_P> {
+        result = !result;
+    }
+    |
+    LOOKAHEAD(2) <NOT> result=Term() {
+        result = !result;
+    }
+    |
+    (result=Term())
+  )
+  {
+    return result;
+  }
+
+}
+
+String removeTrailingQuotes(String str):
+{}
+{{
+    if (str.length() >= 2) {
+        return str.substring(1, str.length() - 1);
+    }
+    return "";
+}}
+
+String unescape(String str):
+{}
+{{
+    return str.replace("''", "'");
+}}
+
+boolean Term() :
+{
+	Token tagKeyToken = null;
+	Token serverKeyToken = null;
+	Token valueToken = null;
+	Token numberValueToken = null;
+	Token op;
+
+}
+{
+    (tagKeyToken=<TAG_KEY> | tagKeyToken=<AND> | tagKeyToken=<OR> | tagKeyToken=<NOT> | serverKeyToken=<SERVER_KEY>)
+    (op=<EQ> | op=<NOT_EQ> | op=<GT> | op=<LT> | op=<GTE> | op=<LTE> | op=<CONTAINS>)
+    (valueToken=<PROPERTY_VALUE> | numberValueToken=<NUMBER>)
+    {
+        String requestedValue;
+        boolean isNumberProperty = false;
+        if (valueToken != null) {
+            requestedValue = unescape(removeTrailingQuotes(valueToken.image));
+        } else {
+            requestedValue = numberValueToken.image;
+            isNumberProperty = true;
+        }
+        if (tagKeyToken != null) {
+            checkOperator(isNumberProperty, op.kind);
+        } else if (serverKeyToken != null) {
+            if (!ALLOWED_PROPERTIES.contains(serverKeyToken.image)) {
+                checkOperator(isNumberProperty, op.kind);
+                throw new BadRequestException("Server property " + serverKeyToken.image + " not found");
+            }
+        } else {
+            throw new ParseException("Expected one of tag or server property");
+        }
+        return true;
+    }
+}
+
+void checkOperator(boolean numberProperty, int op):
+{}
+{{
+    if (op == CONTAINS && numberProperty) {
+        throw new UnsupportedOperationException("Unexpected CONTAINS operator");
+    }
+}}

@@ -1,0 +1,40 @@
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+server/node_modules
+/.pnp
+.pnp.js
+
+# testing
+coverage/
+
+# generated scr
+server/src/generated-src
+
+# model assets (imported from model package during build)
+server/model
+
+# npm build results
+server/build
+
+# log files
+server/*.log
+
+# audit files
+server/.*.json
+
+# .env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.next
+.npmrc

@@ -1,0 +1,7 @@
+click == 8.0.1
+urllib3==1.26.6
+pyyaml
+distro
+boto3
+botocore
+requests

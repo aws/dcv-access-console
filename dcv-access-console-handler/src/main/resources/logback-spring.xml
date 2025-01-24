@@ -1,0 +1,52 @@
+<configuration>
+    <property name="LOG_PATTERN" value="%d{dd MMM yyyy HH:mm:ss.SSS} %-5level [%thread %X{Slf4jMDCFilter.UUID} %X{Slf4jMDCFilter.ClientIP} %X{Slf4jMDCFilter.Principal}] %logger - %msg%n" />
+    <property name="LOG_PATH" value="logs" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/dcv-access-console-handler.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/dcv-access-console-handler.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="accesslog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/dcv-access-console-handler-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/dcv-access-console-handler-access.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="warn">
+        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="com.amazon.dcv.sm.ui" level="info" additivity="false">
+        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="handler.authorization" level="info" additivity="false">
+        <appender-ref ref="accesslog" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="handler.throttling" level="debug" additivity="false">
+        <appender-ref ref="accesslog" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="org.springframework.web.client.RestTemplate" level="debug" additivity="false">
+        <appender-ref ref="accesslog" />
+    </logger>
+    <logger name="org.springframework.security" level="debug" additivity="false">
+        <appender-ref ref="accesslog" />
+    </logger>
+</configuration>

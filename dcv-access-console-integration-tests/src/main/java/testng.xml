@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="IntegrationTestSuite" verbose="1">
+    <parameter name="instanceName" value="Al2IntegTestInstance"/>
+    <parameter name="ssmParameterSuffix" value="Al2"/>
+    <parameter name="securityGroupNamePrefix" value="TestingInfraStack"/>
+    <test name="IntegrationTest">
+        <classes>
+            <class name="integration.EndToEndIntegrationTests"/>
+        </classes>
+    </test>
+</suite>
+

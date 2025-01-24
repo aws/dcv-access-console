@@ -1,0 +1,1 @@
+rootProject.name = "dcv-access-console-model"

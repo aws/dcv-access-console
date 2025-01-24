@@ -1,0 +1,46 @@
+[
+  {
+    "roleName": "Admin",
+    "permissions": [
+      "describeSessions",
+      "getSessionScreenshots",
+      "describeHosts",
+      "describeSessionTemplates",
+      "createSessionTemplate",
+      "publishSessionTemplate",
+      "useSessionTemplate",
+      "useSessionTemplateForOther",
+      "describeUsers",
+      "createUsers",
+      "deleteUser",
+      "editUser",
+      "assignUserRole",
+      "addUserToGroup",
+      "removeUserFromGroup",
+      "describeGroups",
+      "describePermissions",
+      "createRole",
+      "deleteRole",
+      "editRole",
+      "fakePermission"
+    ]
+  },
+  {
+    "roleName": "User",
+    "permissions": [
+      "describeSessions",
+      "getSessionScreenshots",
+      "describeSessionTemplates",
+      "useSessionTemplate",
+      "describeGroups"
+    ]
+  },
+  {
+    "roleName": "Guest",
+    "permissions": [
+      "describeSessions",
+      "getSessionScreenshots",
+      "describeGroups"
+    ]
+  }
+]
