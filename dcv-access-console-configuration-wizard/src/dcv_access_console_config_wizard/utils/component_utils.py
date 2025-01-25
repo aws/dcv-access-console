@@ -332,7 +332,7 @@ def get_component_paths(os_type: str, component_installers_location: str):
 
 
 def install_access_console_components(
-        os_type: str, component_installers_location: str, read_existing_configs: bool
+    os_type: str, component_installers_location: str, read_existing_configs: bool
 ):
     component_paths = get_component_paths(os_type, component_installers_location)
     for component in component_names:
@@ -346,7 +346,7 @@ def install_access_console_components(
 
 
 def update_access_console_components(
-        os_type: str, component_installers_location: str, read_existing_configs: bool
+    os_type: str, component_installers_location: str, read_existing_configs: bool
 ):
     completed_tasks = []
     failed_tasks = []
@@ -371,7 +371,7 @@ def update_access_console_components(
             )
             return completed_tasks, failed_tasks
         if not upgrade_access_console_component(
-                os_type, component, component_paths[component], read_existing_configs
+            os_type, component, component_paths[component], read_existing_configs
         ):
             log.warning(f"Error while upgrading {component}, continuing...")
             failed_tasks.append(f"Error while upgrading {component}")
@@ -394,7 +394,7 @@ def update_access_console_components(
 
 
 def upgrade_access_console_component(
-        os_type: str, component: str, component_path: str, read_existing_configs: bool
+    os_type: str, component: str, component_path: str, read_existing_configs: bool
 ):
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
         log.info(f"Upgrading {component_path}...")
