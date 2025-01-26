@@ -339,7 +339,7 @@ def install_access_console_components(
         if component_paths.get(component) is None:
             log.error(f"Unable to find {component} installer")
             return False
-        if not install_sm_console_component(component_paths[component]):
+        if not install_sm_console_component(component_paths[component], read_existing_configs):
             return False
         log.info(f"Successfully installed {component_paths[component]}")
     return True
