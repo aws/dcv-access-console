@@ -14,10 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{secrets.ROLE_ARN}}
           aws-region: ${{secrets.REGION}}
-
-     - name: Trigger CodePipeline
+          
+      - name: Trigger CodePipeline
         run: aws codepipeline start-pipeline-execution --name ${{secrets.CODEPIPELINE}}
