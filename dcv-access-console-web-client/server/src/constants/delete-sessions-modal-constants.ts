@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const DELETE_SESSIONS_MODAL_CONSTANTS = {
     DELETE_SESSION_BUTTON_TEXT: "Close",
     CANCEL_BUTTON_TEXT: "Cancel",

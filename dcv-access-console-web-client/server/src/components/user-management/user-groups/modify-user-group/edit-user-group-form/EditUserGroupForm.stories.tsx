@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import EditUserGroupForm, {
     EditUserGroupFormProps
 } from "@/components/user-management/user-groups/modify-user-group/edit-user-group-form/EditUserGroupForm";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import AddUserGroupUsers
     from "@/components/user-management/user-groups/modify-user-group/add-user-group-users/AddUserGroupUsers";
 import {getDescribeUsers200Response} from "@/generated-src/msw/mock";

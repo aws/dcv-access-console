@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {LoggedInUser} from "@/generated-src/client";
 import {SERVERS_TABLE_CONSTANTS} from "@/constants/servers-table-constants";
 import {getValueOrUnknown} from "@/components/common/utils/SearchUtils";

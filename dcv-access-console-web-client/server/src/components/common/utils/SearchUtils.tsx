@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {PropertyFilterOption} from "@cloudscape-design/collection-hooks";
 import * as React from "react";
 import {Calendar, DateInput, FormField, TimeInput} from "@cloudscape-design/components";

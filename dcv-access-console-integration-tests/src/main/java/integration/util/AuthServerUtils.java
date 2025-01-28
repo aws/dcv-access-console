@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package integration.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;

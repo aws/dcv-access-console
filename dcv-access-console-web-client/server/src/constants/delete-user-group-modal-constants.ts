@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const DELETE_USER_GROUP_MODAL_CONSTANTS = {
     DELETE_GROUP_BUTTON_TEXT: "Delete",
     CANCEL_BUTTON_TEXT: "Cancel",

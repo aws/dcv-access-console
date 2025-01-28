@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {render, screen} from "@testing-library/react";
 import {SERVERS_TABLE_CONSTANTS} from "@/constants/servers-table-constants";
 import GpuDetails from "@/components/servers/gpu-details/GpuDetails";

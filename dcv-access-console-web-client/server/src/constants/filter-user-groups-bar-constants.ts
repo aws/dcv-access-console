@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SEARCH_TOKEN_TO_ID: Map<string, string> = new Map<string, string>([
     ["UserGroupIds", "UserGroupId"],
     ["DisplayNames", "DisplayName"],

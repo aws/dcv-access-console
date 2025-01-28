@@ -1,3 +1,6 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 SAVE_DIRECTORY=$1
 CERT_PASSWORD=$2
 WEBCLIENT_ADDRESS=$3

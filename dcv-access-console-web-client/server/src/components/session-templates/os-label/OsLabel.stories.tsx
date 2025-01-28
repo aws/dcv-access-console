@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import OsLabel from "@/components/session-templates/os-label/OsLabel";
 import {OsFamily} from "@/generated-src/client";
 

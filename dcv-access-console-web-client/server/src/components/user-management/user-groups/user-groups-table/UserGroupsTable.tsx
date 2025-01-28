@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {CollectionPreferencesProps, SpaceBetween, Table, TableProps} from "@cloudscape-design/components";
 import ConsoleHeader from "@/components/common/console-header/ConsoleHeader";
 import {GLOBAL_CONSTANTS} from "@/constants/global-constants";

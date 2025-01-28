@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SESSION_TEMPLATES_TABLE_CONSTANTS = {
     LOADING_TEXT: "Loading session templates",
     EMPTY_TEXT: "No available session templates.",

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Session} from "next-auth";
 import {isAdminRoleFromSession} from "@/components/common/utils/TokenAccessService";
 import {GLOBAL_CONSTANTS} from "@/constants/global-constants";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Server} from "@/generated-src/client";
 import Box from "@cloudscape-design/components/box";
 import * as React from "react";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SERVER_ENDPOINTS_CONSTANTS = {
     SERVER_ENDPOINTS_HEADER: "Server endpoints",
     IP_ID: "Ip",

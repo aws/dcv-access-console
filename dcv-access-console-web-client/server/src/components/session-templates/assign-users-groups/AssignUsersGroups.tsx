@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from "react";
 import AddUserGroupUsers
     from "@/components/user-management/user-groups/modify-user-group/add-user-group-users/AddUserGroupUsers";

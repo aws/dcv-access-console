@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {useState} from "react";
 import {Multiselect, MultiselectProps} from "@cloudscape-design/components";
 import * as React from "react";

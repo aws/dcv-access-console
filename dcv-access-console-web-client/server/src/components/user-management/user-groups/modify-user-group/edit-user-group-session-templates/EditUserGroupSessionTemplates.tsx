@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {FormField, Multiselect, SpaceBetween} from "@cloudscape-design/components";
 import {OptionDefinition} from "@cloudscape-design/components/internal/components/option/interfaces";
 import {useRef, useState} from "react";

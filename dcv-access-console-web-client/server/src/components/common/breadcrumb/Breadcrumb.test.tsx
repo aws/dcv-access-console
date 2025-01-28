@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import Breadcrumb from "@/components/common/breadcrumb/Breadcrumb";
 import {render, screen} from "@testing-library/react";
 import {BreadcrumbNormal} from "@/components/common/breadcrumb/Breadcrumb.stories";

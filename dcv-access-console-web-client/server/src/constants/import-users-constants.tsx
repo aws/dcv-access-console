@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const IMPORT_USERS_CONSTANTS = {
     IMPORT_USERS_TEXT: "Import users",
     UPLOAD_FILE_TEXT: "Upload file",

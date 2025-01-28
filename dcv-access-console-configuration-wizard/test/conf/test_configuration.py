@@ -1,3 +1,6 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 from unittest import TestCase, main
 
 from dcv_access_console_config_wizard.conf.configuration_generator import modify_webclient_config

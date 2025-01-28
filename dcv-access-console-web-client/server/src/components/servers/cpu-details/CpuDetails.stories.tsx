@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {SERVERS} from "@/components/servers/servers-table/ServersTableMocks";
 import CpuDetails from "@/components/servers/cpu-details/CpuDetails";
 

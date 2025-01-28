@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import PropertyFilter, {PropertyFilterProps} from "@cloudscape-design/components/property-filter";
 import {NonCancelableEventHandler} from "@cloudscape-design/components/internal/events";
 import {DropdownStatusProps} from "@cloudscape-design/components/internal/components/dropdown-status";

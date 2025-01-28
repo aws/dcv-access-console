@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {CollectionPreferencesProps} from "@cloudscape-design/components";
 import {
     USER_GROUPS_TABLE_COLUMN_DEFINITIONS

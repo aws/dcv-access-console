@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Container, Grid, Header, SpaceBetween} from "@cloudscape-design/components";
 import EditGroupTextField
     from "@/components/user-management/user-groups/modify-user-group/edit-user-group-display-name/EditGroupTextField";

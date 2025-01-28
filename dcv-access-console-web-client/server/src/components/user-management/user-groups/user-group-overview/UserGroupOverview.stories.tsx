@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import UserGroupOverview, {
     UserGroupOverviewProps
 } from "@/components/user-management/user-groups/user-group-overview/UserGroupOverview";

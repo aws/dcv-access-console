@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {DeleteSessionUIRequestData, SessionTemplate, SessionWithPermissions, UserGroup} from "@/generated-src/client";
 import Box from "@cloudscape-design/components/box";
 import * as React from "react";
