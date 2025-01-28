@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const DOC_CONSTANTS = {
     USERS: "https://docs.aws.amazon.com/dcv/latest/access-console/users.html",
     USER_GROUPS: "https://docs.aws.amazon.com/dcv/latest/access-console/user-groups.html",

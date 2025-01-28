@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import SessionsSplitPanel from "@/components/common/sessions-split-panel/SessionsSplitPanel";
 import {getDescribeSessions200Response} from "@/generated-src/msw/mock";
 import {AppLayout} from "@cloudscape-design/components";

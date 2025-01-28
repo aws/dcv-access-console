@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import ServerEndpoints from "@/components/servers/server-endpoints/ServerEndpoints";
 import {SERVERS} from "@/components/servers/servers-table/ServersTableMocks";
 

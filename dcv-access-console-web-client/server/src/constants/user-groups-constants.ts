@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 
 export const USER_GROUPS_CONSTANT = {
     USER_GROUPS_HEADER_DESCRIPTION: "Groups of users registered with the Access Console are listed here.",

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 const fs = require("fs") // Need to use require instead of import when writing scripts outside the main application
 const YAML = require('yaml')
 

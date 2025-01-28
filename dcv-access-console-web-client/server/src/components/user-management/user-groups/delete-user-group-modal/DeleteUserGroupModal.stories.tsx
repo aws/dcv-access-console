@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import DeleteUserGroupModal from "@/components/user-management/user-groups/delete-user-group-modal/DeleteUserGroupModal";
 
 export default {

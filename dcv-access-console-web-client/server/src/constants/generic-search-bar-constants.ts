@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {PropertyFilterProps} from "@cloudscape-design/components/property-filter/interfaces";
 
 export const PROPERTY_FILTER_I18N_STRINGS: PropertyFilterProps.I18nStrings = {

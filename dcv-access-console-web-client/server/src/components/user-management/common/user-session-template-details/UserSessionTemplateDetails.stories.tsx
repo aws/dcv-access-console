@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import UserSessionTemplateDetails, {
     UserSessionTemplateDetailsProps
 } from "@/components/user-management/common/user-session-template-details/UserSessionTemplateDetails";

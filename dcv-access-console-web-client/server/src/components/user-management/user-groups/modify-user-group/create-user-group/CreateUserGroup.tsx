@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {ContentLayout} from "@cloudscape-design/components";
 import ConsoleHeader from "@/components/common/console-header/ConsoleHeader";
 import * as React from "react";

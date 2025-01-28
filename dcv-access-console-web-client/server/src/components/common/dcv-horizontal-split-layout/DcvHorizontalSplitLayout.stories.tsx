@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import DcvHorizontalSplitLayout, {
     DcvHorizontalSplitLayoutProps
 } from "@/components/common/dcv-horizontal-split-layout/DcvHorizontalSplitLayout";

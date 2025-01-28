@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Os} from "@/generated-src/client";
 import * as React from "react";
 import {service} from "@/constants/service-constants";

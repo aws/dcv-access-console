@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {SERVERS} from "@/components/servers/servers-table/ServersTableMocks";
 import ServerSplitPanel from "@/components/servers/server-split-panel/ServerSplitPanel";
 import {AppLayout} from "@cloudscape-design/components";

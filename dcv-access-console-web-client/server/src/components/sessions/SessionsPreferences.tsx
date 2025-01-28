@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {CollectionPreferencesProps} from "@cloudscape-design/components";
 import {SESSIONS_CONSTANTS} from "@/constants/sessions-constants";
 import {SESSIONS_TABLE_COLUMN_DEFINITIONS} from "@/components/sessions/sessions-table/SessionsTableColumnDefinitions";

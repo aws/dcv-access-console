@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {act, render, screen} from "@testing-library/react";
 import {TopNavNormal} from "@/components/common/top-nav-bar/TopNavBar.stories";
 import {service} from "@/constants/service-constants";

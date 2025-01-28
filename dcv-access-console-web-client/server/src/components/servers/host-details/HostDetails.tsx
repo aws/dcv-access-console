@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Host, Server} from "@/generated-src/client";
 import {ColumnLayout, Container, Header, SpaceBetween} from "@cloudscape-design/components";
 import {ValueWithLabel} from "@/components/common/sessions-split-panel/SessionsSplitPanel";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {act, render, screen} from "@testing-library/react";
 import SessionCards from "@/components/sessions/sessions-cards/SessionCards";
 import {sessionCardsConstants} from "@/constants/sessions-constants";

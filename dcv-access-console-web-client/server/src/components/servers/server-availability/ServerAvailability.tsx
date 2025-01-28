@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Availability, UnavailabilityReason} from "@/generated-src/client";
 import {StatusIndicator} from "@cloudscape-design/components";
 import {capitalizeFirstLetter} from "@/components/common/utils/TextUtils";

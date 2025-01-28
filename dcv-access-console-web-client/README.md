@@ -26,6 +26,13 @@ dcv-access-console-web-client/server
 | | └─<constant-group>.ts
 ```
 
+## Add logos
+The Web Client renders some logos on the UI which are missing in the repository and should be added for a desirable experience. The files that should be added are as follows:
+1. public/linux-logo.svg
+2. public/windows-logo.svg
+3. public/service-name.svg
+4. src/app/favicon.ico
+
 ## Build
 ```bash
 cd server

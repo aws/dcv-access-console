@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import SessionCards from "@/components/sessions/sessions-cards/SessionCards";
 import {getDescribeSessions200Response} from "@/generated-src/msw/mock";
 import {SessionWithPermissions, SessionScreenshotImage} from "@/generated-src/client";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {USER_GROUP_USER_DETAILS_CONSTANTS} from "@/constants/user-group-user-details-constants";
 import {TableProps} from "@cloudscape-design/components";
 import {User} from "@/generated-src/client";

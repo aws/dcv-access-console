@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const USERS_AND_GROUPS_TAB_CONSTANTS = {
     USERS_TAB_TITLE: "Assigned users",
     GROUPS_TAB_TITLE: "Assigned groups",

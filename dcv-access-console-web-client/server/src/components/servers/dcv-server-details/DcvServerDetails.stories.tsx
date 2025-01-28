@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import DcvServerDetails from "@/components/servers/dcv-server-details/DcvServerDetails";
 import {SERVERS} from "@/components/servers/servers-table/ServersTableMocks";
 import {Server} from "@/generated-src/client";

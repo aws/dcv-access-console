@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {JWT} from "next-auth/jwt";
 import {NextResponse} from "next/server";
 import {withAuth} from "next-auth/middleware";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SESSIONS_CREATE_CONSTANTS = {
     CREATE_SESSION_DESCRIPTION: "You create a session by selecting one of the following templates.",
     SESSION_DETAILS: "Session details",
