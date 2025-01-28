@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from "react";
 import {capitalizeFirstLetter} from "@/components/common/utils/TextUtils";
 import {StatusIndicator, TextContent} from "@cloudscape-design/components";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SESSION_TEMPLATES_CREATE_CONSTANTS = {
     CONFIGURE_DETAILS: "Configure template parameters",
     CONFIGURE_DESCRIPTION: "You create a session template by specifying the parameters here.",

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import ServerTags from "@/components/sessions/ServerTags";
 import {sessions} from "@/components/sessions/sessions-cards/SessionCards.stories";
 

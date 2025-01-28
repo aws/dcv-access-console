@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const USER_DETAILS_CONSTANTS = {
     LOADING_TEXT: "Loading user",
     ERROR_TEXT: "Error loading user",

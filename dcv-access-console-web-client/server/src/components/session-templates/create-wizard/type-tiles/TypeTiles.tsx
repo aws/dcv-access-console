@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from "react";
 import Tiles from "@cloudscape-design/components/tiles";
 import {service} from "@/constants/service-constants";

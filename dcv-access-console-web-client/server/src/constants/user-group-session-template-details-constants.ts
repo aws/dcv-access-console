@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const USER_GROUP_SESSION_TEMPLATE_DETAILS_CONSTANTS = {
     SESSION_TEMPLATES_HEADER: "Session templates",
     EMPTY_TEXT: "No session templates available",

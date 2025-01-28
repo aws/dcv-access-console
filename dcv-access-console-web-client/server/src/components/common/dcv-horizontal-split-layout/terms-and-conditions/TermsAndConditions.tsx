@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Link, SpaceBetween} from "@cloudscape-design/components";
 import {TERMS_AND_CONDITIONS_CONSTANTS} from "@/constants/terms-and-conditions-constants";
 import './TermsAndConditions.css'

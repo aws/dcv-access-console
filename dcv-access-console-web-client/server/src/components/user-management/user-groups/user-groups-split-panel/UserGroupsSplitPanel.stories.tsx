@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import UserGroupsSplitPanel, {
     UserGroupsSplitPanelProps
 } from "@/components/user-management/user-groups/user-groups-split-panel/UserGroupsSplitPanel";

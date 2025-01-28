@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {BreadcrumbGroup} from "@cloudscape-design/components";
 import {usePathname, useRouter} from "next/navigation";
 

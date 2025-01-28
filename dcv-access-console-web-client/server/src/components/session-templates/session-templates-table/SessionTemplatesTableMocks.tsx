@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {SessionTemplate} from "@/generated-src/client";
 import {getDescribeSessionTemplates200Response} from "@/generated-src/msw/mock";
 

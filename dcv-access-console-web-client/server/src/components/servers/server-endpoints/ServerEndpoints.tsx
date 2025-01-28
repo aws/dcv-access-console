@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Container, Header, Table} from "@cloudscape-design/components";
 import {Endpoint} from "@/generated-src/client";
 import {SERVER_ENDPOINTS_CONSTANTS} from "@/constants/server-endpoints-constants";

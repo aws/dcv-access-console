@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {act, render} from "@testing-library/react";
 import ServerDetails from "@/components/servers/server-details/ServerDetails";
 import {

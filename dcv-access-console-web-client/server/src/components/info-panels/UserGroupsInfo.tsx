@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from "react";
 import {HelpPanel, Icon} from '@cloudscape-design/components';
 import {DOC_CONSTANTS} from "@/constants/doc-constants";

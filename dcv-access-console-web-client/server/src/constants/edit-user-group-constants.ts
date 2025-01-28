@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const EDIT_USER_GROUP_CONSTANTS = {
     LOADING_TEXT: "Loading user group",
     ERROR_TEXT: "Error loading user group: ",

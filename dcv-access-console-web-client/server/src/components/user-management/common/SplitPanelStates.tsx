@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {Session, SessionTemplate, User, UserGroup} from "@/generated-src/client";
 
 export type SessionTemplatesState = {

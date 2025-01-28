@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {render, screen} from "@testing-library/react";
 import ServerTags from "@/components/sessions/ServerTags";
 import {ServerTagsEmpty, ServerTagsWithTags} from "@/components/sessions/ServerTags.stories";

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const SESSIONS_CONSTANTS = {
     LOADING_TEXT: "Loading sessions",
     EMPTY_TEXT: "No available sessions",
