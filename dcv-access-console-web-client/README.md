@@ -27,7 +27,7 @@ dcv-access-console-web-client/server
 ```
 
 ## Add logos
-The Web Client renders some logos on the UI which are missing in the repository and should be added for a desirable experience. The files that should be added are as follows:
+The Web Client renders some logos on the UI which can be added to the repository for a more desirable experience. The files that should be added are as follows:
 1. public/linux-logo.svg
 2. public/windows-logo.svg
 3. public/service-name.svg

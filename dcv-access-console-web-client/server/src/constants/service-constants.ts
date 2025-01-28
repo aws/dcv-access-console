@@ -2,19 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export const service = {
-    name: 'SESSIONMANAGER',
-    displayName: 'Session Manager',
-    dcvLogo: {
-        src: '/dcv-logo.svg',
-        alt: 'dcv-logo'
-    },
     footerLogo: {
         src: '/footer-logo.svg',
         alt: 'aws-logo'
     },
     nameImage: {
         src: '/service-name.svg',
-        alt: 'Session Manager'
+        alt: 'DCV Access Console'
     },
     loginBackground: '/login-background.svg',
     tagline: 'Manage and connect to your Amazon DCV sessions.',

@@ -6,11 +6,14 @@ import {service} from "@/constants/service-constants";
 import {capitalizeFirstLetter} from "@/components/common/utils/TextUtils";
 import {SpaceBetween, TextContent} from "@cloudscape-design/components";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
+import {useEffect, useState} from "react";
 
 export type OsLabelProps = {
     osFamily: String | undefined,
 }
 export default function OsLabel(props: OsLabelProps) {
+    const [osLogoExists, setOsLogoExists] = useState(false);
+
     let imgSrc
     if(!props.osFamily) {
         return <TextContent>{SESSION_TEMPLATES_TABLE_CONSTANTS.UNKNOWN}</TextContent>
@@ -23,8 +26,16 @@ export default function OsLabel(props: OsLabelProps) {
             imgSrc = service.osLogos.linux
             break;
     }
+
+    useEffect(() => {
+        const img = new Image();
+        img.onload = () => setOsLogoExists(true);
+        img.onerror = () => setOsLogoExists(false);
+        img.src = imgSrc;
+    }, []);
+
     return <SpaceBetween size={"xxs"} direction={"horizontal"} alignItems={"center"}>
-            <img src={imgSrc} alt={props.osFamily}/>
+        {osLogoExists ? <img src={imgSrc} alt={props.osFamily}/> : undefined}
             <TextContent>
                 {capitalizeFirstLetter(props.osFamily)}
             </TextContent>

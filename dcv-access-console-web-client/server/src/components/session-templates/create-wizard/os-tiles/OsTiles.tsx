@@ -4,6 +4,7 @@
 import * as React from "react";
 import Tiles from "@cloudscape-design/components/tiles";
 import {service} from "@/constants/service-constants";
+import {useEffect, useState} from "react";
 
 export type OsTilesProps = {
     columns: number
@@ -13,10 +14,25 @@ export type OsTilesProps = {
 }
 
 export default ({columns, os, setOs, setType}: OsTilesProps) => {
+    const [linuxLogoExists, setLinuxLogoExists] = useState(false);
+    const [windowsLogoExists, setWindowsLogoExists] = useState(false);
+
+    useEffect(() => {
+        const linux = new Image();
+        linux.onload = () => setLinuxLogoExists(true);
+        linux.onerror = () => setLinuxLogoExists(false);
+        linux.src = service.osLogos.linux;
+
+        const windows = new Image();
+        windows.onload = () => setWindowsLogoExists(true);
+        windows.onerror = () => setWindowsLogoExists(false);
+        windows.src = service.osLogos.windows;
+    }, []);
+
     const items = [
         {
             label: "Linux",
-            image: (
+            image: linuxLogoExists ? (
                 <center>
                     <img
                         src={service.osLogos.linux}
@@ -24,12 +40,12 @@ export default ({columns, os, setOs, setType}: OsTilesProps) => {
                         style={{width: 96, padding: 5}}
                     />
                 </center>
-            ),
+            ) : undefined,
             value: "linux"
         },
         {
             label: "Windows",
-            image: (
+            image: windowsLogoExists ? (
                 <center>
                     <img
                         src={service.osLogos.windows}
@@ -37,7 +53,7 @@ export default ({columns, os, setOs, setType}: OsTilesProps) => {
                         style={{width: 96, padding: 5}}
                     />
                 </center>
-            ),
+            ) : undefined,
             value: "windows"
         }
     ]
