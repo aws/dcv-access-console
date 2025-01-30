@@ -6,10 +6,8 @@ export const service = {
         src: '/footer-logo.svg',
         alt: 'aws-logo'
     },
-    nameImage: {
-        src: '/service-name.svg',
-        alt: 'DCV Access Console'
-    },
+    nameImage: '/service-name.svg',
+    serviceName: 'DCV Access Console',
     loginBackground: '/login-background.svg',
     tagline: 'Manage and connect to your Amazon DCV sessions.',
     osLogos: {
