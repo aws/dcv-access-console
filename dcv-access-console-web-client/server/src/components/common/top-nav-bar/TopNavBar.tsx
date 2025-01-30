@@ -18,7 +18,7 @@ export default function TopNavBar({session}: { session: Session }) {
         const img = new Image();
         img.onload = () => setServiceLogoExists(true);
         img.onerror = () => setServiceLogoExists(false);
-        img.src = service.nameImage.src;
+        img.src = service.nameImage;
     }, []);
 
     return (
@@ -26,9 +26,10 @@ export default function TopNavBar({session}: { session: Session }) {
             identity={{
                 href: "/sessions",
                 logo: serviceLogoExists ? {
-                    src: service.nameImage.src,
-                    alt: service.nameImage.alt
-                } : undefined
+                    src: service.nameImage,
+                    alt: service.serviceName
+                } : undefined,
+                title: serviceLogoExists ? undefined : service.serviceName
             }}
             utilities={[
                 {
