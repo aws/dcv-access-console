@@ -208,7 +208,7 @@ public class EndToEndIntegrationTests {
 
         SSLContext sslContext;
         try {
-            sslContext = SSLContext.getInstance("TLS");
+            sslContext = SSLContext.getInstance("TLSv1.2");
             CustomTrustManager trustManager = new CustomTrustManager();
             sslContext.init(null, new CustomTrustManager[]{trustManager}, new SecureRandom());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

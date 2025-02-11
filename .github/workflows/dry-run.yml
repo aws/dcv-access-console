@@ -38,6 +38,16 @@ jobs:
         cd ..
         git secrets --scan -r
 
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Semgrep scan
+      run: |
+        pip install semgrep
+        semgrep --config p/ci --error
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -48,11 +58,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16'
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.11
 
     - name: Build dcv-access-console
       uses: nick-fields/retry@v2
