@@ -1666,6 +1666,13 @@ def run(
 @click.command(context_settings=dict(allow_extra_args=True))
 @click.pass_context
 @click.option(
+    "--log-location",
+    default=None,
+    help="Override the default log storage location",
+    required=False,
+    callback=update_log_location,
+)
+@click.option(
     "--component-installers-location",
     default=".",
     help="The path to the folder where the installers for the three components can be found. "
@@ -1673,7 +1680,14 @@ def run(
     required=False,
     prompt=prompts.COMPONENT_INSTALLERS_LOCATION_PROMPT,
 )
-def update(ctx, component_installers_location, read_existing_configs):
+@click.option(
+    "--read-existing-configs/--no-read-existing-configs",
+    is_flag=True,
+    help="Read the existing configuration files and use them as defaults",
+    required=False,
+    prompt=prompts.READ_EXISTING_CONFIG_FILES_PROMPT,
+)
+def update(ctx, log_location, component_installers_location, read_existing_configs):
     completed_tasks, failed_tasks = update_access_console_components(
         environment_configuration["os_type"], component_installers_location, read_existing_configs
     )
