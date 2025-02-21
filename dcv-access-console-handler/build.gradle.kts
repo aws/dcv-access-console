@@ -171,13 +171,16 @@ tasks {
             }
         )
     }
+
     check {
         dependsOn(jacocoTestCoverageVerification)
     }
+
     test {
         useJUnitPlatform()
         finalizedBy("jacocoTestReport")
     }
+
     jacocoTestReport {
         reports {
             csv.required.set(true)
