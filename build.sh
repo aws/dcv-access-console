@@ -15,7 +15,7 @@ cd dcv-access-console-handler
 ./gradlew release
 
 echo "Building the auth server..."
-cd dcv-access-console-auth-server
+cd ../dcv-access-console-auth-server
 ./gradlew release
 
 echo "Building the web client..."

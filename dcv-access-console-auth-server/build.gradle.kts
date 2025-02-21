@@ -74,7 +74,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache:3.0.6")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.+")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
 }
 
 spotless {
@@ -113,6 +113,7 @@ tasks {
     jacocoTestReport {
         dependsOn(test)
         reports {
+            csv.required.set(true)
             xml.required.set(true)
             xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/test/coverage.xml"))
             classDirectories.setFrom(
