@@ -14,6 +14,10 @@ echo "Building the handler..."
 cd dcv-access-console-handler
 ./gradlew release
 
+echo "Building the auth server..."
+cd dcv-access-console-auth-server
+./gradlew release
+
 echo "Building the web client..."
 cd ../dcv-access-console-web-client/server
 npm install
