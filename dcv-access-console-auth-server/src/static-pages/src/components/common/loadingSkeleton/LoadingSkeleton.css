@@ -1,0 +1,17 @@
+.loading-skeleton {
+    height: 56px;
+    display: grid;
+    align-content: stretch;
+    grid-template-rows: min-content;
+}
+.loading-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    height: 100vh;
+    background-size: cover;
+;
+}

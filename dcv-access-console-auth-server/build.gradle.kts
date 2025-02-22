@@ -30,6 +30,7 @@ plugins {
     id("org.springframework.boot") version "3.0.6"
     id("io.freefair.lombok") version "8.0.1"
     id("com.github.jk1.dependency-license-report") version "2.0"
+    id("com.github.node-gradle.node") version "7.1.0"
 }
 
 licenseReport {
@@ -85,7 +86,36 @@ spotless {
     }
 }
 
+node {
+    version.set("16.14.0")
+    download.set(true)
+    nodeProjectDir.set(file("${project.projectDir}/src/static-pages"))
+}
+
 tasks {
+    register<com.github.gradle.node.npm.task.NpmTask>("buildStaticPages") {
+        dependsOn("npmInstall")
+        args.set(listOf("run", "build"))
+    }
+
+    register<Delete>("cleanStaticResources") {
+        delete("src/main/resources/static")
+    }
+
+    named<ProcessResources>("processResources") {
+        dependsOn("copyStaticBuildOutput")
+    }
+
+    register<Copy>("copyStaticBuildOutput") {
+        dependsOn("cleanStaticResources", "buildStaticPages")
+        from("src/static-pages/out")
+        into("src/main/resources/static")
+    }
+
+    named("build") {
+        dependsOn("copyStaticBuildOutput")
+    }
+
     clean {
         doLast {
             mkdir(layout.buildDirectory.dir("reports"))
