@@ -80,17 +80,29 @@ jobs:
           fi
         }
         
-        # Extract JaCoCo coverages
-        JACOCO_CSV="dcv-access-console-handler/build/reports/jacoco/test/jacocoTestReport.csv"
-        LINE_COVERED=$(awk -F, 'NR>1 {sum+=$9} END {print sum}' $JACOCO_CSV)
-        LINE_MISSED=$(awk -F, 'NR>1 {sum+=$8} END {print sum}' $JACOCO_CSV)
-        BRANCH_COVERED=$(awk -F, 'NR>1 {sum+=$7} END {print sum}' $JACOCO_CSV)
-        BRANCH_MISSED=$(awk -F, 'NR>1 {sum+=$6} END {print sum}' $JACOCO_CSV)
+        # Extract JaCoCo coverages for handler
+        JACOCO_CSV_HANDLER="dcv-access-console-handler/build/reports/jacoco/test/jacocoTestReport.csv"
+        LINE_COVERED=$(awk -F, 'NR>1 {sum+=$9} END {print sum}' $JACOCO_CSV_HANDLER)
+        LINE_MISSED=$(awk -F, 'NR>1 {sum+=$8} END {print sum}' $JACOCO_CSV_HANDLER)
+        BRANCH_COVERED=$(awk -F, 'NR>1 {sum+=$7} END {print sum}' $JACOCO_CSV_HANDLER)
+        BRANCH_MISSED=$(awk -F, 'NR>1 {sum+=$6} END {print sum}' $JACOCO_CSV_HANDLER)
         
         LINE_COVERAGE=$(calculate_coverage $LINE_COVERED $LINE_MISSED)
         BRANCH_COVERAGE=$(calculate_coverage $BRANCH_COVERED $BRANCH_MISSED)
-        echo "JACOCO_LINE_COVERAGE=$LINE_COVERAGE" >> $GITHUB_ENV
-        echo "JACOCO_BRANCH_COVERAGE=$BRANCH_COVERAGE" >> $GITHUB_ENV
+        echo "JACOCO_LINE_COVERAGE_HANDLER=$LINE_COVERAGE" >> $GITHUB_ENV
+        echo "JACOCO_BRANCH_COVERAGE_HANDLER=$BRANCH_COVERAGE" >> $GITHUB_ENV
+        
+        # Extract JaCoCo coverages for auth server
+        JACOCO_CSV_AUTH_SERVER="dcv-access-console-auth-server/build/reports/jacoco/test/jacocoTestReport.csv"
+        LINE_COVERED=$(awk -F, 'NR>1 {sum+=$9} END {print sum}' $JACOCO_CSV_AUTH_SERVER)
+        LINE_MISSED=$(awk -F, 'NR>1 {sum+=$8} END {print sum}' $JACOCO_CSV_AUTH_SERVER)
+        BRANCH_COVERED=$(awk -F, 'NR>1 {sum+=$7} END {print sum}' $JACOCO_CSV_AUTH_SERVER)
+        BRANCH_MISSED=$(awk -F, 'NR>1 {sum+=$6} END {print sum}' $JACOCO_CSV_AUTH_SERVER)
+        
+        LINE_COVERAGE=$(calculate_coverage $LINE_COVERED $LINE_MISSED)
+        BRANCH_COVERAGE=$(calculate_coverage $BRANCH_COVERED $BRANCH_MISSED)
+        echo "JACOCO_LINE_COVERAGE_AUTH_SERVER=$LINE_COVERAGE" >> $GITHUB_ENV
+        echo "JACOCO_BRANCH_COVERAGE_AUTH_SERVER=$BRANCH_COVERAGE" >> $GITHUB_ENV
         
         # Extract Jest coverages
         COVERAGE_SUMMARY=$(cat dcv-access-console-web-client/server/coverage/coverage-summary.json)
@@ -128,9 +140,10 @@ jobs:
               <th width="25%">Lines</th>
               <th width="25%">Branches</th>
             </tr>
-            ${createRow('dcv-access-console-handler', process.env.JACOCO_LINE_COVERAGE, process.env.JACOCO_BRANCH_COVERAGE)}
+            ${createRow('dcv-access-console-handler', process.env.JACOCO_LINE_COVERAGE_HANDLER, process.env.JACOCO_BRANCH_COVERAGE_HANDLER)}
             ${createRow('dcv-access-console-web-client', process.env.JEST_LINE_COVERAGE, process.env.JEST_BRANCH_COVERAGE)}
             ${createRow('dcv-access-console-configuration-wizard', process.env.TOX_LINE_COVERAGE, process.env.TOX_BRANCH_COVERAGE)}
+            ${createRow('dcv-access-console-auth-server', process.env.JACOCO_LINE_COVERAGE_AUTH_SERVER, process.env.JACOCO_BRANCH_COVERAGE_AUTH_SERVER)}
           </table>
           `;
 
