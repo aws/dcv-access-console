@@ -1,0 +1,11 @@
+.error-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    background-image: url(/login-background.svg);
+    height: 100vh;
+    background-size: cover;
+}

@@ -1,0 +1,17 @@
+.login-form {
+    display: flex;
+    background-size: cover;
+    background-position: center center;
+    height: 100%;
+    width: 328px;
+}
+.form-text-box {
+    width: 328px;
+}
+.form-button {
+    width: 328px;
+}
+
+.sign-in {
+    font-weight: 800
+}
