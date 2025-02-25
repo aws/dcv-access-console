@@ -13,6 +13,21 @@ const ERROR_MESSAGE_500 = "An error occured while processing the request."
 const BAD_CALLBACK_URL_MESSAGE = "Callback URL must begin with '/'."
 const BAD_REQUEST_MESSAGE = "Request body could not be parsed"
 
+async function getLogoutEndpoint() {
+    try {
+        const enableLogoutRedirect = process.env.SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT === 'true'
+        if (!enableLogoutRedirect) {
+            return undefined
+        }
+        // Getting the logout endpoint from the wellknown uri
+        const wellKnownJson = await (await fetch(process.env.SM_UI_AUTH_WELL_KNOWN_URI)).json()
+        return wellKnownJson?.end_session_endpoint ?? process.env.SM_UI_AUTH_LOGOUT_URI
+    } catch (error) {
+        console.log("Error while retrieving the logout endpoint", error)
+        return process.env.SM_UI_AUTH_LOGOUT_URI
+    }
+}
+
 /**
  * Takes a token, and returns a new token with updated
  * `accessToken` and `accessTokenExpires`. If an error occurs,
@@ -22,18 +37,17 @@ async function refreshAccessToken(token) {
     try {
         // Getting the token endpoint from the wellknown uri
         const wellKnownJson = await (await fetch(process.env.SM_UI_AUTH_WELL_KNOWN_URI)).json()
-        const url =
-            wellKnownJson.token_endpoint + "?" +
-            new URLSearchParams({
-                grant_type: "refresh_token",
-                refresh_token: token.refresh_token,
-            })
+        const url = wellKnownJson.token_endpoint
 
         const response = await fetch(url, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Basic " + Buffer.from(process.env.SM_UI_AUTH_CLIENT_ID + ":" + process.env.SM_UI_AUTH_CLIENT_SECRET, 'binary').toString('base64')
             },
+            body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: token.refresh_token,
+            }).toString(),
             method: "POST",
         })
 
@@ -52,32 +66,34 @@ async function refreshAccessToken(token) {
         console.log("Error while trying to obtain the refresh token", error)
         console.log("Logging out")
         await signOut()
-        await fetch("/api/auth/postSignOut", {
-            method: "POST",
-        });
-        await revokeRefreshToken(token)
-        await getCsrfToken()
         return
     }
 }
+
 async function revokeRefreshToken(token) {
     try {
         // Getting the revocation endpoint from the wellknown uri
         const wellKnownJson = await (await fetch(process.env.SM_UI_AUTH_WELL_KNOWN_URI)).json()
-        const url = wellKnownJson.revocation_endpoint + "?" + new URLSearchParams({ refresh_token: token.refresh_token });
+        const url = wellKnownJson.revocation_endpoint
 
         const response = await fetch(url, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Basic " + Buffer.from(process.env.SM_UI_AUTH_CLIENT_ID + ":" + process.env.SM_UI_AUTH_CLIENT_SECRET, 'binary').toString('base64')
             },
-            body: `token=${token.refresh_token}&token_type_hint=refresh_token`,
+            body: new URLSearchParams({
+                token: token.refresh_token,
+                client_id: process.env.SM_UI_AUTH_CLIENT_ID!,
+                client_secret: process.env.SM_UI_AUTH_CLIENT_SECRET!,
+                token_type_hint: "refresh_token"
+            }).toString(),
             method: "POST",
         })
 
         if (!response.ok) {
             throw response
         }
+
         return true
     } catch (error) {
         console.log("Error while trying to revoke the refresh token", error)
@@ -111,7 +127,7 @@ export const authOptions: NextAuthOptions = {
         userinfo: {
             url: process.env.SM_UI_HANDLER_BASE_URL + process.env.SM_UI_HANDLER_API_PREFIX! + "/describeUserInfo",
             // The result of this method will be the input to the `profile` callback.
-            async request(context){
+            async request(context) {
                 let user: DescribeUserInfoResponse | void = await new DataAccessService().getUserInfo(context.tokens.access_token!)
                 if(!user) {
                     throw "Error while contacting the handler"
@@ -145,7 +161,6 @@ export const authOptions: NextAuthOptions = {
                 if (account?.expires_at) {
                     token.access_token_expires_at = account?.expires_at
                 }
-
             }
             if (profile) {
                 token.sub = profile.UserInfo.id
@@ -162,6 +177,8 @@ export const authOptions: NextAuthOptions = {
             return refreshAccessToken(token)
         },
         async session({session, user, token}) {
+            const logoutEndpoint = await getLogoutEndpoint()
+
             // Send properties to the client, like an access_token and user id from a provider.
             session.userRole = token.userRole
             session.user.id = token.sub
@@ -169,19 +186,25 @@ export const authOptions: NextAuthOptions = {
             session.user.role = token.userRole
             session.access_token = token.access_token
             session.sm_ui_handler_base_url = process.env.SM_UI_HANDLER_BASE_URL! + process.env.SM_UI_HANDLER_API_PREFIX!
+            session.logout_endpoint = logoutEndpoint
+            session.client_id = process.env.SM_UI_AUTH_CLIENT_ID
+            session.post_logout_uri = process.env.NEXTAUTH_URL
             return session
         },
     },
     events: {
         async signOut({session, token}) {
             await revokeRefreshToken(token)
+            await fetch("/api/auth/postSignOut", {
+                method: "POST",
+            })
+            await getCsrfToken()
         }
     }
 }
 const handler = NextAuth(authOptions)
 
 export {handler as GET}
-
 
 export async function POST(req: NextRequest, context: any, options: AuthOptions) {
     if (req.nextUrl.searchParams.get("callbackUrl") !== null &&

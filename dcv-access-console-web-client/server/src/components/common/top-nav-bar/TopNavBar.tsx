@@ -7,12 +7,14 @@ import * as React from "react";
 import TopNavigation from "@cloudscape-design/components/top-navigation";
 import {service} from "@/constants/service-constants";
 import {topNavBarConstants} from "@/constants/top-nav-bar-constants";
-import {getCsrfToken, signOut} from "next-auth/react";
+import {signOut} from "next-auth/react";
 import {Session} from "next-auth";
 import {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
 
 export default function TopNavBar({session}: { session: Session }) {
     const [serviceLogoExists, setServiceLogoExists] = useState(false);
+    const {push} = useRouter();
 
     useEffect(() => {
         const img = new Image();
@@ -42,11 +44,15 @@ export default function TopNavBar({session}: { session: Session }) {
                     ],
                     onItemClick: async (event) => {
                         if (event.detail.id === "signout") {
-                            await signOut()
-                            await fetch("/api/auth/postSignOut", {
-                                method: "POST",
-                            });
-                            await getCsrfToken()
+                            await signOut({
+                                redirect: false
+                            })
+
+                            const logout_uri = session.logout_endpoint
+                            if (logout_uri) {
+                                const url = `${logout_uri}?client_id=${session.client_id}&response_type=code&logout_uri=${encodeURIComponent(session.post_logout_uri)}`
+                                push(url)
+                            }
                         }
                     }
                 }
