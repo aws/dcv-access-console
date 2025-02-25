@@ -1,0 +1,72 @@
+.branded-horizontal-split-layout-container {
+    display: flex;
+    background-size: cover;
+    background-position: center center;
+    height: 100%;
+    width: 100vw;
+
+}
+
+.branded-horizontal-split-layout-left-panel {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    background-image: url(/login-background.svg);
+    height: 100vh;
+    background-size: cover;
+}
+
+.branded-horizontal-split-layout-right-panel {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+}
+
+.branded-horizontal-split-layout-brand-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.branded-horizontal-split-layout-brand-logo {
+    height: 36px;
+}
+
+.branded-horizontal-split-layout-brand-title {
+    height: 36px;
+}
+
+.branded-horizontal-split-layout-brand-description {
+    color: #FFFFFF;
+    font-size: 6rem;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 8rem;
+    text-align: start;
+}
+
+.branded-horizontal-split-layout-brand-description p {
+    margin-block: 1.5rem;
+}
+
+.branded-horizontal-split-layout-header,
+.branded-horizontal-split-layout-footer,
+.branded-horizontal-split-layout-brand-header,
+.branded-horizontal-split-layout-brand-footer {
+    width: 100%;
+}
+
+.branded-horizontal-split-layout-main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

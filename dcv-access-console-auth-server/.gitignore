@@ -1,1 +1,5 @@
 /src/main/resources/*-dev.properties
+
+node_modules
+src/static-pages/out
+.next
