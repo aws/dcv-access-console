@@ -18,6 +18,4 @@
 - [ ] I confirm that the change is backwards compatible.
 - [ ] There is no modification of dependencies or if there is, a corresponding update to THIRD-PARTY-LICENSES is part of the commit.
 
-Refer to [Compatibility Guidelines](/COMPATIBILITY.md) for more information.
-
 By submitting this pull request, I confirm that you can use, modify, copy, and redistribute this contribution, under the terms of your choice.
