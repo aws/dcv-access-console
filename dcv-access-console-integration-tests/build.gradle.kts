@@ -1,8 +1,14 @@
+import com.github.jk1.license.render.ReportRenderer
+import com.github.jk1.license.render.InventoryHtmlReportRenderer
+import com.github.jk1.license.render.CsvReportRenderer
+import com.github.jk1.license.render.TextReportRenderer
+
 plugins {
     `java-library`
     jacoco
     `maven-publish`
     id("io.freefair.lombok") version "8.0.1"
+    id("com.github.jk1.dependency-license-report") version "2.0"
 }
 
 group = "dcv-access-console-integration-tests"
@@ -33,6 +39,11 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
+}
+
+licenseReport {
+    renderers = arrayOf<ReportRenderer>(InventoryHtmlReportRenderer("report.html", "dcv-access-console-integration-tests"),
+        CsvReportRenderer("third-party-libs.csv"), TextReportRenderer("third-party-licenses.txt"))
 }
 
 tasks.register<Test>("run-integration") {
