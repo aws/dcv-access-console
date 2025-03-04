@@ -1,4 +1,5 @@
 /src/main/resources/*-dev.properties
+/src/main/resources/static
 
 node_modules
 src/static-pages/out

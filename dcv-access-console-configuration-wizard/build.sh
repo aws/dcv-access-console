@@ -42,10 +42,11 @@ copy_configs() {
 
   HANDLER_ARTIFACTS="../dcv-access-console-handler/src/main/resources"
   WEBCLIENT_ARTIFACTS="../dcv-access-console-web-client/server"
+  AUTH_SERVER_ARTIFACTS="../dcv-access-console-auth-server/src/main/resources"
   cp "$HANDLER_ARTIFACTS/access-console-handler.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
   cp "$HANDLER_ARTIFACTS/access-console-handler-secrets.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
-#  cp "$AUTH_SERVER_ARTIFACTS/access-console-auth-server.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
-#  cp "$AUTH_SERVER_ARTIFACTS/access-console-auth-server-secrets.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
+  cp "$AUTH_SERVER_ARTIFACTS/access-console-auth-server.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
+  cp "$AUTH_SERVER_ARTIFACTS/access-console-auth-server-secrets.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
   cp "$WEBCLIENT_ARTIFACTS/access-console-web-client.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
   cp "$WEBCLIENT_ARTIFACTS/access-console-web-client-secrets.properties" "src/dcv_access_console_config_wizard/assets/default_configs/"
 }
