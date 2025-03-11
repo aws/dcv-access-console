@@ -141,6 +141,7 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
     public void loadEntities() {
         loadPoliciesFromFile(policyFile);
         entities = new HashSet<>();
+        entitiesMap.clear();
         loadRolesFromFile(roleFile);
         loadUsersFromDb();
         loadUserGroupsFromDb();
