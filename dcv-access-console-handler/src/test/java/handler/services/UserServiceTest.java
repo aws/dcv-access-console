@@ -47,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -333,5 +334,108 @@ public class UserServiceTest {
         when(mockUserRepository.findById(GROUP1_ID)).thenReturn(user);
         testUserService.updateLastLoggedInTime(GROUP1_ID);
         verify(mockUserRepository, times(1)).save(user.get());
+    }
+
+    @Test
+    public void testUpdateUser_WhenUserExists_AndChangesNeeded() {
+        String newLoginUsername = "newLogin";
+        String newDisplayName = "newDisplay";
+
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(USER1_ID);
+        existingUser.setLoginUsername("oldLogin");
+        existingUser.setDisplayName("oldDisplay");
+
+        UserEntity updatedUser = new UserEntity();
+        updatedUser.setUserId(USER1_ID);
+        updatedUser.setLoginUsername(newLoginUsername);
+        updatedUser.setDisplayName(newDisplayName);
+
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
+
+        Optional<User> result = testUserService.updateUser(USER1_ID, newLoginUsername, newDisplayName);
+
+        assertTrue(result.isPresent());
+        assertEquals(newLoginUsername, result.get().getLoginUsername());
+        assertEquals(newDisplayName, result.get().getDisplayName());
+        verify(mockUserRepository, times(1)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testUpdateUser_WhenUserExists_NoChangesNeeded() {
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(USER1_ID);
+        existingUser.setLoginUsername(USER1_ID);
+        existingUser.setDisplayName(USER1_ID);
+
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
+
+        Optional<User> result = testUserService.updateUser(USER1_ID, USER1_ID, USER1_ID);
+
+        assertFalse(result.isPresent());
+        verify(mockUserRepository, times(0)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testUpdateUser_WhenUserDoesNotExist() {
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> testUserService.updateUser(USER1_ID, USER1_ID, USER1_ID));
+        assertEquals("Cannot update user " + USER1_ID + " as it does not exist", exception.getMessage());
+        verify(mockUserRepository, times(0)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testUpdateUser_WhenOnlyLoginUsernameChanges() {
+        String newLoginUsername = "newLogin";
+        String displayName = "currentDisplay";
+
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(USER1_ID);
+        existingUser.setLoginUsername("oldLogin");
+        existingUser.setDisplayName(displayName);
+
+        UserEntity updatedUser = new UserEntity();
+        updatedUser.setUserId(USER1_ID);
+        updatedUser.setLoginUsername(newLoginUsername);
+        updatedUser.setDisplayName(displayName);
+
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
+
+        Optional<User> result = testUserService.updateUser(USER1_ID, newLoginUsername, displayName);
+
+        assertTrue(result.isPresent());
+        assertEquals(newLoginUsername, result.get().getLoginUsername());
+        assertEquals(displayName, result.get().getDisplayName());
+        verify(mockUserRepository, times(1)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testUpdateUser_WhenOnlyDisplayNameChanges() {
+        String loginUsername = "currentLogin";
+        String newDisplayName = "newDisplay";
+
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(USER1_ID);
+        existingUser.setLoginUsername(loginUsername);
+        existingUser.setDisplayName("oldDisplay");
+
+        UserEntity updatedUser = new UserEntity();
+        updatedUser.setUserId(USER1_ID);
+        updatedUser.setLoginUsername(loginUsername);
+        updatedUser.setDisplayName(newDisplayName);
+
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
+
+        Optional<User> result = testUserService.updateUser(USER1_ID, loginUsername, newDisplayName);
+
+        assertTrue(result.isPresent());
+        assertEquals(loginUsername, result.get().getLoginUsername());
+        assertEquals(newDisplayName, result.get().getDisplayName());
+        verify(mockUserRepository, times(1)).save(any(UserEntity.class));
     }
 }

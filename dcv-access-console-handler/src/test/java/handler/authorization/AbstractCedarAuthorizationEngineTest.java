@@ -11,6 +11,7 @@ import handler.authorization.enums.ResourceType;
 import handler.authorization.enums.ShareLevel;
 import handler.authorization.enums.SystemAction;
 import handler.brokerclients.BrokerClient;
+import handler.model.User;
 import handler.services.SessionTemplateService;
 import handler.services.UserGroupService;
 import handler.services.UserService;
@@ -31,14 +32,18 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -465,5 +470,23 @@ public abstract class AbstractCedarAuthorizationEngineTest {
                 mockBrokerClient
         );
         assertTrue(testAuthorizationEngine.isAuthorized(PrincipalType.User, USER_UUID, ResourceAction.viewSessionTemplateDetails, ResourceType.SessionTemplate, SESSION_TEMPLATE_STRING));
+    }
+
+    @Test
+    public void testUpdateUser_WhenUserUpdated() {
+        when(mockUserService.updateUser(USER_UUID, USER_UUID, USER_UUID))
+                .thenReturn(Optional.of(new User()));
+        testMockedCedarAuthorizationEngine.updateUser(USER_UUID, USER_UUID, USER_UUID);
+        verify(mockUserService, times(1)).updateUser(USER_UUID, USER_UUID, USER_UUID);
+        verify(testMockedCedarAuthorizationEngine, times(1)).addUser(any(), any(), any(), anyBoolean());
+    }
+
+    @Test
+    public void testUpdateUser_WhenUserNotUpdated() {
+        when(mockUserService.updateUser(USER_UUID, USER_UUID, USER_UUID))
+                .thenReturn(Optional.empty());
+        testMockedCedarAuthorizationEngine.updateUser(USER_UUID, USER_UUID, USER_UUID);
+        verify(mockUserService, times(1)).updateUser(USER_UUID, USER_UUID, USER_UUID);
+        verify(testMockedCedarAuthorizationEngine, times(0)).addUser(any(), any(), any(), anyBoolean());
     }
 }

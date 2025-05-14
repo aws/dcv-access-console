@@ -27,6 +27,11 @@ public class UserEntity extends User {
     }
 
     @Override
+    public String getLoginUsername() {
+        return super.getLoginUsername();
+    }
+
+    @Override
     public String getDisplayName() {
         return super.getDisplayName();
     }

@@ -25,7 +25,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jetty.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -68,6 +68,21 @@ public class UserService {
         log.info("Successfully added User {} to the persistence layer", userId);
         return true;
     }
+
+    public Optional<User> updateUser(String userId, String loginUsername, String displayName) {
+        UserEntity existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Cannot update user " + userId + " as it does not exist"));
+
+        if (!StringUtils.equals(existingUser.getLoginUsername(), loginUsername) || !StringUtils.equals(existingUser.getDisplayName(), displayName)) {
+            existingUser.setLoginUsername(loginUsername);
+            existingUser.setDisplayName(displayName);
+            User updatedUser = userRepository.save(existingUser);
+            log.info("Successfully updated User {} on the persistence layer", userId);
+            return Optional.of(updatedUser);
+        }
+
+        return Optional.empty();  // No changes needed
+    }
+
 
     private UserEntity getNewUserEntity(String userId, String displayName, String role, Boolean isDisabled, String disabledReason, Boolean isImported) {
         User user = new UserEntity().userId(userId);
@@ -177,7 +192,7 @@ public class UserService {
 
             for (UserCsvEntity user : csvToBean) {
                 String userId = user.getUserId();
-                if (StringUtil.isBlank(userId)) {
+                if (StringUtils.isBlank(userId)) {
                     log.warn("Ignoring {} since userId is blank", userId);
                     batcher.getUnsuccessfulUsersList().add(userId);
                     continue;
@@ -190,10 +205,10 @@ public class UserService {
 
                 String displayName = userId;
                 String role = defaultRole;
-                if (!StringUtil.isBlank(user.getDisplayName()) && user.getDisplayName().length() < 255) {
+                if (!StringUtils.isBlank(user.getDisplayName()) && user.getDisplayName().length() < 255) {
                     displayName = user.getDisplayName();
                 }
-                if (!StringUtil.isBlank(user.getRole()) && roles.contains(user.getRole())) {
+                if (!StringUtils.isBlank(user.getRole()) && roles.contains(user.getRole())) {
                     role = user.getRole();
                 }
                 UserEntity newUser = getNewUserEntity(userId, displayName, role, false, null, true);
@@ -205,7 +220,7 @@ public class UserService {
                 log.info("Parsed list of groups {} for user {}", userGroups, user);
                 if (user.getGroups() != null && !user.getGroups().isEmpty()) {
                     for (String groupId : new HashSet<>(user.getGroups())) {
-                        if (StringUtil.isNotBlank(groupId)) {
+                        if (StringUtils.isNotBlank(groupId)) {
                             log.debug("Parsed user {} is a member of group {}", userId, groupId);
                             userGroups.add(userGroupService.createUserGroupOrReturnIfExists(groupId, groupId, true));
                         }

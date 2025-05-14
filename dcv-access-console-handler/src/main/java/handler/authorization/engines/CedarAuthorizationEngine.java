@@ -47,6 +47,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -233,6 +234,14 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
 
         addUser(userId, userId, defaultRole, false);
         return true;
+    }
+
+    @Override
+    public void updateUser(String userUUID, String loginUsername, String displayName) {
+        String userId = normalizeUUID(userUUID);
+        String name = !StringUtils.isEmpty(displayName) ? displayName : userId;
+        userService.updateUser(userId, loginUsername, name)
+            .ifPresent(user -> addUser(userId, name, user.getRole(), user.getIsDisabled()));
     }
 
     @Override

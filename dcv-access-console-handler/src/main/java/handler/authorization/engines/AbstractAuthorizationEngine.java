@@ -56,6 +56,14 @@ public abstract class AbstractAuthorizationEngine {
     public abstract boolean addUserWithPersistence(String userUUID);
 
     /**
+     * Updates the loginUsername and displayName for an existing user.
+     * @param userUUID The unique identifier of the user to add.
+     * @param loginUsername The Session Manager login username.
+     * @param displayName The display name of the user.
+     */
+    public abstract void updateUser(String userUUID, String loginUsername, String displayName);
+
+    /**
      * Adds a new user to the system with the role specified.
      * @param userUUID The unique identifier of the user to add.
      * @param displayName The display name of the user. If not present, defaults to the userUUID.

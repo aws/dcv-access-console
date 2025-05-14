@@ -802,6 +802,9 @@ components:
         UserId:
           description: "The ID of the User"
           type: string
+        LoginUsername:
+          description: "The Session Manager login username of the User"
+          type: string
         DisplayName:
           description: "The display name of the User"
           type: string
