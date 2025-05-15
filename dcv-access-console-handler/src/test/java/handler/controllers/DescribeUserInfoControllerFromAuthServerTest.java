@@ -4,10 +4,12 @@
 package handler.controllers;
 
 import handler.services.AuthServerClientService;
+import handler.model.User;
 import handler.services.UserService;
 import java.time.Instant;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,14 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.support.WebContentGenerator;
-
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,6 +83,15 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
         userInfo.put("name", testUserDisplayName);
         when(mockAuthServerClientService.getUserInfo(any())).thenReturn(userInfo);
 
+        User updatedUser = new User()
+                .userId(testUser)
+                .loginUsername(testLoginUsername)
+                .displayName(testUserDisplayName)
+                .role(testUserRole)
+                .isDisabled(false);
+        when(mockUserService.updateUser(eq(testUser), any(), eq(testUserDisplayName)))
+                .thenReturn(updatedUser);
+
         mvc.perform(
                         get(urlTemplate)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +103,8 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
                 .andExpect(jsonPath("$.Role", is(testUserRole)));
 
         verify(mockAuthServerClientService).getUserInfo(any());
-        verify(mockAuthorizationEngine).updateUser(testUser, testLoginUsername, testUserDisplayName);
+        verify(mockUserService).updateUser(testUser, Optional.of(testLoginUsername), testUserDisplayName);
+        verify(mockAuthorizationEngine).addUser(testUser, testLoginUsername, testUserDisplayName, testUserRole, false);
     }
 
     @Test
@@ -115,7 +126,8 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
                 .andExpect(jsonPath("$.Role", is(testUserRole)));
 
         verify(mockAuthServerClientService).getUserInfo(any());
-        verify(mockAuthorizationEngine, times(0)).updateUser(any(), any(), any());
+        verify(mockUserService).updateUser(any(), any(), any());
+        verify(mockAuthorizationEngine, never()).addUser(any(), any(), any(), any(), anyBoolean());
     }
 
     @Test
@@ -135,6 +147,32 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
                 .andExpect(jsonPath("$.Role", is(testUserRole)));
 
         verify(mockAuthServerClientService).getUserInfo(any());
-        verify(mockAuthorizationEngine, times(0)).updateUser(any(), any(), any());
+        verify(mockUserService, never()).updateUser(any(), any(), any());
+        verify(mockAuthorizationEngine, never()).addUser(any(), any(), any(), any(), anyBoolean());
+    }
+
+    @Test
+    public void testDescribeCurrentUser_UpdateUserFailure() throws Exception {
+        when(mockAuthorizationEngine.getUserDisplayName(testUser)).thenReturn(testUserDisplayName);
+        when(mockAuthorizationEngine.getUserRole(testUser)).thenReturn(testUserRole);
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("username", testLoginUsername);
+        userInfo.put("name", testUserDisplayName);
+        when(mockAuthServerClientService.getUserInfo(any())).thenReturn(userInfo);
+
+        when(mockUserService.updateUser(any(), any(), any()))
+                .thenThrow(new RuntimeException("Update failed"));
+
+        mvc.perform(get(urlTemplate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, WebContentGenerator.METHOD_POST)
+                        .header(HttpHeaders.ORIGIN, origin))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.DisplayName", is(testUserDisplayName)))
+                .andExpect(jsonPath("$.Role", is(testUserRole)));
+
+        verify(mockUserService).updateUser(testUser, Optional.of(testLoginUsername), testUserDisplayName);
+        verify(mockAuthorizationEngine, never()).addUser(any(), any(), any(), any(), anyBoolean());
     }
 }

@@ -471,22 +471,4 @@ public abstract class AbstractCedarAuthorizationEngineTest {
         );
         assertTrue(testAuthorizationEngine.isAuthorized(PrincipalType.User, USER_UUID, ResourceAction.viewSessionTemplateDetails, ResourceType.SessionTemplate, SESSION_TEMPLATE_STRING));
     }
-
-    @Test
-    public void testUpdateUser_WhenUserUpdated() {
-        when(mockUserService.updateUser(USER_UUID, USER_UUID, USER_UUID))
-                .thenReturn(Optional.of(new User()));
-        testMockedCedarAuthorizationEngine.updateUser(USER_UUID, USER_UUID, USER_UUID);
-        verify(mockUserService, times(1)).updateUser(USER_UUID, USER_UUID, USER_UUID);
-        verify(testMockedCedarAuthorizationEngine, times(1)).addUser(any(), any(), any(), anyBoolean());
-    }
-
-    @Test
-    public void testUpdateUser_WhenUserNotUpdated() {
-        when(mockUserService.updateUser(USER_UUID, USER_UUID, USER_UUID))
-                .thenReturn(Optional.empty());
-        testMockedCedarAuthorizationEngine.updateUser(USER_UUID, USER_UUID, USER_UUID);
-        verify(mockUserService, times(1)).updateUser(USER_UUID, USER_UUID, USER_UUID);
-        verify(testMockedCedarAuthorizationEngine, times(0)).addUser(any(), any(), any(), anyBoolean());
-    }
 }

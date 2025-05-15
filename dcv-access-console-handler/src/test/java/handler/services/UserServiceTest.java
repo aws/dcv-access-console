@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -354,11 +355,11 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        Optional<User> result = testUserService.updateUser(USER1_ID, newLoginUsername, newDisplayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), newDisplayName);
 
-        assertTrue(result.isPresent());
-        assertEquals(newLoginUsername, result.get().getLoginUsername());
-        assertEquals(newDisplayName, result.get().getDisplayName());
+        assertNotNull(result);
+        assertEquals(newLoginUsername, result.getLoginUsername());
+        assertEquals(newDisplayName, result.getDisplayName());
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
     }
 
@@ -371,9 +372,9 @@ public class UserServiceTest {
 
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
 
-        Optional<User> result = testUserService.updateUser(USER1_ID, USER1_ID, USER1_ID);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID);
 
-        assertFalse(result.isPresent());
+        assertNull(result);
         verify(mockUserRepository, times(0)).save(any(UserEntity.class));
     }
 
@@ -381,9 +382,8 @@ public class UserServiceTest {
     public void testUpdateUser_WhenUserDoesNotExist() {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> testUserService.updateUser(USER1_ID, USER1_ID, USER1_ID));
-        assertEquals("Cannot update user " + USER1_ID + " as it does not exist", exception.getMessage());
+        assertThrows(MissingResourceException.class,
+                () -> testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID));
         verify(mockUserRepository, times(0)).save(any(UserEntity.class));
     }
 
@@ -405,11 +405,11 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        Optional<User> result = testUserService.updateUser(USER1_ID, newLoginUsername, displayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), displayName);
 
-        assertTrue(result.isPresent());
-        assertEquals(newLoginUsername, result.get().getLoginUsername());
-        assertEquals(displayName, result.get().getDisplayName());
+        assertNotNull(result);
+        assertEquals(newLoginUsername, result.getLoginUsername());
+        assertEquals(displayName, result.getDisplayName());
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
     }
 
@@ -431,11 +431,11 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        Optional<User> result = testUserService.updateUser(USER1_ID, loginUsername, newDisplayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(loginUsername), newDisplayName);
 
-        assertTrue(result.isPresent());
-        assertEquals(loginUsername, result.get().getLoginUsername());
-        assertEquals(newDisplayName, result.get().getDisplayName());
+        assertNotNull(result);
+        assertEquals(loginUsername, result.getLoginUsername());
+        assertEquals(newDisplayName, result.getDisplayName());
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
     }
 }

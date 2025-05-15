@@ -39,6 +39,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,18 +70,31 @@ public class UserService {
         return true;
     }
 
-    public Optional<User> updateUser(String userId, String loginUsername, String displayName) {
-        UserEntity existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Cannot update user " + userId + " as it does not exist"));
+    public User updateUser(String userId, Optional<String> loginUsername, String displayName) {
+        UserEntity existingUser = userRepository.findById(userId).orElseThrow(() -> new MissingResourceException("Cannot update user as it does not exist", UserEntity.class.getName().toString(), userId));
 
-        if (!StringUtils.equals(existingUser.getLoginUsername(), loginUsername) || !StringUtils.equals(existingUser.getDisplayName(), displayName)) {
-            existingUser.setLoginUsername(loginUsername);
-            existingUser.setDisplayName(displayName);
-            User updatedUser = userRepository.save(existingUser);
-            log.info("Successfully updated User {} on the persistence layer", userId);
-            return Optional.of(updatedUser);
+        boolean changeFlag = false;
+        if (loginUsername != null && !StringUtils.equals(existingUser.getLoginUsername(), loginUsername.get())) {
+            existingUser.setLoginUsername(loginUsername.get());
+            changeFlag = true;
         }
 
-        return Optional.empty();  // No changes needed
+        if (!StringUtils.isEmpty(displayName)) {
+            if (!StringUtils.equals(existingUser.getDisplayName(), displayName)) {
+                existingUser.setDisplayName(displayName);
+                changeFlag = true;
+            }
+        } else {
+            log.warn("DisplayName not updated as it cannot be blank");
+        }
+
+        if (!changeFlag) {
+            return null;
+        }
+
+        User updatedUser = userRepository.save(existingUser);
+        log.info("Successfully updated User {} on the persistence layer", userId);
+        return updatedUser;
     }
 
 

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package handler.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,16 +32,18 @@ public class AuthServerClientService {
     @Value("${auth-server-well-known-uri:#{null}}")
     private String wellknownEndpoint;
 
-    public Map<String, Object> getUserInfo(String accessToken) {
-        String endpoint = userinfoEndpoint;
-        if (StringUtils.isEmpty(endpoint)) {
+    @PostConstruct
+    private void init() {
+        if (StringUtils.isEmpty(userinfoEndpoint)) {
             Map<String, Object> wellknownResponse = getHttpResponse(wellknownEndpoint, null, null);
             if (wellknownResponse != null && wellknownResponse.containsKey("userinfo_endpoint")) {
-                endpoint = wellknownResponse.get("userinfo_endpoint").toString();
+                userinfoEndpoint = wellknownResponse.get("userinfo_endpoint").toString();
             }
         }
+    }
 
-        return getHttpResponse(endpoint, "Authorization", "Bearer " + accessToken);
+    public Map<String, Object> getUserInfo(String accessToken) {
+        return getHttpResponse(userinfoEndpoint, "Authorization", "Bearer " + accessToken);
     }
 
     private Map<String, Object> getHttpResponse(String endpoint, String headerName, String headerValue) {

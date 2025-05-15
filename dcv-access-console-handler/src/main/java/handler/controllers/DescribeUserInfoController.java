@@ -6,9 +6,11 @@ package handler.controllers;
 import handler.api.DescribeUserInfoApi;
 import handler.authorization.engines.AbstractAuthorizationEngine;
 import handler.model.DescribeUserInfoResponse;
+import handler.model.User;
 import handler.services.AuthServerClientService;
 import handler.services.UserService;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -41,13 +43,14 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
     public ResponseEntity<DescribeUserInfoResponse> describeUserInfo() {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            String displayName = authorizationEngine.getUserDisplayName(username);
-            String role = authorizationEngine.getUserRole(username);
 
             if ((StringUtils.isNotEmpty(loginUsernameKey) || StringUtils.isNotEmpty(displayNameKey))
                     && authServerClientService != null) {
                 updateUserFromAuthServer(username);
             }
+
+            String displayName = authorizationEngine.getUserDisplayName(username);
+            String role = authorizationEngine.getUserRole(username);
 
             userService.updateLastLoggedInTime(username);
 
@@ -68,33 +71,37 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
                 .getAuthentication()).getToken().getTokenValue();
 
         Map<String, Object> userInfo = authServerClientService.getUserInfo(accessToken);
-        if (userInfo != null) {
-            String loginUsername = null;
-            String displayName = null;
 
-            if (!StringUtils.isEmpty(loginUsernameKey)) {
-                if (userInfo.containsKey(loginUsernameKey)) {
-                    loginUsername = userInfo.get(loginUsernameKey).toString();
-                } else {
-                    log.warn("Claim {} not found in userInfo response", loginUsernameKey);
-                    return;
-                }
-            }
+        if (userInfo == null) {
+            return;
+        }
 
-            if (!StringUtils.isEmpty(displayNameKey)) {
-                if (userInfo.containsKey(displayNameKey)) {
-                    displayName = userInfo.get(displayNameKey).toString();
-                } else {
-                    log.warn("Claim {} not found in userInfo response", displayNameKey);
-                    return;
-                }
-            }
+        Optional<String> loginUsername = null;
+        String displayName = null;
 
-            try {
-                authorizationEngine.updateUser(username, loginUsername, displayName);
-            } catch (Exception e) {
-                log.error("Error updating the user using the claims retrieved", e);
+        if (!StringUtils.isEmpty(loginUsernameKey)) {
+            if (userInfo.containsKey(loginUsernameKey)) {
+                loginUsername = Optional.ofNullable(String.valueOf(userInfo.get(loginUsernameKey)));
+            } else {
+                log.warn("Claim {} not found in userInfo response", loginUsernameKey);
             }
+        }
+
+        if (!StringUtils.isEmpty(displayNameKey)) {
+            if (userInfo.containsKey(displayNameKey)) {
+                displayName = String.valueOf(userInfo.get(displayNameKey));
+            } else {
+                log.warn("Claim {} not found in userInfo response", displayNameKey);
+            }
+        }
+
+        try {
+            User updatedUser = userService.updateUser(username, loginUsername, displayName);
+            if (updatedUser != null) {
+                authorizationEngine.addUser(username, updatedUser.getLoginUsername(), updatedUser.getDisplayName(), updatedUser.getRole(), updatedUser.getIsDisabled());
+            }
+        } catch (Exception e) {
+            log.error("Error updating the user using the claims retrieved", e);
         }
     }
 }
