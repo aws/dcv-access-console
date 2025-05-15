@@ -9,9 +9,8 @@ import handler.authorization.enums.ResourceAction;
 import handler.authorization.enums.ResourceType;
 import handler.authorization.enums.ShareLevel;
 import handler.authorization.enums.SystemAction;
-import org.springframework.security.access.AuthorizationServiceException;
-
 import java.util.List;
+import org.springframework.security.access.AuthorizationServiceException;
 
 public abstract class AbstractAuthorizationEngine {
 
@@ -58,11 +57,12 @@ public abstract class AbstractAuthorizationEngine {
     /**
      * Adds a new user to the system with the role specified.
      * @param userUUID The unique identifier of the user to add.
+     * @param loginUsername The Session Manager login username.
      * @param displayName The display name of the user. If not present, defaults to the userUUID.
      * @param roleUUID The unique identifier of the role to assign to the user.
      * @param isDisabled The disabled state of the user.
      */
-    public abstract void addUser(String userUUID, String displayName, String roleUUID, boolean isDisabled);
+    public abstract void addUser(String userUUID, String loginUsername, String displayName, String roleUUID, boolean isDisabled);
 
     /**
      * Adds a new group to the system with the UUID specified.

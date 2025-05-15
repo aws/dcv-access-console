@@ -47,6 +47,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -83,6 +84,7 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
     private static final String DISABLED_ATTRIBUTE = "disabled";
     private static final String OWNER_ATTRIBUTE = "owner";
     private static final String DISPLAY_NAME_ATTRIBUTE = "displayName";
+    private static final String LOGINUSER_ATTRIBUTE = "loginUser";
 
     @Value("${default-role}")
     private String defaultRole;
@@ -205,9 +207,13 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
         response.errors.ifPresent(e -> log.warn("Authorization engine denied access due to errors: {}", e.stream().map(er -> er.message).collect(Collectors.toList())));
     }
 
-    public void addUser(String userUUID, String displayName, String roleUUID, boolean isDisabled) {
+    public void addUser(String userUUID, String loginUsername, String displayName, String roleUUID, boolean isDisabled) {
         EntityUID userEUID = new EntityUID(UserTypeName, normalizeUUID(userUUID));
         Map<String, com.cedarpolicy.value.Value> attributes = new HashMap<>();
+        if (StringUtils.isEmpty(loginUsername)) {
+            loginUsername = normalizeUUID(userUUID);
+        }
+        attributes.put(LOGINUSER_ATTRIBUTE, new EntityUID(UserTypeName, loginUsername));
         attributes.put(ROLE_ATTRIBUTE, new EntityUID(RoleTypeName, roleUUID));
         attributes.put(DISPLAY_NAME_ATTRIBUTE, new PrimString(displayName));
         attributes.put(DISABLED_ATTRIBUTE, new PrimBool(isDisabled));
@@ -231,7 +237,7 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
             return false;
         }
 
-        addUser(userId, userId, defaultRole, false);
+        addUser(userId, userId, userId, defaultRole, false);
         return true;
     }
 
@@ -674,7 +680,7 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
         do {
             response = userService.describeUsers(new DescribeUsersRequestData().nextToken(token));
             for (User user : response.getUsers()) {
-                addUser(user.getUserId(), user.getDisplayName(), user.getRole(), user.getIsDisabled());
+                addUser(user.getUserId(), user.getLoginUsername(), user.getDisplayName(), user.getRole(), user.getIsDisabled());
             }
             token = response.getNextToken();
         } while (token != null);
