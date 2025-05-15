@@ -57,7 +57,6 @@ public class CreateSessionsController implements CreateSessionsApi {
 
     private final Filter<DescribeSessionTemplatesRequestData, SessionTemplate> sessionTemplateFilter;
 
-
     private ResponseEntity<CreateSessionsUIResponse> sendExceptionResponse(HttpStatus status, Exception e, List<CreateSessionUIRequestData> requests, HandlerErrorMessage errorMessage) {
         log.error("Error while performing createSessions for {}", requests, e);
         Error error = new Error().code(String.valueOf(status.value())).message(errorMessage.getDescription());
@@ -73,7 +72,7 @@ public class CreateSessionsController implements CreateSessionsApi {
             List<Pair<CreateSessionUIRequestData, SessionTemplate>> brokerRequests = new ArrayList<>();
             List<UnsuccessfulCreateSessionUIRequestData> unsuccessfulRequests = new ArrayList<>();
             for(CreateSessionUIRequestData request: requests) {
-                if (StringUtils.isNotBlank(request.getOwner()) && !request.getOwner().equals(username)) {
+                if (StringUtils.isNotBlank(request.getOwner()) && !request.getOwner().equals(authorizationEngine.getUserLoginUsername(username))) {
                     // Owner is not empty, and is not the current user
                     if (!authorizationEngine.isAuthorized(PrincipalType.User, username, SystemAction.createSessionsForOthers)) {
                         String message = String.format("User %s is not authorized to create sessions for other users. ", username);
@@ -83,7 +82,7 @@ public class CreateSessionsController implements CreateSessionsApi {
                 } else {
                     // We should be creating this session for the logged-in user
                     log.info("Setting the Session Owner to the current user: {}", username);
-                    request.owner(username);
+                    request.setOwner(authorizationEngine.getUserLoginUsername(username));
                 }
 
                 FilterToken filterToken = new FilterToken()
@@ -131,7 +130,7 @@ public class CreateSessionsController implements CreateSessionsApi {
                 List<DeleteSessionUIRequestData> deleteRequests = new ArrayList<>();
                 if (response.getSuccessfulList() != null) {
                     for(SessionWithPermissions session: response.getSuccessfulList()) {
-                        if (!authorizationEngine.addSession(session.getId(), username)) {
+                        if (!authorizationEngine.addSession(session.getId(), session.getOwner())) {
                             deleteRequests.add(new DeleteSessionUIRequestData().sessionId(session.getId()).owner(session.getOwner()));
                         }
                     }

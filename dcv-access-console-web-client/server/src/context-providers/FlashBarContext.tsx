@@ -160,7 +160,7 @@ export const FlashBarContextProvider = ({children}) => {
                 type: "error",
                 loading: false,
                 content: <>
-                        Unable to create session "{sessionName}" due to: {reason}.
+                        Unable to create session "{sessionName}" due to: {reason}
                         <br/>
                         Please contact your administrator.
                     </>,

@@ -229,6 +229,13 @@ public abstract class AbstractAuthorizationEngine {
     public abstract String getUserDisplayName(String userUUID);
 
     /**
+     * Provides the login username of the user.
+     * @param userUUID The unique identifier of the user
+     * @return Returns a String of the login username of the user
+     */
+    public abstract String getUserLoginUsername(String userUUID);
+
+    /**
      * Provides principals the resource is shared to
      * @param resourceType A String representing the type of resource, e.g. 'Session'.
      * @param resourceUUID The unique identifier of the resource to change the share list of.

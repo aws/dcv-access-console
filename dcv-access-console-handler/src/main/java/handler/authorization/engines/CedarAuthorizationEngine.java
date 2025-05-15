@@ -621,6 +621,12 @@ public class CedarAuthorizationEngine extends AbstractAuthorizationEngine {
     }
 
     @Override
+    public String getUserLoginUsername(String userUUID) {
+        Entity userEntity = getUserEntity(userUUID);
+        return ((EntityUID) userEntity.attrs.get(LOGINUSER_ATTRIBUTE)).getId().toString();
+    }
+
+    @Override
     public String getUserDisplayName(String userUUID) {
         Entity userEntity = getUserEntity(userUUID);
         return userEntity.attrs.get(DISPLAY_NAME_ATTRIBUTE).toString();

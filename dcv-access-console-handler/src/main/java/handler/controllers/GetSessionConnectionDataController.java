@@ -73,7 +73,7 @@ public class GetSessionConnectionDataController implements GetSessionConnectionD
             log.info("Received getSessionConnectionData for sessionId: {}", sessionId);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            if (StringUtils.isNotBlank(user) && !user.equals(username)) {
+            if (StringUtils.isNotBlank(user) && !user.equals(authorizationEngine.getUserLoginUsername(username))) {
                 // Owner is not empty, and is not the current user
                 if (!authorizationEngine.isAuthorized(PrincipalType.User, username, SystemAction.getSessionConnectionDataForOther)) {
                     String message = String.format("User %s is not authorized to connect to other users sessions.", username);
@@ -89,7 +89,7 @@ public class GetSessionConnectionDataController implements GetSessionConnectionD
                         new AuthorizationServiceException(message), sessionId, UNAUTHORIZED_TO_CONNECT_TO_SESSION);
             }
 
-            GetSessionConnectionDataUIResponse response = brokerClient.getSessionConnectionData(sessionId, Optional.ofNullable(user).orElse(username));
+            GetSessionConnectionDataUIResponse response = brokerClient.getSessionConnectionData(sessionId, Optional.ofNullable(user).orElse(authorizationEngine.getUserLoginUsername(username)));
             Server server = response.getSession().getServer();
             String hostName = getHostName(server);
             String port = getPort(server);
