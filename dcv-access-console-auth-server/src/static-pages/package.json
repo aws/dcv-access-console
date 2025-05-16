@@ -13,7 +13,7 @@
     "@types/react-dom": "18.2.3",
     "encoding": "^0.1.13",
     "eslint": "8.39.0",
-    "next": "13.5.5",
+    "next": "15.3.2",
     "next-auth": "^4.22.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
