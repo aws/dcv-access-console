@@ -27,8 +27,7 @@ permit (
     ],
     resource
 ) when {
-    principal == resource.owner ||
-    principal in resource.collaborators
+    principal.loginUser == resource.owner || principal.loginUser in resource.collaborators
 };
 
 // Policy 3: Permit owners of sessions to edit and delete them, as long as they are not Guests
@@ -40,7 +39,7 @@ permit (
     ],
     resource
 ) when {
-    principal == resource.owner && principal.role != Role::"Guest"
+    principal.loginUser == resource.owner && principal.role != Role::"Guest"
 };
 
 // Policy 4: Permit Users to modify their own details. This is a special case, as the User role doesn't have the editUser permission.

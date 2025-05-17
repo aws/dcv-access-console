@@ -101,6 +101,7 @@ class DescribeSessionsControllerTest extends BaseControllerTest  {
         when(mockAuthorizationEngine.getUserRole(testUser)).thenReturn("User");
         when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewSessionDetails, ResourceType.Session, "fail")).thenReturn(false);
         when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewSessionDetails, ResourceType.Session, testId)).thenReturn(true);
+        when(mockAuthorizationEngine.getUserLoginUsername(testUser)).thenReturn(testUser);
         mvc.perform(
                         post(urlTemplate)
                                 .contentType(MediaType.APPLICATION_JSON)

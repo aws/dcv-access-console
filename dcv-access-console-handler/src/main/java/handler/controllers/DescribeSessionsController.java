@@ -114,7 +114,7 @@ public class DescribeSessionsController implements DescribeSessionsApi {
                 log.warn("User {} not authorized to view session {}", username, session.getId());
             } else {
                 log.info("User {} is authorized to view session {}", username, session.getId());
-                session.levelOfAccess(session.getOwner().equals(username) ? "Owner" : "Admin");
+                session.levelOfAccess(session.getOwner().equals(authorizationEngine.getUserLoginUsername(username)) ? "Owner" : "Admin");
                 authorizedSessions.add(session);
             }
         }
