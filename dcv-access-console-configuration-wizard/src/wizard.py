@@ -13,7 +13,7 @@ def main(argv, arc):
 
     if python_major < 3 or (python_major == 3 and python_minor < 8):
         logger.get().error(
-            "Python 3.8 or greater is required to run the DCV Session Manager CLI, but version {}.{} is in use.".format(
+            "Python 3.9 or greater is required to run the DCV Session Manager CLI, but version {}.{} is in use.".format(
                 python_major, python_minor
             )
         )

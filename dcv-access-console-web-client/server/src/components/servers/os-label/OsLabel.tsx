@@ -36,7 +36,7 @@ export default function OsLabel(props: OsLabelProps) {
     }, []);
 
     return <SpaceBetween size={"xxs"} direction={"horizontal"} alignItems={"center"}>
-        {osLogoExists ? <img src={imgSrc} alt={props.osFamily}/> : undefined}
+        {osLogoExists ? <img src={imgSrc} alt={props.os?.Family?.toString()}/> : undefined}
             <TextContent>
                 {capitalizeFirstLetter(props.os?.Family?.toString())}
             </TextContent>

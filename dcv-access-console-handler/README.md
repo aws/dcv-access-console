@@ -13,6 +13,14 @@ For persistence, SQL based datastores and DynamoDB are supported. The following 
 * `persistence-db` = `mysql`/`dynamodb` to select datastore type
 * `hibernate-ddl-auto` = `update` enables making DDL changes to the MySQL db. To disable, set to `none`
 
+## Reading claims from the auth server
+When using external OAuth providers like Cognito, user properties like login username (username used by Session Manager) and display name can be extracted from the userInfo endpoint.
+The following properties can help with this:
+* `jwt-login-username-claim-key` is the key for the login username claim key
+* `jwt-display-name-claim-key` is the key for the display name claim key
+* `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
+* `auth-server-userinfo-endpoint` is the userInfo endpoint
+
 ## Testing
 While running the application you can use Postman to send requests to the endpoints to ensure correct functionality.
 

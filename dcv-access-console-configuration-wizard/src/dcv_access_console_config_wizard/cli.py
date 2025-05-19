@@ -1096,6 +1096,34 @@ def exit_with_failure_message(tasks_completed, failed_task):
     prompt=None,
 )
 @click.option(
+    "--login-username-claim-key",
+    default="",
+    help="The key to retrieve login username from the auth server.",
+    required=False,
+    prompt=None,
+)
+@click.option(
+    "--display-name-claim-key",
+    default="",
+    help="The key to retrieve display name from the auth server.",
+    required=False,
+    prompt=None,
+)
+@click.option(
+    "--well-known-uri",
+    default="",
+    help="The well known URI of the auth server.",
+    required=False,
+    prompt=None,
+)
+@click.option(
+    "--userinfo-endpoint",
+    default="",
+    help="The userInfo endpoint of the auth server.",
+    required=False,
+    prompt=None,
+)
+@click.option(
     "--install-nginx/--no-install-nginx",
     is_flag=True,
     help="Installs NGINX on this machine",
@@ -1235,6 +1263,10 @@ def run(
     mariadb_username,
     mariadb_password,
     database_prefix,
+    login_username_claim_key,
+    display_name_claim_key,
+    well_known_uri,
+    userinfo_endpoint,
     install_nginx,
     install_components,
     component_installers_location,
@@ -1514,6 +1546,10 @@ def run(
             mariadb_password=mariadb_password,
             mariadb_tablename=mariadb_database_name,
             database_prefix=database_prefix,
+            login_username_claim_key=login_username_claim_key,
+            display_name_claim_key=display_name_claim_key,
+            well_known_uri=well_known_uri,
+            userinfo_endpoint=userinfo_endpoint,
             read_existing_configs=read_existing_configs,
             save_location=configuration_file_save_location,
         ):

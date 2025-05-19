@@ -185,6 +185,10 @@ def modify_handler_config(
     mariadb_port: str,
     mariadb_tablename: str,
     database_prefix: str,
+    login_username_claim_key: str,
+    display_name_claim_key: str,
+    well_known_uri: str,
+    userinfo_endpoint: str,
 ) -> Any:
     dynamodb_lines = {
         "dynamodb-region": dynamodb_region,
@@ -203,6 +207,10 @@ def modify_handler_config(
         "server-port": handler_port,
         "request-prefix": f"/{handler_prefix}",
         "jwt-issuer-uri": f"{authserver_address}",
+        "jwt-login-username-claim-key": f"{login_username_claim_key}",
+        "jwt-display-name-claim-key": f"{display_name_claim_key}",
+        "auth-server-well-known-uri": f"{well_known_uri}",
+        "auth-server-userinfo-endpoint": f"{userinfo_endpoint}",
         "enable-connection-gateway": str(enable_connection_gateway).lower(),
         "connection-gateway-host": connection_gateway_host or "gatewayhostname",
         "connection-gateway-port": connection_gateway_port,
@@ -512,6 +520,10 @@ def create_configuration_files(
     mariadb_password: str,
     mariadb_tablename: str,
     database_prefix: str,
+    login_username_claim_key: str,
+    display_name_claim_key: str,
+    well_known_uri: str,
+    userinfo_endpoint: str,
     read_existing_configs: bool,
     save_location: Path = None,
 ) -> bool:
@@ -636,6 +648,10 @@ def create_configuration_files(
         mariadb_port=mariadb_port,
         mariadb_tablename=mariadb_tablename,
         database_prefix=database_prefix,
+        login_username_claim_key=login_username_claim_key,
+        display_name_claim_key=display_name_claim_key,
+        well_known_uri=well_known_uri,
+        userinfo_endpoint=userinfo_endpoint,
     )
 
     write_lines_to_file(
