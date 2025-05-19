@@ -1098,14 +1098,14 @@ def exit_with_failure_message(tasks_completed, failed_task):
 @click.option(
     "--login-username-claim-key",
     default="",
-    help="The key to retrieve login username from the auth server.",
+    help="The key to retrieve login username from the JWT claims of the auth server.",
     required=False,
     prompt=None,
 )
 @click.option(
     "--display-name-claim-key",
     default="",
-    help="The key to retrieve display name from the auth server.",
+    help="The key to retrieve display name from the JWT claims of the auth server.",
     required=False,
     prompt=None,
 )
