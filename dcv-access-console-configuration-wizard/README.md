@@ -9,7 +9,7 @@ DCV Access Console, as well as creating a self-signed cert for the WebServer. Th
 
 ## Running
 
-This script requires Python3.x to be installed. To install the dependencies, run 
+This script requires Python3.9+ to be installed. To install the dependencies, run 
 ```
 python3 -m pip install -r dcv_access_console_config_wizard/requirements.txt
 ```
