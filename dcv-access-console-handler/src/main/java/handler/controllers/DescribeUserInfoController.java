@@ -39,6 +39,9 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
     @Value("${jwt-display-name-claim-key:#{null}}")
     private String displayNameKey;
 
+    @Value("${auth-server-claims-from-access-token:false}")
+    private boolean useAuthServerClaimsFromAccessToken;
+
     @Override
     public ResponseEntity<DescribeUserInfoResponse> describeUserInfo() {
         try {
@@ -67,11 +70,17 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
     }
 
     private void updateUserFromAuthServer(String username) {
-        String accessToken = ((JwtAuthenticationToken) SecurityContextHolder.getContext()
-                .getAuthentication()).getToken().getTokenValue();
+        Map<String, Object> userInfo = null;
 
-        Map<String, Object> userInfo = authServerClientService.getUserInfo(accessToken);
+        if (useAuthServerClaimsFromAccessToken) {
+            userInfo = ((JwtAuthenticationToken) SecurityContextHolder.getContext()
+                    .getAuthentication()).getToken().getClaims();
+        } else {
+            String accessToken = ((JwtAuthenticationToken) SecurityContextHolder.getContext()
+                    .getAuthentication()).getToken().getTokenValue();
 
+            userInfo = authServerClientService.getUserInfo(accessToken);
+        }
         if (userInfo == null) {
             return;
         }

@@ -50,15 +50,16 @@ npm run test
 Ensure that the auth-server is running and set the following variables in `.env.development`:
 1. SM_UI_HANDLER_BASE_URL - Change the `<replace>` to the URL of the Handler, with the port
 2. SM_UI_AUTH_WELL_KNOWN_URI  - Change the `<replace>` to the URL of the Auth Server, with the port
-3. SM_UI_AUTH_CLIENT_ID - Should match the `client-id` of the Auth Server
-4. SM_UI_AUTH_CLIENT_SECRET - Should match `client-secret` of the Auth Server, without `{noop}`
-5. SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT - Set as true (default) if the sign out event should log out from the auth provider as well (useful when using external providers)
-6. SM_UI_AUTH_LOGOUT_URI - Set as the logout endpoint when using an external auth provider, empty (default) will look for `end_session_endpoint` from the well_known json
-7. NEXT_PUBLIC_SM_UI_AUTH_ID - Should match the ending of `redirect-uris` in the Auth Server `access-console-auth-server.properties` file
-8. NEXT_PUBLIC_DEFAULT_PATH - Leave as `/sessions`
-9. NEXTAUTH_SECRET - Set a string 
-10. NODE_EXTRA_CA_CERTS - Path to cert file 
-11. SESSION_SCREENSHOT_MAX_WIDTH and SESSION_SCREENSHOT_MAX_HEIGHT - Can be undefined or a value greater than or equal to 0. If set to 0, the resolution set in the Broker configuration will be used. If undefined, default values will be used.
+3. SM_UI_AUTH_SERVER_SCOPE - When using an external auth provider, the custom scope can be set. The default is "openid". Multiple scopes can be specified by separating them with spaces.
+4. SM_UI_AUTH_CLIENT_ID - Should match the `client-id` of the Auth Server
+5. SM_UI_AUTH_CLIENT_SECRET - Should match `client-secret` of the Auth Server, without `{noop}`
+6. SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT - Set as true (default) if the sign out event should log out from the auth provider as well (useful when using external providers)
+7. SM_UI_AUTH_LOGOUT_URI - Set as the logout endpoint when using an external auth provider, empty (default) will look for `end_session_endpoint` from the well_known json
+8. NEXT_PUBLIC_SM_UI_AUTH_ID - Should match the ending of `redirect-uris` in the Auth Server `access-console-auth-server.properties` file
+9. NEXT_PUBLIC_DEFAULT_PATH - Leave as `/sessions`
+10. NEXTAUTH_SECRET - Set a string 
+11. NODE_EXTRA_CA_CERTS - Path to cert file 
+12. SESSION_SCREENSHOT_MAX_WIDTH and SESSION_SCREENSHOT_MAX_HEIGHT - Can be undefined or a value greater than or equal to 0. If set to 0, the resolution set in the Broker configuration will be used. If undefined, default values will be used.
 
 ## Running the development server
 ```bash

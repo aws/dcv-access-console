@@ -21,6 +21,9 @@ The following properties can help with this:
 * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
 * `auth-server-userinfo-endpoint` is the userInfo endpoint
 
+When using MS Entra as an OAuth provider, the access token cannot be used to query the userInfo endpoint. In this case, claims can be read from the access token:
+* `auth-server-claims-from-access-token` determines whether to read claims directly from the access token instead of calling the userInfo endpoint. To enable set to true. Default is false.
+
 ## Testing
 While running the application you can use Postman to send requests to the endpoints to ensure correct functionality.
 

@@ -121,7 +121,7 @@ export const authOptions: NextAuthOptions = {
         wellKnown: process.env.SM_UI_AUTH_WELL_KNOWN_URI,
         clientId: process.env.SM_UI_AUTH_CLIENT_ID,
         clientSecret: process.env.SM_UI_AUTH_CLIENT_SECRET,
-        authorization: {params: {scope: "openid"}},
+        authorization: {params: {scope: process.env.SM_UI_AUTH_SERVER_SCOPE}},
         checks: ["nonce", "pkce", "state"],
         idToken: true,
         userinfo: {

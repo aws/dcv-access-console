@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.support.WebContentGenerator;
 import static org.hamcrest.Matchers.is;
@@ -45,6 +46,9 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private DescribeUserInfoController controller;
 
     @MockBean
     private UserService mockUserService;
@@ -71,6 +75,8 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
                 .build();
         JwtAuthenticationToken jwtAuth = new JwtAuthenticationToken(jwt);
         SecurityContextHolder.getContext().setAuthentication(jwtAuth);
+        
+        ReflectionTestUtils.setField(controller, "useAuthServerClaimsFromAccessToken", false);
     }
 
     @Test
@@ -174,5 +180,52 @@ public class DescribeUserInfoControllerFromAuthServerTest extends BaseController
 
         verify(mockUserService).updateUser(testUser, Optional.of(testLoginUsername), testUserDisplayName);
         verify(mockAuthorizationEngine, never()).addUser(any(), any(), any(), any(), anyBoolean());
+    }
+
+    @Test
+    public void testDescribeCurrentUser_WithAuthServerClaimsFromToken() throws Exception {
+        ReflectionTestUtils.setField(controller, "useAuthServerClaimsFromAccessToken", true);
+
+        when(mockAuthorizationEngine.getUserDisplayName(testUser)).thenReturn(testUserDisplayName);
+        when(mockAuthorizationEngine.getUserRole(testUser)).thenReturn(testUserRole);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", testLoginUsername);
+        claims.put("name", testUserDisplayName);
+
+        Jwt jwt = Jwt.withTokenValue("test-token")
+                .header("alg", "RS256")
+                .subject(testUser)
+                .claims(s -> s.putAll(claims))
+                .build();
+        JwtAuthenticationToken jwtAuth = new JwtAuthenticationToken(jwt);
+        SecurityContextHolder.getContext().setAuthentication(jwtAuth);
+
+        User updatedUser = new User()
+                .userId(testUser)
+                .loginUsername(testLoginUsername)
+                .displayName(testUserDisplayName)
+                .role(testUserRole)
+                .isDisabled(false);
+
+        when(mockUserService.updateUser(
+                eq(testUser),
+                eq(Optional.of(testLoginUsername)),
+                eq(testUserDisplayName)))
+                .thenReturn(updatedUser);
+
+        mvc.perform(
+                        get(urlTemplate)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, WebContentGenerator.METHOD_POST)
+                                .header(HttpHeaders.ORIGIN, origin)
+                                .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.DisplayName", is(testUserDisplayName)))
+                .andExpect(jsonPath("$.Role", is(testUserRole)));
+
+        verify(mockAuthServerClientService, never()).getUserInfo(any());
+        verify(mockUserService).updateUser(testUser, Optional.of(testLoginUsername), testUserDisplayName);
+        verify(mockAuthorizationEngine).addUser(testUser, testLoginUsername, testUserDisplayName, testUserRole, false);
     }
 }
