@@ -12,6 +12,7 @@ cat /etc/dcv-access-console-web-client/access-console-web-client-*.properties >>
 sed -Ei "s/handler-base-url/SM_UI_HANDLER_BASE_URL/g" ./.env
 sed -Ei "s/handler-api-prefix/SM_UI_HANDLER_API_PREFIX/g" ./.env
 sed -Ei "s/auth-server-well-known-uri/SM_UI_AUTH_WELL_KNOWN_URI/g" ./.env
+sed -Ei "s/auth-server-scope/SM_UI_AUTH_SERVER_SCOPE/g" ./.env
 sed -Ei "s/auth-server-client-id/SM_UI_AUTH_CLIENT_ID/g" ./.env
 sed -Ei "s/auth-server-client-secret/SM_UI_AUTH_CLIENT_SECRET/g" ./.env
 sed -Ei "s/web-client-url/NEXTAUTH_URL/g" ./.env
