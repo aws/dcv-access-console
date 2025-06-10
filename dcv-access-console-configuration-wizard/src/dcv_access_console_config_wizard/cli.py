@@ -1124,6 +1124,22 @@ def exit_with_failure_message(tasks_completed, failed_task):
     prompt=None,
 )
 @click.option(
+    "--claims-from-access-token",
+    default=False,
+    help="Determines whether to read claims directly from the access token instead of calling the userInfo endpoint. "
+    "To enable set to true. Default is false.",
+    required=False,
+    prompt=None,
+)
+@click.option(
+    "--auth-server-scope",
+    default="openid",
+    help="When using an external auth provider, the custom scope can be set. Multiple scopes can be specified by "
+    "separating them with spaces.",
+    required=False,
+    prompt=None,
+)
+@click.option(
     "--install-nginx/--no-install-nginx",
     is_flag=True,
     help="Installs NGINX on this machine",
@@ -1250,6 +1266,7 @@ def run(
     webclient_cert_path,
     webclient_cert_key_path,
     root_ca_path,
+    auth_server_scope,
     use_pam_authentication,
     pam_service_name,
     normalize_userid,
@@ -1267,6 +1284,7 @@ def run(
     display_name_claim_key,
     well_known_uri,
     userinfo_endpoint,
+    claims_from_access_token,
     install_nginx,
     install_components,
     component_installers_location,
@@ -1530,6 +1548,7 @@ def run(
             webclient_cert_path=webclient_cert_path,
             webclient_key_path=webclient_cert_key_path,
             root_ca_path=root_ca_path,
+            auth_server_scope=auth_server_scope,
             handler_keystore_path=handler_keystore_path,
             handler_keystore_password=handler_keystore_password,
             auth_server_keystore_path=auth_server_keystore_path,
@@ -1550,6 +1569,7 @@ def run(
             display_name_claim_key=display_name_claim_key,
             well_known_uri=well_known_uri,
             userinfo_endpoint=userinfo_endpoint,
+            claims_from_access_token=claims_from_access_token,
             read_existing_configs=read_existing_configs,
             save_location=configuration_file_save_location,
         ):

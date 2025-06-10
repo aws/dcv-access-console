@@ -189,6 +189,7 @@ def modify_handler_config(
     display_name_claim_key: str,
     well_known_uri: str,
     userinfo_endpoint: str,
+    claims_from_access_token: bool,
 ) -> Any:
     dynamodb_lines = {
         "dynamodb-region": dynamodb_region,
@@ -211,6 +212,7 @@ def modify_handler_config(
         "jwt-display-name-claim-key": f"{display_name_claim_key}",
         "auth-server-well-known-uri": f"{well_known_uri}",
         "auth-server-userinfo-endpoint": f"{userinfo_endpoint}",
+        "auth-server-claims-from-access-token": str(claims_from_access_token).lower(),
         "enable-connection-gateway": str(enable_connection_gateway).lower(),
         "connection-gateway-host": connection_gateway_host or "gatewayhostname",
         "connection-gateway-port": connection_gateway_port,
@@ -282,6 +284,7 @@ def modify_webclient_config(
     handler_address: str,
     handler_prefix: str,
     root_ca_path: Path,
+    auth_server_scope: str,
 ) -> Any:
 
     replacement_lines = {
@@ -290,6 +293,7 @@ def modify_webclient_config(
         "auth-server-well-known-uri": f"{authserver_address}/.well-known/oauth-authorization-server",
         "web-client-url": webclient_address,
         "extra-ca-certs": f"{root_ca_path}",
+        "auth-server-scope": f"{auth_server_scope}",
     }
 
     for line in data:
@@ -504,6 +508,7 @@ def create_configuration_files(
     webclient_cert_path: Path,
     webclient_key_path: Path,
     root_ca_path: Path,
+    auth_server_scope: str,
     handler_keystore_path: Path,
     handler_keystore_password: str,
     auth_server_keystore_path: Path,
@@ -524,6 +529,7 @@ def create_configuration_files(
     display_name_claim_key: str,
     well_known_uri: str,
     userinfo_endpoint: str,
+    claims_from_access_token: bool,
     read_existing_configs: bool,
     save_location: Path = None,
 ) -> bool:
@@ -652,6 +658,7 @@ def create_configuration_files(
         display_name_claim_key=display_name_claim_key,
         well_known_uri=well_known_uri,
         userinfo_endpoint=userinfo_endpoint,
+        claims_from_access_token=claims_from_access_token,
     )
 
     write_lines_to_file(
@@ -721,6 +728,7 @@ def create_configuration_files(
         handler_address=handler_address,
         handler_prefix=handler_prefix,
         root_ca_path=root_ca_path,
+        auth_server_scope=auth_server_scope,
     )
 
     write_lines_to_file(
