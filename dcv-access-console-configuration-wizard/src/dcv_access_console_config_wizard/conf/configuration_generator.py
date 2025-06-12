@@ -359,6 +359,10 @@ def modify_nginx_config(
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
 
+    proxy_buffer_size 16k;
+    proxy_buffers 4 16k;
+    proxy_busy_buffers_size 32k;
+
     location @access_console_webclient {{
         proxy_pass  http://127.0.0.1:{webclient_port}$uri;
         proxy_intercept_errors on;
