@@ -35,12 +35,9 @@ async function getLogoutEndpoint() {
  */
 async function refreshAccessToken(token) {
     try {
-        console.log("Starting token refresh")
         // Getting the token endpoint from the wellknown uri
-        console.log("Fetching from well-known URI:", process.env.SM_UI_AUTH_WELL_KNOWN_URI);
         const wellKnownJson = await (await fetch(process.env.SM_UI_AUTH_WELL_KNOWN_URI)).json()
         const url = wellKnownJson.token_endpoint
-        console.log("Token endpoint URL:", url);
 
         const response = await fetch(url, {
             headers: {
@@ -55,7 +52,6 @@ async function refreshAccessToken(token) {
         })
 
         const refreshedTokens = await response.json()
-        console.log("Response body:", JSON.stringify(refreshedTokens, null, 2));
 
         if (!response.ok) {
             throw response
@@ -68,16 +64,9 @@ async function refreshAccessToken(token) {
         }
     } catch (error) {
         console.log("Error while trying to obtain the refresh token", error)
-        if (error.status) {
-            try {
-                const errorClone = error.clone();
-                const errorBody = await errorClone.json();
-                console.log("Error response body:", JSON.stringify(errorBody, null, 2));
-            } catch (jsonError) {
-                console.log("Could not parse error response as JSON");
-            }
-        }
-        return token
+        console.log("Logging out")
+        await signOut()
+        return
     }
 }
 
@@ -178,8 +167,6 @@ export const authOptions: NextAuthOptions = {
                 token.name = profile.UserInfo.displayName
                 token.userRole = profile.UserInfo.role
             }
-
-            console.log(`Token expires at timestamp: ${token.access_token_expires_at}`);
 
             // Return previous token if the access token has not expired yet
             if (token.access_token_expires_at && Date.now() < token.access_token_expires_at) {
