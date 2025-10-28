@@ -30,8 +30,9 @@ dcv-access-console-web-client/server
 The Web Client renders some logos on the UI which can be added to the repository for a more desirable experience. The files that should be added are as follows:
 1. public/linux-logo.svg
 2. public/windows-logo.svg
-3. public/service-name.svg
-4. src/app/favicon.ico
+3. public/macos-logo.svg
+4. public/service-name.svg
+5. src/app/favicon.ico
 
 ## Build
 ```bash

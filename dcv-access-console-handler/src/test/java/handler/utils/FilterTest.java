@@ -349,6 +349,12 @@ public class FilterTest {
         filterOsFamilyToken = new FilterOsFamilyToken().operator(FilterOsFamilyToken.OperatorEnum.NOT_EQUAL);
         filterOsFamilyToken.setValue(OsFamily.WINDOWS);
         serverRequest.addOsFamiliesItem(filterOsFamilyToken);
+        filterOsFamilyToken = new FilterOsFamilyToken().operator(FilterOsFamilyToken.OperatorEnum.EQUAL);
+        filterOsFamilyToken.setValue(OsFamily.MACOS);
+        serverRequest.addOsFamiliesItem(filterOsFamilyToken);
+        filterOsFamilyToken = new FilterOsFamilyToken().operator(FilterOsFamilyToken.OperatorEnum.NOT_EQUAL);
+        filterOsFamilyToken.setValue(OsFamily.MACOS);
+        serverRequest.addOsFamiliesItem(filterOsFamilyToken);
         serverRequest.addTagsItem(new KeyValuePair());
         KeyValuePair tag = new KeyValuePair().key(testString);
         tag.setValue(testString);

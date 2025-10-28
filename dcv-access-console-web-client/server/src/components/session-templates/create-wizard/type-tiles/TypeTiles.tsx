@@ -41,7 +41,7 @@ export default function TypeTiles({columns, os, type, setType}: TypeTilesProps) 
         ),
         value: "VIRTUAL",
         description: SESSION_TEMPLATES_CREATE_CONSTANTS.VIRTUAL_DESCRIPTION,
-        disabled: os == "windows"
+        disabled: os == "windows" || os == "macos"
     }]
     return (
         <Tiles

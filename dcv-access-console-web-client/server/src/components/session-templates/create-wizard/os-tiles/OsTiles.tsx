@@ -16,6 +16,7 @@ export type OsTilesProps = {
 export default ({columns, os, setOs, setType}: OsTilesProps) => {
     const [linuxLogoExists, setLinuxLogoExists] = useState(false);
     const [windowsLogoExists, setWindowsLogoExists] = useState(false);
+    const [macosLogoExists, setMacosLogoExists] = useState(false);
 
     useEffect(() => {
         const linux = new Image();
@@ -27,6 +28,11 @@ export default ({columns, os, setOs, setType}: OsTilesProps) => {
         windows.onload = () => setWindowsLogoExists(true);
         windows.onerror = () => setWindowsLogoExists(false);
         windows.src = service.osLogos.windows;
+
+        const macos = new Image();
+        macos.onload = () => setMacosLogoExists(true);
+        macos.onerror = () => setMacosLogoExists(false);
+        macos.src = service.osLogos.macos;
     }, []);
 
     const items = [
@@ -55,13 +61,26 @@ export default ({columns, os, setOs, setType}: OsTilesProps) => {
                 </center>
             ) : undefined,
             value: "windows"
+        },
+        {
+            label: "macOS",
+            image: macosLogoExists ? (
+                <center>
+                    <img
+                        src={service.osLogos.macos}
+                        alt="macOS"
+                        style={{width: 96, padding: 5}}
+                    />
+                </center>
+            ) : undefined,
+            value: "macos"
         }
     ]
     return (
         <Tiles
             onChange={({ detail }) => {
                 setOs(detail.value)
-                if(detail.value == "windows") {
+                if(detail.value == "windows" || detail.value == "macos") {
                     setType("CONSOLE")
                 }
             }}

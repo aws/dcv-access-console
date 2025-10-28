@@ -271,8 +271,17 @@ public class DCVBrokerClient extends BrokerClient {
                     "Session type cannot be " + Type.VIRTUAL.getValue() + " for " + OsFamily.WINDOWS.getValue() + ".");
         }
 
+        if (request.getOsFamily() == OsFamily.MACOS && request.getType() == Type.VIRTUAL) {
+            errors.put("Type",
+                    "Session type cannot be " + Type.VIRTUAL.getValue() + " for " + OsFamily.MACOS.getValue() + ".");
+        }
+
         if(request.getOsFamily() == OsFamily.LINUX && request.getType() == Type.CONSOLE && request.getAutorunFile() != null) {
             errors.put("AutorunFile", "AutorunFile not supported for " + OsFamily.LINUX.getValue() + " " + Type.CONSOLE.getValue() + " type.");
+        }
+
+        if(request.getOsFamily() == OsFamily.MACOS && request.getAutorunFile() != null) {
+            errors.put("AutorunFile", "AutorunFile not supported for " + OsFamily.MACOS.getValue() + " " + Type.CONSOLE.getValue() + " type.");
         }
 
         if(request.getDcvGlEnabled() != null && request.getType() == Type.CONSOLE) {

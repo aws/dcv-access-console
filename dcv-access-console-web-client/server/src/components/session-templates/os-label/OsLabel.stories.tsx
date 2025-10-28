@@ -20,6 +20,11 @@ OsLabelWindows.args = {
     osFamily: OsFamily.Windows
 }
 
+export const OsLabelMacOS = Template.bind({})
+OsLabelMacOS.args = {
+    osFamily: OsFamily.Macos
+}
+
 export const OsLabelUnknown = Template.bind({})
 OsLabelUnknown.args = {
 }
