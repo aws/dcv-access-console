@@ -17,9 +17,9 @@ import {SessionWithPermissions} from "@/generated-src/client";
 import {SESSION_CARDS_DETAILS_CONSTANTS} from "@/constants/session-cards-details-constants";
 import StatusLabel from "@/components/sessions/sessions-cards/status-label/StatusLabel";
 import {
-    capitalizeFirstLetter,
     formatDate,
     formatFileSize,
+    formatOsFamily,
     formatUserOverTotal
 } from "@/components/common/utils/TextUtils";
 import {getValueOrUnknown} from "@/components/common/utils/SearchUtils";
@@ -74,7 +74,7 @@ function DetailsTabContent({session}: {session: SessionWithPermissions}) {
                     <ValueWithLabel label={SESSIONS_CONSTANTS.ID_HEADER}>{getValueOrUnknown(session.Id)}</ValueWithLabel>
                     <ValueWithLabel label={SESSIONS_CONSTANTS.HOSTNAME_HEADER}>{getValueOrUnknown(session.Server?.Hostname)}</ValueWithLabel>
                     <ValueWithLabel label={SESSIONS_CONSTANTS.IP_ADDRESS_HEADER}>{getValueOrUnknown(session.Server?.Ip)}</ValueWithLabel>
-                    <ValueWithLabel label={SESSIONS_CONSTANTS.OS_HEADER}>{capitalizeFirstLetter(getValueOrUnknown(session.Server?.Host?.Os?.Family?.toString()))}</ValueWithLabel>
+                    <ValueWithLabel label={SESSIONS_CONSTANTS.OS_HEADER}>{getValueOrUnknown(formatOsFamily(session.Server?.Host?.Os?.Family?.toString()))}</ValueWithLabel>
                 </SpaceBetween>
                 <SpaceBetween size="l">
                     <ValueWithLabel label={SESSIONS_CONSTANTS.CPU_HEADER}>{getValueOrUnknown(session.Server?.Host?.CpuInfo?.ModelName)}</ValueWithLabel>

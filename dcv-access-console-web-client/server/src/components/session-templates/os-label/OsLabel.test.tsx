@@ -3,7 +3,7 @@
 
 import {render, screen} from "@testing-library/react";
 import OsLabel from "@/components/session-templates/os-label/OsLabel";
-import {OsLabelLinux, OsLabelUnknown, OsLabelWindows} from "@/components/session-templates/os-label/OsLabel.stories";
+import {OsLabelLinux, OsLabelMacOS, OsLabelUnknown, OsLabelWindows} from "@/components/session-templates/os-label/OsLabel.stories";
 
 describe('OsLabel', () => {
     it('Should render windows', () => {
@@ -13,6 +13,10 @@ describe('OsLabel', () => {
     it('Should render linux', () => {
         render(<OsLabel {...OsLabelLinux.args}/>)
         expect(screen.getByText("Linux", {})).toBeVisible()
+    })
+    it('Should render macOS', () => {
+        render(<OsLabel {...OsLabelMacOS.args}/>)
+        expect(screen.getByText("macOS", {})).toBeVisible()
     })
     it('Should render unknown', () => {
         render(<OsLabel {...OsLabelUnknown.args}/>)

@@ -12,7 +12,8 @@ export const service = {
     tagline: 'Manage and connect to your Amazon DCV sessions.',
     osLogos: {
         windows: '/windows-logo.svg',
-        linux: '/linux-logo.svg'
+        linux: '/linux-logo.svg',
+        macos: '/macos-logo.svg'
     },
     documentation: 'https://docs.aws.amazon.com/dcv/latest/access-console/',
     download: 'https://download.nice-dcv.com/'

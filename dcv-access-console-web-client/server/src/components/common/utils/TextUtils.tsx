@@ -14,6 +14,11 @@ export function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function formatOsFamily(osFamily: string | undefined) {
+    if (!osFamily) return osFamily;
+    return osFamily.toLowerCase() === 'macos' ? 'macOS' : capitalizeFirstLetter(osFamily);
+}
+
 export function usersToCommaSeperatedString(users: LoggedInUser[] | undefined) {
     if (!users || users.length === 0) {
         // TODO: Make this formatted as placeholder text

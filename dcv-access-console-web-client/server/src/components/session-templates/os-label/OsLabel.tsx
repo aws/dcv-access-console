@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import {service} from "@/constants/service-constants";
-import {capitalizeFirstLetter} from "@/components/common/utils/TextUtils";
+import {formatOsFamily} from "@/components/common/utils/TextUtils";
 import {SpaceBetween, TextContent} from "@cloudscape-design/components";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
 import {useEffect, useState} from "react";
@@ -25,6 +25,9 @@ export default function OsLabel(props: OsLabelProps) {
         case "linux":
             imgSrc = service.osLogos.linux
             break;
+        case "macos":
+            imgSrc = service.osLogos.macos
+            break;
     }
 
     useEffect(() => {
@@ -37,7 +40,7 @@ export default function OsLabel(props: OsLabelProps) {
     return <SpaceBetween size={"xxs"} direction={"horizontal"} alignItems={"center"}>
         {osLogoExists ? <img src={imgSrc} alt={props.osFamily}/> : undefined}
             <TextContent>
-                {capitalizeFirstLetter(props.osFamily)}
+                {formatOsFamily(props.osFamily)}
             </TextContent>
         </SpaceBetween>
 }
