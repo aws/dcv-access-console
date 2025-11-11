@@ -13,6 +13,10 @@ const ERROR_MESSAGE_500 = "An error occured while processing the request."
 const BAD_CALLBACK_URL_MESSAGE = "Callback URL must begin with '/'."
 const BAD_REQUEST_MESSAGE = "Request body could not be parsed"
 
+function toMilliseconds(timestamp: number): number {
+    return timestamp * (timestamp % 1000 ? 1 : 1000);
+}
+
 async function getLogoutEndpoint() {
     try {
         const enableLogoutRedirect = process.env.SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT === 'true'
@@ -59,7 +63,7 @@ async function refreshAccessToken(token) {
         return {
             ...token,
             access_token: refreshedTokens.access_token,
-            access_token_expires_at: Date.now() + (refreshedTokens.expires_in * 1000),
+            access_token_expires_at: toMilliseconds(Date.now() + refreshedTokens.expires_in),
             refresh_token: refreshedTokens.refresh_token ?? token.refresh_token, // Fall back to old refresh token
         }
     } catch (error) {
@@ -159,7 +163,7 @@ export const authOptions: NextAuthOptions = {
                 token.refresh_token = account?.refresh_token
                 token.token_type = account?.token_type
                 if (account?.expires_at) {
-                    token.access_token_expires_at = account?.expires_at
+                    token.access_token_expires_at = toMilliseconds(account.expires_at)
                 }
             }
             if (profile) {
@@ -169,7 +173,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             // Return previous token if the access token has not expired yet
-            if (token.access_token_expires_at && Date.now() < token.access_token_expires_at * 1000) {
+            if (token.access_token_expires_at && Date.now() < token.access_token_expires_at) {
                 return token
             }
 
