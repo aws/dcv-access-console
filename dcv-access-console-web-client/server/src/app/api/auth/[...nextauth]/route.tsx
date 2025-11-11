@@ -63,7 +63,7 @@ async function refreshAccessToken(token) {
         return {
             ...token,
             access_token: refreshedTokens.access_token,
-            access_token_expires_at: toMilliseconds(Date.now() + refreshedTokens.expires_in),
+            access_token_expires_at: Date.now() + toMilliseconds(refreshedTokens.expires_in),
             refresh_token: refreshedTokens.refresh_token ?? token.refresh_token, // Fall back to old refresh token
         }
     } catch (error) {
@@ -173,7 +173,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             // Return previous token if the access token has not expired yet
-            if (token.access_token_expires_at && Date.now() < token.access_token_expires_at) {
+            if (token.access_token_expires_at && Date.now() < toMilliseconds(token.access_token_expires_at)) {
                 return token
             }
 
