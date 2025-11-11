@@ -14,7 +14,8 @@ const BAD_CALLBACK_URL_MESSAGE = "Callback URL must begin with '/'."
 const BAD_REQUEST_MESSAGE = "Request body could not be parsed"
 
 function toMilliseconds(timestamp: number): number {
-    return timestamp * (timestamp % 1000 ? 1 : 1000);
+    // Check if the timestamp is already in milliseconds
+    return timestamp < 10000000000 ? timestamp * 1000 : timestamp;
 }
 
 async function getLogoutEndpoint() {
