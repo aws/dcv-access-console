@@ -57,6 +57,25 @@ For complete system requirements please refer to our [requirements documentation
 ### Build
 Run the `build.sh` script to trigger a build for all the components. Alternatively, the components can be built individually by following the instructions in their specific READMEs.
 
+### Setting up AWS Cognito for external oAuth
+1. Go to Amazon Cognito on the AWS Console -> User pools -> Create user pool
+2. Set up resources for your application and Create user directory:
+   * Define your application- Traditional web application 
+   * Configure options as you like
+   * Add a return URL: <web-client-url>/api/auth/callback/<NEXT_PUBLIC_SM_UI_AUTH_ID>
+   * Once the user pool is created, you can configure Allowed sign-out URLs: Applications -> App clients -> Login pages -> Managed login pages configuration -> Edit
+3. Adding users to the user pool:
+   * Go to User management -> Users and add users 
+   * Alternatively, if you have allowed self-registration in step 2, users may sign up themselves
+4. Preparing the handler:
+   * Copy the User pool ID from the user pool Overview page and set `jwt-issuer-uri` as https://cognito-idp.<region>.amazonaws.com/<user_pool_id>
+   * Refer to the steps [here](https://github.com/aws/dcv-access-console/blob/0d3b842bbf28293682e1f0ce91c866169636ae52/dcv-access-console-handler/README.md#L16) to set up the reading of claims
+5. Preparing the web client:
+   * Set the auth-server-well-known-uri in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
+   * Set the auth server client ID and secret values to match the values of the user pool App client you set up in step 2 above
+   * You can set up log out redirection by referring to [this](https://github.com/aws/dcv-access-console/blob/541a3671079b62395f82a32399e4fb42ce5e414e/dcv-access-console-web-client/README.md#L57)
+
+
 ## Getting Help
 AWS provides support for the Access Console in its default, unmodified state. Your existing support model will extend to include support for the Access Console. If you have made custom modifications or built additional features on top of the Access Console, AWS will not be able to provide support for these customized elements.
 
