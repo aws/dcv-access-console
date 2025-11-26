@@ -62,18 +62,23 @@ Run the `build.sh` script to trigger a build for all the components. Alternative
 2. Set up resources for your application and Create user directory:
    * Define your application- Traditional web application 
    * Configure options as you like
-   * Add a return URL: <web-client-url>/api/auth/callback/<NEXT_PUBLIC_SM_UI_AUTH_ID>
+   * Add a return URL: <web-client-url>/api/auth/callback/<NEXT_PUBLIC_SM_UI_AUTH_ID>. For example, using defaults for a locally running server: http://localhost:3000/api/auth/callback/dcv-access-console-auth-server
    * Once the user pool is created, you can configure Allowed sign-out URLs: Applications -> App clients -> Login pages -> Managed login pages configuration -> Edit
 3. Adding users to the user pool:
    * Go to User management -> Users and add users 
    * Alternatively, if you have allowed self-registration in step 2, users may sign up themselves
 4. Preparing the handler:
    * Copy the User pool ID from the user pool Overview page and set `jwt-issuer-uri` as https://cognito-idp.<region>.amazonaws.com/<user_pool_id>
-   * Refer to the steps [here](https://github.com/aws/dcv-access-console/blob/0d3b842bbf28293682e1f0ce91c866169636ae52/dcv-access-console-handler/README.md#L16) to set up the reading of claims
+   * Set the following properties:
+     * `jwt-login-username-claim-key` is the key for the login username claim key
+     * `jwt-display-name-claim-key` is the key for the display name claim key
+     * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
+     * `auth-server-userinfo-endpoint` is the userInfo endpoint
 5. Preparing the web client:
-   * Set the auth-server-well-known-uri in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
+   * Set the `auth-server-well-known-uri` in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
    * Set the auth server client ID and secret values to match the values of the user pool App client you set up in step 2 above
-   * You can set up log out redirection by referring to [this](https://github.com/aws/dcv-access-console/blob/541a3671079b62395f82a32399e4fb42ce5e414e/dcv-access-console-web-client/README.md#L57)
+   * Set `SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT` as true to enable signing out of Cognito on each log out event
+   * Leave `SM_UI_AUTH_LOGOUT_URI` empty since `end_session_endpoint` from well_known json will be used to log out of Cognito
 
 
 ## Getting Help
