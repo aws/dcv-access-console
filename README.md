@@ -67,19 +67,20 @@ Run the `build.sh` script to trigger a build for all the components. Alternative
 3. Adding users to the user pool:
    * Go to User management -> Users and add users 
    * Alternatively, if you have allowed self-registration in step 2, users may sign up themselves
-4. Preparing the handler:
+4. Preparing access-console-handler.properties:
    * Copy the User pool ID from the user pool Overview page and set `jwt-issuer-uri` as https://cognito-idp.<region>.amazonaws.com/<user_pool_id>
    * Set the following properties:
      * `jwt-login-username-claim-key` is the key for the login username claim key
      * `jwt-display-name-claim-key` is the key for the display name claim key
      * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
      * `auth-server-userinfo-endpoint` is the userInfo endpoint
+   * Restart the handler: `sudo systemctl restart dcv-access-console-handler`
 5. Preparing the web client:
-   * Set the `auth-server-well-known-uri` in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
-   * Set the auth server client ID and secret values to match the values of the user pool App client you set up in step 2 above
-   * Set `SM_UI_AUTH_ENABLE_PROVIDER_LOGOUT` as true to enable signing out of Cognito on each log out event
-   * Leave `SM_UI_AUTH_LOGOUT_URI` empty since `end_session_endpoint` from well_known json will be used to log out of Cognito
-
+   * /etc/dcv-access-console-web-client/access-console-web-client.properties:
+     * Set `auth-server-well-known-uri` in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
+   * /etc/dcv-access-console-web-client/access-console-web-client-secrets.properties:
+     * Set the `auth-server-client-id` and `auth-server-client-secret` values to match the values of the user pool App client you set up in step 2 above
+   * Restart the web client: `sudo systemctl restart dcv-access-console-web-client`
 
 ## Getting Help
 AWS provides support for the Access Console in its default, unmodified state. Your existing support model will extend to include support for the Access Console. If you have made custom modifications or built additional features on top of the Access Console, AWS will not be able to provide support for these customized elements.
