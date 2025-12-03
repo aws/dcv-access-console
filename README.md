@@ -72,14 +72,14 @@ Run the `build.sh` script to trigger a build for all the components. Alternative
    * Set the following properties:
      * `jwt-login-username-claim-key` is the key for the login username claim key
      * `jwt-display-name-claim-key` is the key for the display name claim key
-     * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
+     * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided) in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
      * `auth-server-userinfo-endpoint` is the userInfo endpoint
    * Restart the handler: `sudo systemctl restart dcv-access-console-handler`
 5. Preparing the web client:
    * /etc/dcv-access-console-web-client/access-console-web-client.properties:
      * Set `auth-server-well-known-uri` in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
    * /etc/dcv-access-console-web-client/access-console-web-client-secrets.properties:
-     * Set the `auth-server-client-id` and `auth-server-client-secret` values to match the values of the user pool App client you set up in step 2 above
+     * Set the `auth-server-client-id` and `auth-server-client-secret` values as the Client ID and Client secret values of the user pool App client you set up in step 2 above (Applications -> App clients -> Select your App client name -> App client information)
    * Restart the web client: `sudo systemctl restart dcv-access-console-web-client`
 
 ## Getting Help
