@@ -75,12 +75,16 @@ Run the `build.sh` script to trigger a build for all the components. Alternative
      * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided) in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
      * `auth-server-userinfo-endpoint` is the userInfo endpoint
    * Restart the handler: `sudo systemctl restart dcv-access-console-handler`
+   * Confirm that the service is running: `sudo systemctl status dcv-access-console-handler`
+   * To get service logs: `sudo journalctl -u dcv-access-console-handler`
 5. Preparing the web client:
    * /etc/dcv-access-console-web-client/access-console-web-client.properties:
      * Set `auth-server-well-known-uri` in the format https://cognito-idp.<region>.amazonaws.com/<user_pool_id>/.well-known/openid-configuration
    * /etc/dcv-access-console-web-client/access-console-web-client-secrets.properties:
      * Set the `auth-server-client-id` and `auth-server-client-secret` values as the Client ID and Client secret values of the user pool App client you set up in step 2 above (Applications -> App clients -> Select your App client name -> App client information)
    * Restart the web client: `sudo systemctl restart dcv-access-console-web-client`
+   * Confirm that the service is running: `sudo systemctl status dcv-access-console-web-client`
+   * To get service logs: `sudo journalctl -u dcv-access-console-web-client`
 
 ## Getting Help
 AWS provides support for the Access Console in its default, unmodified state. Your existing support model will extend to include support for the Access Console. If you have made custom modifications or built additional features on top of the Access Console, AWS will not be able to provide support for these customized elements.
