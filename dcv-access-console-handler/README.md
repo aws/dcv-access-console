@@ -42,22 +42,23 @@ To change to Tomcat, simply comment out the line excluding Tomcat in the `build.
 
 ## Generating a self-signed cert and a keystore. Enabling TLS
 1. Create a CA
-    2. ```aidl
-       openssl genrsa -des3 -out rootCA.key 2048
-       openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1825 -out rootCA.pem
+   ```
+   openssl genrsa -des3 -out rootCA.key 2048
+   openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1825 -out rootCA.pem
+   ```
 2. Generate a server cert
-    1. ```aidl
-      openssl genrsa -des3 -out server.key 2048
-      openssl req -new -sha256 -key server.key -out server.csr
-      ```
+   ```
+   openssl genrsa -des3 -out server.key 2048
+   openssl req -new -sha256 -key server.key -out server.csr
+   ```
 3. Sign the server cert with the CA
-    1. ```aidl
-      openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.pem -days 365 -sha256
-      ```
+   ```
+   openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.pem -days 365 -sha256
+   ```
 4. Create a keystore with the cert and private key
-    1. ```aidl
-      openssl pkcs12 -export -in server.pem -out keystore.p12 -name server -nodes -inkey server.key
-      ```
+   ```
+   openssl pkcs12 -export -in server.pem -out keystore.p12 -name server -nodes -inkey server.key
+   ```
 5. Update the `server.ssl.*` values in the properties file
 
 ## Logging
