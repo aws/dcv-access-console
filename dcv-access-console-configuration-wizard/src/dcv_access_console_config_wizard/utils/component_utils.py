@@ -235,63 +235,34 @@ def setup_mariadb_database(mariadb_database_name, mariadb_username, mariadb_pass
 def install_nginx_with_package_manager():
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
         log.info("Installing NGINX...")
-        if "amzn2" in platform.release() and "amzn2023" not in platform.release():
-            if (
-                subprocess.run(
-                    ["sudo", "amazon-linux-extras", "enable", "nginx1"],
-                    stdout=logging_file,
-                    stderr=logging_file,
-                ).returncode
-                != 0
-            ):
-                log.error("Unable to enable nginx with amazon-linux-extras")
-                return False
-            if (
-                subprocess.run(
-                    ["sudo", "amazon-linux-extras", "install", "-y", "nginx1"],
-                    stdout=logging_file,
-                    stderr=logging_file,
-                ).returncode
-                != 0
-            ):
-                log.error("Unable to install nginx with amazon-linux-extras")
-                return False
-            log.debug("Successfully installed nginx with amazon-linux-extras")
+        for package_manager in os_package_manager_priority_list:
+            if shutil.which(package_manager) is None:
+                log.debug(f"Could not find package manager {package_manager}")
+                continue
 
-        else:
-            for package_manager in os_package_manager_priority_list:
-                if shutil.which(package_manager) is None:
-                    log.debug(f"Could not find package manager {package_manager}")
-                    continue
+            returncode = subprocess.run(
+                ["sudo", package_manager, "install", "-y", "nginx"],
+                stdout=logging_file,
+                stderr=logging_file,
+            ).returncode
 
-                returncode = subprocess.run(
-                    ["sudo", package_manager, "install", "-y", "nginx"],
-                    stdout=logging_file,
-                    stderr=logging_file,
-                ).returncode
-
-                if returncode == 0:
-                    log.debug("Successfully installed nginx with " + package_manager)
-                    break
-    log.info("Successfully installed NGINX")
-    return True
+            if returncode == 0:
+                log.debug("Successfully installed nginx with " + package_manager)
+                log.info("Successfully installed NGINX")
+                return True
+    log.info("Unable to install NGINX")
+    return False
 
 
 def setup_node_dependency(os_type: str, os_version: str):
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
         log.info("Setting up NodeJS...")
         node_link = None
-        if os_type == "amzn" and os_version == "2":
-            node_link = "https://rpm.nodesource.com/setup_16.x"
-        elif os_type in ["rhel", "centos", "rocky"]:
-            if os_version.startswith("7"):
-                node_link = "https://rpm.nodesource.com/setup_16.x"
-            elif os_version.startswith("8"):
+        if os_type in ["rhel", "centos", "rocky"]:
+            if os_version.startswith("8"):
                 node_link = "https://rpm.nodesource.com/setup_16.x"
         elif os_type == "ubuntu":
-            if os_version.startswith("20"):
-                node_link = "https://deb.nodesource.com/setup_16.x"
-            elif os_version.startswith("22"):
+            if os_version.startswith("22"):
                 node_link = "https://deb.nodesource.com/setup_18.x"
             elif os_version.startswith("24"):
                 node_link = "https://deb.nodesource.com/setup_18.x"
