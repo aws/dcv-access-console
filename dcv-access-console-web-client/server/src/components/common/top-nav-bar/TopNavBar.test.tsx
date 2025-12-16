@@ -4,7 +4,7 @@
 import {act, render, screen} from "@testing-library/react";
 import {TopNavNormal} from "@/components/common/top-nav-bar/TopNavBar.stories";
 import {service} from "@/constants/service-constants";
-import {userEvent} from "@storybook/testing-library";
+import userEvent from "@testing-library/user-event";
 import {SessionProvider} from "next-auth/react";
 
 describe('TopNavBar', () => {

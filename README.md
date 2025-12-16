@@ -45,11 +45,11 @@ This repository contains the following components, each with its own detailed RE
 Before setting up the Amazon DCV Access Console, you must first install and configure the Session Manager Agent and Broker. For more information about setting up Amazon DCV Session Manager, see the [Amazon DCV Session Manager Administrator Guide](https://docs.aws.amazon.com/dcv/latest/sm-admin/what-is-sm.html).
 
 ### Requirements
-* Supported operating systems include Amazon Linux 2, AL 2023, RHEL 9.x, Rocky Linux, and Ubuntu
+* Supported operating systems include AL 2023, RHEL 9.x, Rocky Linux, and Ubuntu
 * 64-bit architecture (x86 or ARM)
 * Minimum 4GB memory per component
 * Java 17 (Authentication Server and Handler)
-* Node.js 16 (Web Client)
+* Node.js 24 (Web Client)
 * Datastore for the Handler: DynamoDB (requires an AWS account), MySQL or MariaDB
 
 For complete system requirements please refer to our [requirements documentation](https://docs.aws.amazon.com/dcv/latest/access-console/requirements.html).
@@ -92,10 +92,6 @@ AWS provides support for the Access Console in its default, unmodified state. Yo
 The best way to interact with our team is through GitHub. You can open an [issue](https://github.com/aws/dcv-access-console/issues/new/choose).
 
 If you have a support plan with AWS Support, you can also create a new [support case](https://support.console.aws.amazon.com/support/home#/).
-
-## Known Issues
-### Security Vulnerabilities
-There are known security vulnerabilities that cannot be addressed at this time due to Node.js version constraints. The Access Console requires Node.js v16 to support Amazon Linux 2 (AL2).
 
 ## Security
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.

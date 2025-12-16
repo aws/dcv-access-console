@@ -4,7 +4,7 @@
 import Breadcrumb from "@/components/common/breadcrumb/Breadcrumb";
 import {render, screen} from "@testing-library/react";
 import {BreadcrumbNormal} from "@/components/common/breadcrumb/Breadcrumb.stories";
-import {userEvent} from "@storybook/testing-library";
+import userEvent from "@testing-library/user-event";
 import {useRouter} from "next/navigation";
 import preview from "../../../../.storybook/preview";
 
