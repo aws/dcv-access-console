@@ -54,10 +54,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Set up Node.js 24
+    - name: Set up Node.js 18
       uses: actions/setup-node@v3
       with:
-        node-version: '24'
+        node-version: '18'
 
     - name: Build dcv-access-console
       uses: nick-fields/retry@v2
