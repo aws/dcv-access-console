@@ -49,7 +49,7 @@ Before setting up the Amazon DCV Access Console, you must first install and conf
 * 64-bit architecture (x86 or ARM)
 * Minimum 4GB memory per component
 * Java 17 (Authentication Server and Handler)
-* Node.js 24 (Web Client)
+* Node.js 18 (Web Client)
 * Datastore for the Handler: DynamoDB (requires an AWS account), MySQL or MariaDB
 
 For complete system requirements please refer to our [requirements documentation](https://docs.aws.amazon.com/dcv/latest/access-console/requirements.html).

@@ -259,9 +259,9 @@ def setup_node_dependency(os_type: str, os_version: str):
         log.info("Setting up NodeJS...")
         node_link = None
         if os_type in ["rhel", "centos", "rocky"] and os_version.startswith("8"):
-            node_link = "https://rpm.nodesource.com/setup_24.x"
+            node_link = "https://rpm.nodesource.com/setup_18.x"
         elif os_type == "ubuntu" and os_version.startswith(("22", "24")):
-            node_link = "https://deb.nodesource.com/setup_24.x"
+            node_link = "https://deb.nodesource.com/setup_18.x"
 
         if not node_link:
             log.debug("Downloading NodeJS not required. Skipping.")
