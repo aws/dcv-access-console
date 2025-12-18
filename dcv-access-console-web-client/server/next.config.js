@@ -4,9 +4,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     // output: 'export', // Export to static HTML for the login screen
-    experimental: {
-        serverActions: true
-    },
     // TODO: re-enable linting and TypeScript checks
     eslint: {
         // Warning: This allows production builds to successfully complete even if

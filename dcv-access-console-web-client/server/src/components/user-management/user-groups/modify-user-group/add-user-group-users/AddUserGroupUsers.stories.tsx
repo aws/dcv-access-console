@@ -18,8 +18,9 @@ const Template = (args: AddUserGroupUsersProps) => <AddUserGroupUsers {...args} 
 
 export const AddUserGroupUsersLoading = Template.bind({})
 AddUserGroupUsersLoading.args = {
-    selectUsersState: {
-        status: "loading"
+    selectItemsState: {
+        status: "loading",
+        options: []
     },
     formConstants: {
         LOADING: CREATE_USER_GROUP_FORM_CONSTANTS.LOADING_USERS_TEXT,
@@ -32,9 +33,10 @@ AddUserGroupUsersLoading.args = {
 
 export const AddUserGroupUsersError = Template.bind({})
 AddUserGroupUsersError.args = {
-    selectUsersState: {
+    selectItemsState: {
         status: "error",
-        errorMessage: "Test Message"
+        errorMessage: "Test Message",
+        options: []
     },
     formConstants: {
         LOADING: CREATE_USER_GROUP_FORM_CONSTANTS.LOADING_USERS_TEXT,
@@ -46,8 +48,9 @@ AddUserGroupUsersError.args = {
 }
 export const AddUserGroupUsersEmpty = Template.bind({})
 AddUserGroupUsersEmpty.args = {
-    selectUsersState: {
+    selectItemsState: {
         users: [],
+        options: [],
         state: "finished",
     },
     formConstants: {
@@ -61,7 +64,7 @@ AddUserGroupUsersEmpty.args = {
 
 export const AddUserGroupUsersPopulated = Template.bind({})
 AddUserGroupUsersPopulated.args = {
-    selectUsersState: {
+    selectItemsState: {
         options: getDescribeUsers200Response().Users.map(user => {
             return {
                 value: user.UserId,

@@ -23,7 +23,7 @@ export const SessionTemplatesTableEmpty = Template.bind({})
 SessionTemplatesTableEmpty.args = {
     onSelectionChange: () => {},
     alerts: [],
-    preferences: SESSION_TEMPLATES_DEFAULT_PREFERENCES,
+    columnPreferences: SESSION_TEMPLATES_DEFAULT_PREFERENCES,
     setPreferences: () => {},
     query: {
         tokens: [],
@@ -45,7 +45,7 @@ SessionTemplatesTableNormal.args = {
     selectedSessionTemplate: SESSION_TEMPLATES[0],
     onSelectionChange: () => {},
     alerts: [],
-    preferences: SESSION_TEMPLATES_DEFAULT_PREFERENCES,
+    columnPreferences: SESSION_TEMPLATES_DEFAULT_PREFERENCES,
     setPreferences: () => {},
     query: {
         tokens: [],

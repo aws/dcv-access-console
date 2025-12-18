@@ -6,7 +6,7 @@ import preview from "../../../../.storybook/preview";
 import SideNavPanel from "@/components/common/side-nav-panel/SideNavPanel";
 import {SideNavPanelNormal} from "@/components/common/side-nav-panel/SideNavPanel.stories";
 import {useRouter} from "next/navigation";
-import {userEvent} from "@storybook/testing-library";
+import userEvent from "@testing-library/user-event";
 import {sideNavPanelConstants} from "@/constants/side-nav-panel-constants";
 import React from "react";
 

@@ -24,6 +24,7 @@ const config: { webpackFinal: (config) => | WebpackConfiguration; staticDirs: st
         config.resolve.alias = {
             ...config.resolve.alias,
             "@": path.resolve(__dirname, "../src"),
+            "next-auth/react": path.resolve(__dirname, "mocks/next-auth.js")
         };
         return config;
     },

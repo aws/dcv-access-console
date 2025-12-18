@@ -35,8 +35,8 @@ BrandedHorizontalSplitNormal.args = {
         }}
     >
     </div>,
-    brandLogoSrc: service.dcvLogo.src,
-    brandLogoAlt: service.dcvLogo.alt,
+    brandLogoSrc: service.nameImage.src,
+    brandLogoAlt: service.nameImage.alt,
     brandDescription: (
         <p style={{ fontSize: "68px", lineHeight: "74.21px", color: "#FFFFFF", letterSpacing: "1.54px", font: "Amazon Ember"}}>
             {service.tagline}
