@@ -258,7 +258,7 @@ def setup_node_dependency(os_type: str, os_version: str):
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
         log.info("Setting up NodeJS...")
         node_link = None
-        if os_type in ["rhel", "centos", "rocky"] and os_version.startswith("8"):
+        if os_type in ["rhel", "centos", "rocky"] and os_version.startswith(("8", "9")):
             node_link = "https://rpm.nodesource.com/setup_18.x"
         elif os_type == "ubuntu" and os_version.startswith(("22", "24")):
             node_link = "https://deb.nodesource.com/setup_18.x"
