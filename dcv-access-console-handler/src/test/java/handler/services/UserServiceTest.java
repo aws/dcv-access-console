@@ -355,7 +355,7 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), newDisplayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), newDisplayName, null);
 
         assertNotNull(result);
         assertEquals(newLoginUsername, result.getLoginUsername());
@@ -372,7 +372,7 @@ public class UserServiceTest {
 
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
 
-        User result = testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID, null);
 
         assertNull(result);
         verify(mockUserRepository, times(0)).save(any(UserEntity.class));
@@ -383,7 +383,7 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.empty());
 
         assertThrows(MissingResourceException.class,
-                () -> testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID));
+                () -> testUserService.updateUser(USER1_ID, Optional.of(USER1_ID), USER1_ID, null));
         verify(mockUserRepository, times(0)).save(any(UserEntity.class));
     }
 
@@ -405,7 +405,7 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), displayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(newLoginUsername), displayName, null);
 
         assertNotNull(result);
         assertEquals(newLoginUsername, result.getLoginUsername());
@@ -431,11 +431,146 @@ public class UserServiceTest {
         when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
 
-        User result = testUserService.updateUser(USER1_ID, Optional.of(loginUsername), newDisplayName);
+        User result = testUserService.updateUser(USER1_ID, Optional.of(loginUsername), newDisplayName, null);
 
         assertNotNull(result);
         assertEquals(loginUsername, result.getLoginUsername());
         assertEquals(newDisplayName, result.getDisplayName());
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testUpdateUser_WhenOnlyRoleChanges() {
+        String loginUsername = "currentLogin";
+        String displayName = "currentDisplay";
+        String newRole = "Admin";
+
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(USER1_ID);
+        existingUser.setLoginUsername(loginUsername);
+        existingUser.setDisplayName(displayName);
+        existingUser.setRole("User");
+
+        UserEntity updatedUser = new UserEntity();
+        updatedUser.setUserId(USER1_ID);
+        updatedUser.setLoginUsername(loginUsername);
+        updatedUser.setDisplayName(displayName);
+        updatedUser.setRole(newRole);
+
+        when(mockUserRepository.findById(USER1_ID)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.save(any(UserEntity.class))).thenReturn(updatedUser);
+
+        User result = testUserService.updateUser(USER1_ID, Optional.of(loginUsername), displayName, newRole);
+
+        assertNotNull(result);
+        assertEquals(loginUsername, result.getLoginUsername());
+        assertEquals(displayName, result.getDisplayName());
+        assertEquals(newRole, result.getRole());
+        verify(mockUserRepository, times(1)).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testApplyDefaultGroupsForNewUser() {
+        String userId = "testUser";
+        
+        // Mock user with null lastLoggedInTime (first login)
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(userId);
+        existingUser.setLastLoggedInTime(null);
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        
+        UserGroupEntity mockGroup1 = new UserGroupEntity();
+        mockGroup1.setUserGroupId("group1");
+        UserGroupEntity mockGroup2 = new UserGroupEntity();
+        mockGroup2.setUserGroupId("group2");
+        UserGroupEntity mockGroup3 = new UserGroupEntity();
+        mockGroup3.setUserGroupId("group3");
+        
+        when(mockUserGroupService.createUserGroupOrReturnIfExists("group1", "group1", false)).thenReturn(mockGroup1);
+        when(mockUserGroupService.createUserGroupOrReturnIfExists("group2", "group2", false)).thenReturn(mockGroup2);
+        when(mockUserGroupService.createUserGroupOrReturnIfExists("group3", "group3", false)).thenReturn(mockGroup3);
+        
+        boolean result = testUserService.addUserToDefaultGroups(userId, "group1,group2,group3");
+        
+        assertTrue(result);
+        verify(mockUserGroupService).createUserGroupOrReturnIfExists("group1", "group1", false);
+        verify(mockUserGroupService).createUserGroupOrReturnIfExists("group2", "group2", false);
+        verify(mockUserGroupService).createUserGroupOrReturnIfExists("group3", "group3", false);
+        verify(mockUserGroupService).addUserToGroup(userId, "group1");
+        verify(mockUserGroupService).addUserToGroup(userId, "group2");
+        verify(mockUserGroupService).addUserToGroup(userId, "group3");
+    }
+
+    @Test
+    public void testApplyDefaultGroupsForNewUser_EmptyGroups() {
+        String userId = "testUser";
+        
+        boolean result = testUserService.addUserToDefaultGroups(userId, "");
+        
+        assertFalse(result);
+        verify(mockUserGroupService, Mockito.never()).createUserGroupOrReturnIfExists(any(), any(), Mockito.anyBoolean());
+        verify(mockUserGroupService, Mockito.never()).addUserToGroup(any(), any());
+    }
+
+    @Test
+    public void testApplyDefaultGroupsForNewUser_NullGroups() {
+        String userId = "testUser";
+        
+        boolean result = testUserService.addUserToDefaultGroups(userId, null);
+        
+        assertFalse(result);
+        verify(mockUserGroupService, Mockito.never()).createUserGroupOrReturnIfExists(any(), any(), Mockito.anyBoolean());
+        verify(mockUserGroupService, Mockito.never()).addUserToGroup(any(), any());
+    }
+
+    @Test
+    public void testApplyDefaultGroupsForExistingUser_NotFirstLogin() {
+        String userId = "testUser";
+        
+        // Mock user with existing lastLoggedInTime (not first login)
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUserId(userId);
+        existingUser.setLastLoggedInTime(java.time.OffsetDateTime.now());
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        
+        boolean result = testUserService.addUserToDefaultGroups(userId, "group1,group2");
+        
+        assertFalse(result);
+        verify(mockUserGroupService, Mockito.never()).createUserGroupOrReturnIfExists(any(), any(), Mockito.anyBoolean());
+        verify(mockUserGroupService, Mockito.never()).addUserToGroup(any(), any());
+    }
+
+    @Test
+    public void testParseAndValidateGroupIds_ValidGroups() {
+        List<String> result = testUserService.parseAndValidateGroupIds("group1,group2,group3");
+        
+        assertEquals(3, result.size());
+        assertEquals("group1", result.get(0));
+        assertEquals("group2", result.get(1));
+        assertEquals("group3", result.get(2));
+    }
+
+    @Test
+    public void testParseAndValidateGroupIds_EmptyString() {
+        List<String> result = testUserService.parseAndValidateGroupIds("");
+        
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testParseAndValidateGroupIds_NullString() {
+        List<String> result = testUserService.parseAndValidateGroupIds(null);
+        
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testParseAndValidateGroupIds_WithSpaces() {
+        List<String> result = testUserService.parseAndValidateGroupIds("group1, group2 , group3");
+        
+        assertEquals(3, result.size());
+        assertEquals("group1", result.get(0));
+        assertEquals("group2", result.get(1));
+        assertEquals("group3", result.get(2));
     }
 }

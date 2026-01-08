@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -69,8 +70,7 @@ public class UserService {
         log.info("Successfully added User {} to the persistence layer", userId);
         return true;
     }
-
-    public User updateUser(String userId, Optional<String> loginUsername, String displayName) {
+    public User updateUser(String userId, Optional<String> loginUsername, String displayName, String role) {
         UserEntity existingUser = userRepository.findById(userId).orElseThrow(() -> new MissingResourceException("Cannot update user as it does not exist", UserEntity.class.getName().toString(), userId));
 
         boolean changeFlag = false;
@@ -86,6 +86,15 @@ public class UserService {
             }
         } else {
             log.warn("DisplayName not updated as it cannot be blank");
+        }
+
+        if (!StringUtils.isEmpty(role)) {
+            if (!StringUtils.equals(existingUser.getRole(), role)) {
+                existingUser.setRole(role);
+                changeFlag = true;
+            }
+        } else if (role != null) {
+            log.warn("Role not updated as it cannot be blank");
         }
 
         if (!changeFlag) {
@@ -189,6 +198,48 @@ public class UserService {
             userRepository.save(user.get());
             log.debug("Updated last logged in time for user {}", userId);
         }
+    }
+
+    public boolean addUserToDefaultGroups(String userId, String defaultGroupsClaim) {
+        List<String> validGroupIds = parseAndValidateGroupIds(defaultGroupsClaim);
+        if (validGroupIds.isEmpty()) {
+            return false;
+        }
+        
+        // Check if this is the user's first login by verifying lastLoggedInTime is null
+        UserEntity existingUser = userRepository.findById(userId).orElseThrow(() -> 
+            new MissingResourceException("Cannot add user to default groups as user does not exist", 
+                UserEntity.class.getName(), userId));
+        
+        if (existingUser.getLastLoggedInTime() != null) {
+            return false;
+        }
+        
+        log.info("Applying default groups for new user {}: {}", userId, validGroupIds);
+        
+        boolean success = true;
+        for (String groupId : validGroupIds) {
+            try {
+                userGroupService.createUserGroupOrReturnIfExists(groupId, groupId, false);
+                userGroupService.addUserToGroup(userId, groupId);
+            } catch (Exception e) {
+                log.error("Failed to add user {} to group {}", userId, groupId, e);
+                success = false;
+            }
+        }
+        
+        return success;
+    }
+
+    public List<String> parseAndValidateGroupIds(String defaultGroupsClaim) {
+        if (StringUtils.isBlank(defaultGroupsClaim)) {
+            return List.of();
+        }
+        
+        return Arrays.stream(defaultGroupsClaim.split(","))
+                .map(String::trim)
+                .filter(groupId -> !StringUtils.isEmpty(groupId) && groupId.matches("^[a-zA-Z0-9]+$"))
+                .collect(Collectors.toList());
     }
 
     public ImportUsersResponse importUsers(MultipartFile file, Boolean overwriteExistingUsers, Boolean overwriteGroups, List<String> roles, String defaultRole) throws IOException {
