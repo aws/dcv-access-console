@@ -52,6 +52,7 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
                 updateUserFromAuthServer(username);
             }
 
+            String loginUsername = authorizationEngine.getUserLoginUsername(username);
             String displayName = authorizationEngine.getUserDisplayName(username);
             String role = authorizationEngine.getUserRole(username);
 
@@ -59,6 +60,7 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
 
             DescribeUserInfoResponse describeCurrentUserResponse = new DescribeUserInfoResponse()
                     .id(username)
+                    .loginUsername(loginUsername)
                     .displayName(displayName)
                     .role(role);
             return new ResponseEntity<>(describeCurrentUserResponse, HttpStatus.OK);

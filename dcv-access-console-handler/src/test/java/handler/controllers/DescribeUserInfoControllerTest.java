@@ -37,11 +37,13 @@ public class DescribeUserInfoControllerTest extends BaseControllerTest {
 
     private final static String urlTemplate = "/describeUserInfo";
 
+    private final static String testUserLoginUsername = "testUserLoginUsername";
     private final static String testUserDisplayName = "testUserDisplayName";
     private final static String testUserRole = "testUserRole";
 
     @Test
     public void testDescribeCurrentUser() throws Exception {
+        when(mockAuthorizationEngine.getUserLoginUsername(testUser)).thenReturn(testUserLoginUsername);
         when(mockAuthorizationEngine.getUserDisplayName(testUser)).thenReturn(testUserDisplayName);
         when(mockAuthorizationEngine.getUserRole(testUser)).thenReturn(testUserRole);
         mvc.perform(
@@ -51,6 +53,8 @@ public class DescribeUserInfoControllerTest extends BaseControllerTest {
                         .header(HttpHeaders.ORIGIN, origin)
                         .content("{}"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.Id", is(testUser)))
+                .andExpect(jsonPath("$.LoginUsername", is(testUserLoginUsername)))
                 .andExpect(jsonPath("$.DisplayName", is(testUserDisplayName)))
                 .andExpect(jsonPath("$.Role", is(testUserRole)));
     }

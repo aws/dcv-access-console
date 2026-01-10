@@ -140,6 +140,7 @@ export const authOptions: NextAuthOptions = {
                 return {
                     UserInfo: {
                         id: user.Id,
+                        loginUsername: user.LoginUsername,
                         displayName: user.DisplayName,
                         role: user.Role
                     }
@@ -169,6 +170,7 @@ export const authOptions: NextAuthOptions = {
             }
             if (profile) {
                 token.sub = profile.UserInfo.id
+                token.loginUsername = profile.UserInfo.loginUsername
                 token.name = profile.UserInfo.displayName
                 token.userRole = profile.UserInfo.role
             }
@@ -187,6 +189,7 @@ export const authOptions: NextAuthOptions = {
             // Send properties to the client, like an access_token and user id from a provider.
             session.userRole = token.userRole
             session.user.id = token.sub
+            session.user.loginUsername = token.loginUsername
             session.user.name = token.name
             session.user.role = token.userRole
             session.access_token = token.access_token

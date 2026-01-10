@@ -85,7 +85,7 @@ public class DescribeUsersSharedWithSessionTemplateController implements Describ
                 DescribeUsersResponse describeUsersResponse = userService.describeUsers(
                         new DescribeUsersRequestData().userIds(userIds).nextToken(request.getNextToken()));
                 log.info("DescribeUsersResponse for: {} is: {}", userIds, describeUsersResponse.getUsers());
-                response.setUsers(describeUsersResponse.getUsers().stream().map(user -> new UserWithPermissions().userId(user.getUserId()).displayName(user.getDisplayName())).toList());
+                response.setUsers(describeUsersResponse.getUsers().stream().map(user -> new UserWithPermissions().userId(user.getUserId()).loginUsername(user.getLoginUsername()).displayName(user.getDisplayName())).toList());
             } else {
                 response.setUsers(List.of());
             }

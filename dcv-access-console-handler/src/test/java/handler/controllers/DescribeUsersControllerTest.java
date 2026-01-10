@@ -95,4 +95,61 @@ public class DescribeUsersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.Users[0].UserId", is(testString)))
                 .andExpect(jsonPath("$.Error", nullValue()));
     }
+
+    @Test
+    public void describeUsersWithNullLoginUsername() throws Exception {
+        List<User> users = new ArrayList<>();
+        User userWithNullLoginUsername = new User()
+                .userId(testString)
+                .loginUsername(null)
+                .displayName("Test User")
+                .role("User");
+        users.add(userWithNullLoginUsername);
+
+        when(mockUserService.describeUsers(any())).thenReturn(new DescribeUsersResponse().users(users).nextToken(null));
+        when(mockUserSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewUserDetails, ResourceType.User, testString)).thenReturn(true);
+
+        mvc.perform(
+                        post(urlTemplate)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, WebContentGenerator.METHOD_POST)
+                                .header(HttpHeaders.ORIGIN, origin)
+                                .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.Users", hasSize(1)))
+                .andExpect(jsonPath("$.Users[0].UserId", is(testString)))
+                .andExpect(jsonPath("$.Users[0].LoginUsername", nullValue()))
+                .andExpect(jsonPath("$.Users[0].DisplayName", is("Test User")))
+                .andExpect(jsonPath("$.Error", nullValue()));
+    }
+
+    @Test
+    public void describeUsersWithLoginUsername() throws Exception {
+        List<User> users = new ArrayList<>();
+        String loginUsername = "test.user";
+        User userWithLoginUsername = new User()
+                .userId(testString)
+                .loginUsername(loginUsername)
+                .displayName("Test User")
+                .role("User");
+        users.add(userWithLoginUsername);
+
+        when(mockUserService.describeUsers(any())).thenReturn(new DescribeUsersResponse().users(users).nextToken(null));
+        when(mockUserSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewUserDetails, ResourceType.User, testString)).thenReturn(true);
+
+        mvc.perform(
+                        post(urlTemplate)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, WebContentGenerator.METHOD_POST)
+                                .header(HttpHeaders.ORIGIN, origin)
+                                .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.Users", hasSize(1)))
+                .andExpect(jsonPath("$.Users[0].UserId", is(testString)))
+                .andExpect(jsonPath("$.Users[0].LoginUsername", is(loginUsername)))
+                .andExpect(jsonPath("$.Users[0].DisplayName", is("Test User")))
+                .andExpect(jsonPath("$.Error", nullValue()));
+    }
 }

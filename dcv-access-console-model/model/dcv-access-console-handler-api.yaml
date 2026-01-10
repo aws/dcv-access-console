@@ -1966,6 +1966,9 @@ components:
         Id:
           description: "Id of the user"
           type: "string"
+        LoginUsername:
+          description: "The login username of the user"
+          type: "string"
         DisplayName:
           description: "The display name of the current user"
           type: "string"

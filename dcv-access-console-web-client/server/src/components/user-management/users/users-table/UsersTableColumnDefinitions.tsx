@@ -17,7 +17,7 @@ export const USERS_TABLE_COLUMN_DEFINITIONS: TableProps.ColumnDefinition<User>[]
         {
             id: USERS_TABLE_CONSTANTS.USER_ID,
             header: USERS_TABLE_CONSTANTS.USER_HEADER,
-            cell: user => user.UserId,
+            cell: user => user.LoginUsername || user.UserId,
             sortingField: USERS_TABLE_CONSTANTS.USER_ID,
         },
         {

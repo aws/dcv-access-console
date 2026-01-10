@@ -66,7 +66,7 @@ export default function AssignUsersGroups({
                     handleError("Error while obtaining users for the session template")
                 }
                 result.Users?.forEach(user => {
-                    userIds.push({label: user.UserId, value: user.UserId, description: user.DisplayName})
+                    userIds.push({label: user.LoginUsername || user.UserId, value: user.UserId, description: user.DisplayName})
                 })
                 handleUsersChangeInternal(userIds)
             })
@@ -209,7 +209,7 @@ export default function AssignUsersGroups({
             const options = result.Users?.map(user => {
                 return {
                     value: user.UserId,
-                    label: user.UserId,
+                    label: user.LoginUsername || user.UserId,
                     description: user.DisplayName,
                 }
             }) || []

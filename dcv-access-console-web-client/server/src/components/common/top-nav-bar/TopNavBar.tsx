@@ -37,7 +37,7 @@ export default function TopNavBar({session}: { session: Session }) {
                 {
                     type: "menu-dropdown",
                     text: session?.user?.name,
-                    description: session?.user?.id,
+                    description: session?.user?.loginUsername || session?.user?.id,
                     iconName: "user-profile",
                     items: [
                         {id: "signout", text: topNavBarConstants.utilities.signOut}
