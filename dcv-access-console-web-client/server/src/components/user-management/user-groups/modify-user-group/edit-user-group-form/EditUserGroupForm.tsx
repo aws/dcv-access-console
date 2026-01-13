@@ -240,7 +240,7 @@ export default function EditUserGroupForm(
             const options = result.Users?.map(user => {
                 return {
                     value:  user.UserId,
-                    label: user.UserId,
+                    label: user.LoginUsername || user.UserId,
                     description: user.DisplayName,
                 }
             }) || []

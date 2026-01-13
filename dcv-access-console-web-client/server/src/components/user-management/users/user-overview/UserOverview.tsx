@@ -25,7 +25,7 @@ export default function UserOverview({user}: UserOverviewProps) {
                 <ValueWithLabel
                     label={USER_DETAILS_CONSTANTS.DISPLAY_NAME_HEADER}>{getValueOrUnknown(user.DisplayName)}</ValueWithLabel>
                 <ValueWithLabel
-                    label={USER_DETAILS_CONSTANTS.ID_HEADER}>{getValueOrUnknown(user.UserId)}</ValueWithLabel>
+                    label={USER_DETAILS_CONSTANTS.ID_HEADER}>{getValueOrUnknown(user.LoginUsername || user.UserId)}</ValueWithLabel>
                 <ValueWithLabel
                     label={USER_DETAILS_CONSTANTS.ROLE_HEADER}>{getValueOrUnknown(user.Role)}</ValueWithLabel>
             </SpaceBetween>

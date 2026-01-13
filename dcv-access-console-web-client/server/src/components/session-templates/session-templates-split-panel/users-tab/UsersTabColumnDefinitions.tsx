@@ -14,7 +14,7 @@ export const USERS_TAB_COLUMN_DEFINITIONS: TableProps.ColumnDefinition<User>[] =
     },{
         id: USERS_AND_GROUPS_TAB_CONSTANTS.USER_ID,
         header: USERS_AND_GROUPS_TAB_CONSTANTS.USER_ID_HEADER,
-        cell: user => user.UserId,
+        cell: user => user.LoginUsername || user.UserId,
         isRowHeader: true
     },
 ]
