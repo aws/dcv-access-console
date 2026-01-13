@@ -20,6 +20,9 @@ public class UserCsvEntity {
     private String userId;
 
     @CsvBindByName
+    private String loginUsername;
+
+    @CsvBindByName
     private String displayName;
 
     @CsvBindByName

@@ -97,6 +97,7 @@ public class UserServiceTest {
     private final static String USER5_ID = "user5";
     private final static String USER6_ID = "user6";
     private final static List<String> normalUsersList = List.of(USER1_ID, USER2_ID, USER3_ID, USER4_ID, USER5_ID, USER6_ID);
+    private final static List<String> normalLoginUsernamesList = List.of("login1", "user2", "login3", "user4", "login5", "user6");
     private final static String testSortKey = "Name";
 
     private final static Map<String, List<String>> groupMembers = new HashMap<>() {{
@@ -296,6 +297,7 @@ public class UserServiceTest {
 
         // Check that all arguments were correctly passed
         assertThat(captor.getAllValues().stream().map(UserEntity::getUserId)).containsExactlyInAnyOrderElementsOf(normalUsersList);
+        assertThat(captor.getAllValues().stream().map(UserEntity::getLoginUsername).filter(l -> l != null)).containsExactlyInAnyOrderElementsOf(normalLoginUsernamesList);
 
         assertEquals(response.getSuccessfulUsersList(), normalUsersList);
         assertEquals(0, response.getUnsuccessfulUsersList().size());

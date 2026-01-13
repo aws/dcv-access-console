@@ -66,7 +66,7 @@ public class UserService {
             return false;
         }
 
-        userRepository.save(getNewUserEntity(userId, displayName, role, false, null, false));
+        userRepository.save(getNewUserEntity(userId, userId, displayName, role, false, null, false));
         log.info("Successfully added User {} to the persistence layer", userId);
         return true;
     }
@@ -107,8 +107,9 @@ public class UserService {
     }
 
 
-    private UserEntity getNewUserEntity(String userId, String displayName, String role, Boolean isDisabled, String disabledReason, Boolean isImported) {
+    private UserEntity getNewUserEntity(String userId, String loginUsername, String displayName, String role, Boolean isDisabled, String disabledReason, Boolean isImported) {
         User user = new UserEntity().userId(userId);
+        user.setLoginUsername(loginUsername);
         user.setDisplayName(displayName);
         user.setRole(role);
         user.setIsImported(isImported);
@@ -268,15 +269,19 @@ public class UserService {
                     continue;
                 }
 
+                String loginUsername = userId;
                 String displayName = userId;
                 String role = defaultRole;
+                if (!StringUtils.isBlank(user.getLoginUsername()) && user.getLoginUsername().length() <= 255) {
+                    loginUsername = user.getLoginUsername();
+                }
                 if (!StringUtils.isBlank(user.getDisplayName()) && user.getDisplayName().length() < 255) {
                     displayName = user.getDisplayName();
                 }
                 if (!StringUtils.isBlank(user.getRole()) && roles.contains(user.getRole())) {
                     role = user.getRole();
                 }
-                UserEntity newUser = getNewUserEntity(userId, displayName, role, false, null, true);
+                UserEntity newUser = getNewUserEntity(userId, loginUsername, displayName, role, false, null, true);
 
                 log.info("Starting user group import");
 
