@@ -9,6 +9,7 @@ import handler.model.DescribeUserInfoResponse;
 import handler.model.User;
 import handler.services.AuthServerClientService;
 import handler.services.UserService;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,12 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
     @Value("${jwt-display-name-claim-key:#{null}}")
     private String displayNameKey;
 
+    @Value("${jwt-role-claim-key:#{null}}")
+    private String roleKey;
+
+    @Value("${jwt-default-groups-claim-key:#{null}}")
+    private String defaultGroupsKey;
+
     @Value("${auth-server-claims-from-access-token:false}")
     private boolean useAuthServerClaimsFromAccessToken;
 
@@ -47,7 +54,8 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            if ((StringUtils.isNotEmpty(loginUsernameKey) || StringUtils.isNotEmpty(displayNameKey))
+            if ((StringUtils.isNotEmpty(loginUsernameKey) || StringUtils.isNotEmpty(displayNameKey) 
+                    || StringUtils.isNotEmpty(roleKey) || StringUtils.isNotEmpty(defaultGroupsKey))
                     && authServerClientService != null) {
                 updateUserFromAuthServer(username);
             }
@@ -87,6 +95,8 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
 
         Optional<String> loginUsername = null;
         String displayName = null;
+        String role = null;
+        String defaultGroups = null;
 
         if (!StringUtils.isEmpty(loginUsernameKey)) {
             if (userInfo.containsKey(loginUsernameKey)) {
@@ -104,10 +114,46 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
             }
         }
 
+        if (!StringUtils.isEmpty(roleKey)) {
+            if (userInfo.containsKey(roleKey)) {
+                role = String.valueOf(userInfo.get(roleKey));
+                List<String> validRoles = authorizationEngine.getRoles();
+                if (!validRoles.contains(role)) {
+                    log.warn("Invalid role '{}' for user {}. Valid roles: {}", role, username, validRoles);
+                    role = authorizationEngine.getDefaultUserRole();
+                    log.info("Using default role '{}' for user {}", role, username);
+                }
+            } else {
+                log.warn("Claim {} not found in userInfo response", roleKey);
+            }
+        }
+
+        if (!StringUtils.isEmpty(defaultGroupsKey)) {
+            if (userInfo.containsKey(defaultGroupsKey)) {
+                defaultGroups = String.valueOf(userInfo.get(defaultGroupsKey));
+            } else {
+                log.warn("Claim {} not found in userInfo response", defaultGroupsKey);
+            }
+        }
+
         try {
-            User updatedUser = userService.updateUser(username, loginUsername, displayName);
+            // Note: username here is actually the JWT subject (userId/UUID)
+            User updatedUser = userService.updateUser(username, loginUsername, displayName, role);
             if (updatedUser != null) {
                 authorizationEngine.addUser(username, updatedUser.getLoginUsername(), updatedUser.getDisplayName(), updatedUser.getRole(), updatedUser.getIsDisabled());
+            }
+            
+            if (!StringUtils.isEmpty(defaultGroups)) {
+                boolean defaultGroupsApplied = userService.addUserToDefaultGroups(username, defaultGroups);
+                
+                if (defaultGroupsApplied) {
+                    // Sync groups to Cedar authorization engine
+                    List<String> validGroupIds = userService.parseAndValidateGroupIds(defaultGroups);
+                    for (String groupId : validGroupIds) {
+                        authorizationEngine.addGroup(groupId);
+                        authorizationEngine.addUserToGroup(username, groupId);
+                    }
+                }
             }
         } catch (Exception e) {
             log.error("Error updating the user using the claims retrieved", e);
