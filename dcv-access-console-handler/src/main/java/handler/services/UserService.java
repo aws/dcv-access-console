@@ -93,7 +93,7 @@ public class UserService {
                 existingUser.setRole(role);
                 changeFlag = true;
             }
-        } else if (role != null) {
+        } else {
             log.warn("Role not updated as it cannot be blank");
         }
 
