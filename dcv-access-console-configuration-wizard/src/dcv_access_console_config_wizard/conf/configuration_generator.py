@@ -188,7 +188,7 @@ def modify_handler_config(
     login_username_claim_key: str,
     display_name_claim_key: str,
     default_groups_claim_key: str,
-    role_claim_key:str,
+    role_claim_key: str,
     well_known_uri: str,
     userinfo_endpoint: str,
     claims_from_access_token: bool,
