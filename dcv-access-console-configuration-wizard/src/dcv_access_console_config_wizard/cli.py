@@ -1110,6 +1110,20 @@ def exit_with_failure_message(tasks_completed, failed_task):
     prompt=None,
 )
 @click.option(
+    "--default-groups-claim-key",
+    default="",
+    help="The key to retrieve the default group assignments from the JWT claims of the auth server.",
+    required=False,
+    prompt=None,
+)
+@click.option(
+    "--role-claim-key",
+    default="",
+    help="The key to retrieve the role from the JWT claims of the auth server",
+    required=False,
+    prompt=None,
+)
+@click.option(
     "--well-known-uri",
     default="",
     help="The well known URI of the auth server.",
@@ -1282,6 +1296,8 @@ def run(
     database_prefix,
     login_username_claim_key,
     display_name_claim_key,
+    default_groups_claim_key,
+    role_claim_key,
     well_known_uri,
     userinfo_endpoint,
     claims_from_access_token,
@@ -1567,6 +1583,8 @@ def run(
             database_prefix=database_prefix,
             login_username_claim_key=login_username_claim_key,
             display_name_claim_key=display_name_claim_key,
+            default_groups_claim_key=default_groups_claim_key,
+            role_claim_key=role_claim_key,
             well_known_uri=well_known_uri,
             userinfo_endpoint=userinfo_endpoint,
             claims_from_access_token=claims_from_access_token,
