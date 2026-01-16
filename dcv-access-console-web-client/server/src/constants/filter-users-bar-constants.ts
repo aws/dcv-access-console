@@ -4,7 +4,7 @@
 import {FILTER_CONSTANTS} from "@/constants/generic-search-bar-constants";
 
 export const SEARCH_TOKEN_TO_ID: Map<string, string> = new Map<string, string>([
-    ["UserIds", "UserId"],
+    ["UserIds", "LoginUsername"],
     ["DisplayNames", "DisplayName"],
     ["Roles", "Role"],
     ["IsImported", "IsImported"],

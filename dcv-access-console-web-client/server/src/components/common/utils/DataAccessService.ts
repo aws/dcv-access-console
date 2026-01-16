@@ -18,7 +18,7 @@ import {
     DescribeUsersRequestData,
     DescribeUsersSharedWithSessionTemplateRequestData, DescribeUsersSharedWithSessionTemplateResponse,
     EditSessionTemplateRequestData,
-    EditUserGroupRequestData, GetSessionConnectionDataUIResponse,
+    EditUserGroupRequestData, FilterTokenOperatorEnum, GetSessionConnectionDataUIResponse,
     GetSessionScreenshotsUIRequestData,
     PublishSessionTemplateRequestData,
     RemoveFromUserGroupRequestData,
@@ -85,6 +85,21 @@ export default class DataAccessService {
     }
     public async describeUsers(describeUsersRequest?: DescribeUsersRequestData) {
         return (await this.getUsersApi()).describeUsers(describeUsersRequest)
+    }
+
+    public async describeUsersByIds(userIds: string[]): Promise<Map<string, string>> {
+        const map = new Map<string, string>()
+        if (userIds.length === 0) return map
+        
+        const filters = userIds.map(id => ({ Operator: FilterTokenOperatorEnum.Equal, Value: id }))
+        const response = await this.describeUsers({ InternalUserIds: filters })
+        
+        response.data.Users?.forEach(user => {
+            if (user.UserId) {
+                map.set(user.UserId, user.LoginUsername || user.UserId)
+            }
+        })
+        return map
     }
 
     public async createSessionTemplate(createSessionTemplateRequest?: CreateSessionTemplateRequestData) {

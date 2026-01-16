@@ -174,7 +174,7 @@ export default function AssignUsersGroups({
                 Value: filterString
             } as FilterToken],
             SortToken: {
-                Operator: "DESC",
+                Operator: "ASC",
                 Key: "UserId"
             },
             NextToken: nextToken,

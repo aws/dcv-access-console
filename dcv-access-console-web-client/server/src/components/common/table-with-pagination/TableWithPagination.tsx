@@ -27,6 +27,7 @@ export type TableWithPaginationProps<T> = {
     customPreference?: (value: string, setValue: (value: string) => void) => JSX.Element
     setView?: (view : string) => void
     contentDisplayOptions:  readonly CollectionPreferencesProps.ContentDisplayOption[]
+    onUserMapChange?: (map: Map<string, string>) => void
 }
 
 export default function TableWithPagination<T>(
@@ -46,7 +47,8 @@ export default function TableWithPagination<T>(
         customPageSizePreferences,
         customPreference,
         setView,
-        contentDisplayOptions
+        contentDisplayOptions,
+        onUserMapChange
     }: TableWithPaginationProps<T>) {
 
     const [currentPageIndex, setCurrentPageIndex] = useState(1)
@@ -79,6 +81,14 @@ export default function TableWithPagination<T>(
     }
 
     const result: DataAccessServiceResult<T> = dataAccessServiceFunction(params);
+
+    // Forward userIdToLoginUsernameMap from hook to parent (only useSessionTemplatesService returns this)
+    useEffect(() => {
+        const resultWithMap = result as DataAccessServiceResult<T> & { userIdToLoginUsernameMap?: Map<string, string> }
+        if (onUserMapChange && resultWithMap.userIdToLoginUsernameMap) {
+            onUserMapChange(resultWithMap.userIdToLoginUsernameMap)
+        }
+    }, [(result as any).userIdToLoginUsernameMap])
 
     useEffect(() => {
         // Check if this page has no items
@@ -140,6 +150,10 @@ export default function TableWithPagination<T>(
     useEffect(() => {
         resetPagination();
     }, [preferences.pageSize, resetPaginationKey])
+
+    useEffect(() => {
+        resetPagination();
+    }, [sortingColumn, sortingDescending])
 
     const handleSortingChange = event => {
         setSortingDescending(event.detail.isDescending)

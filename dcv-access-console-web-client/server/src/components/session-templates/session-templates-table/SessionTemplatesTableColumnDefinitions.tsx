@@ -6,8 +6,14 @@ import {SessionTemplate} from "@/generated-src/client";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
 import OsLabel from "@/components/session-templates/os-label/OsLabel";
 import {capitalizeFirstLetter, formatDate, formatFileSize} from "@/components/common/utils/TextUtils";
+import {UserIdToLoginUsernameMap} from "@/components/session-templates/session-templates-table/SessionTemplatesTable";
 
-export const SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS: TableProps.ColumnDefinition<SessionTemplate>[] =
+const getLoginUsername = (userId: string | undefined, userIdToLoginUsernameMap: UserIdToLoginUsernameMap): string => {
+    if (!userId) return '';
+    return userIdToLoginUsernameMap.get(userId) || userId;
+};
+
+export const getSessionTemplatesTableColumnDefinitions = (userIdToLoginUsernameMap: UserIdToLoginUsernameMap): TableProps.ColumnDefinition<SessionTemplate>[] =>
     [
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.NAME_ID,
@@ -72,7 +78,7 @@ export const SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS: TableProps.ColumnDefini
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_ID,
             header: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_HEADER,
-            cell: sessionTemplate => sessionTemplate.CreatedBy,
+            cell: sessionTemplate => getLoginUsername(sessionTemplate.CreatedBy, userIdToLoginUsernameMap),
             sortingField: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_ID,
         },
         {
@@ -84,7 +90,7 @@ export const SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS: TableProps.ColumnDefini
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_ID,
             header: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_HEADER,
-            cell: sessionTemplate => sessionTemplate.LastModifiedBy,
+            cell: sessionTemplate => getLoginUsername(sessionTemplate.LastModifiedBy, userIdToLoginUsernameMap),
             sortingField: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_ID,
         },
         {

@@ -32,6 +32,13 @@ export type FILTER_TOKEN = FilterToken | FilterStateToken | FilterDateToken
 export type FILTER_TOKEN_OPERATOR = FilterTokenOperatorEnum | FilterDateTokenOperatorEnum | FilterStateTokenOperatorEnum
 export const DEFAULT_FILTERING_QUERY = { tokens: [], operation: 'and' } as PropertyFilterQuery
 
+// Helper to add a filter token to a request object
+const addFilterToRequest = <T extends Record<string, any>>(request: T, key: keyof T, operator: string, value: string) => {
+    const tokenArray: Array<FILTER_TOKEN> = (request[key] as Array<FILTER_TOKEN>) || []
+    tokenArray.push({ Operator: operator as FILTER_TOKEN_OPERATOR, Value: value } as FILTER_TOKEN)
+    request[key] = tokenArray as T[keyof T]
+}
+
 export type DataAccessServiceParams<T> = {
     pagination?: {
         currentPageIndex: number,
@@ -228,12 +235,49 @@ export function useServersService(params: DataAccessServiceParams<Server>): Data
     };
 }
 
-export function useSessionTemplatesService(params: DataAccessServiceParams<SessionTemplate>): DataAccessServiceResult<SessionTemplate> {
+// Filter keys that need loginUsername → userId resolution
+const USER_FILTER_KEYS = ['UsersSharedWith', 'CreatedBy', 'LastModifiedBy']
+const USERS_SHARED_WITH_KEY = 'UsersSharedWith'
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// Helper: Resolve user filter token to userIds
+const resolveUserFilter = async (token: PropertyFilterToken, dataService: DataAccessService): Promise<{ token: PropertyFilterToken, userIds: string[] }> => {
+    const isUUID = UUID_REGEX.test(token.value)
+    const isContains = token.operator === ':' || token.operator === '!:'
+    
+    // UUID from dropdown - use directly
+    if (isUUID && isContains) {
+        return { token, userIds: [token.value] }
+    }
+    
+    // CONTAINS - query backend for matching users
+    if (isContains) {
+        try {
+            const r = await dataService.describeUsers({ UserIds: [{ Operator: FilterTokenOperatorEnum.Contains, Value: token.value }] })
+            return { token, userIds: r.data.Users?.map(u => u.UserId).filter(Boolean) || [] }
+        } catch {
+            return { token, userIds: [] }
+        }
+    }
+    
+    // EQUAL/NOT_EQUAL - resolve single user
+    try {
+        const r = await dataService.describeUsers({ UserIds: [{ Operator: FilterTokenOperatorEnum.Equal, Value: token.value }] })
+        return { token, userIds: [r.data.Users?.[0]?.UserId || token.value] }
+    } catch {
+        return { token, userIds: [token.value] }
+    }
+}
+
+// Fetches session templates with user lookup: resolves loginUsername→userId for filtering,
+// then looks up userId→loginUsername for table display (CreatedBy/LastModifiedBy columns)
+export function useSessionTemplatesService(params: DataAccessServiceParams<SessionTemplate>): DataAccessServiceResult<SessionTemplate> & { userIdToLoginUsernameMap: Map<string, string> } {
     const {pageSize, currentPageIndex: clientPageIndex} = params.pagination || {};
     const {sortingDescending, sortingColumn} = params.sorting || {};
     const {filteringText, filteringTokens, filteringOperation} = params.filtering || {};
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([] as SessionTemplate[]);
+    const [userIdToLoginUsernameMap, setUserIdToLoginUsernameMap] = useState(new Map<string, string>());
     const [totalCount, setTotalCount] = useState(0);
     const [currentPageIndex, setCurrentPageIndex] = useState(clientPageIndex as number);
     const [pagesCount, setPagesCount] = useState(0);
@@ -262,34 +306,81 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
             NextToken: params.pagination?.nextToken
         } as DescribeSessionTemplatesRequestData
 
+        const userFilterTokens: PropertyFilterToken[] = []
+
         params.filtering?.filteringTokens.forEach(token => {
             let key = token.propertyKey as keyof DescribeSessionTemplatesRequestData
             let operator: string = SPECIAL_OPERATORS.get(token.operator) || token.operator;
 
-            let tokenArray: Array<FILTER_TOKEN> = describeSessionTemplatesRequest[key] as Array<FILTER_TOKEN> || []
-            tokenArray.push({
-                Operator: operator as FILTER_TOKEN_OPERATOR,
-                Value: token.value
-            } as FILTER_TOKEN)
-            describeSessionTemplatesRequest[key] = tokenArray
+            if (USER_FILTER_KEYS.includes(token.propertyKey as string)) {
+                userFilterTokens.push(token)
+            } else {
+                addFilterToRequest(describeSessionTemplatesRequest, key, operator, token.value)
+            }
         })
 
-        console.log("describeSessionTemplatesRequest: ", describeSessionTemplatesRequest)
-        dataService.describeSessionTemplates(describeSessionTemplatesRequest)
-            .then(r => {
-                r.data.SessionTemplates
+        const resolveUserFilters = userFilterTokens.length > 0
+            ? Promise.all(userFilterTokens.map(token => resolveUserFilter(token, dataService)))
+            : Promise.resolve([])
+
+        resolveUserFilters
+            .then(resolvedTokens => {
+                // Send non-negated filters to backend
+                resolvedTokens
+                    .filter(({ token }) => token.operator !== '!:')
+                    .forEach(({ token, userIds }) => {
+                        const key = token.propertyKey as keyof DescribeSessionTemplatesRequestData
+                        const operator = SPECIAL_OPERATORS.get(token.operator) || token.operator
+                        userIds.forEach(userId => addFilterToRequest(describeSessionTemplatesRequest, key, operator, userId))
+                    })
+
+                return dataService.describeSessionTemplates(describeSessionTemplatesRequest)
+                    .then(r => ({ r, resolvedTokens }))
+            })
+            .then(({ r, resolvedTokens }) => {
+                // Client-side filter for NOT CONTAINS (backend OR logic doesn't support it)
+                let templates = r.data.SessionTemplates || []
+                resolvedTokens
+                    .filter(({ token }) => token.operator === '!:')
+                    .forEach(({ token, userIds }) => {
+                        const key = token.propertyKey as keyof SessionTemplate
+                        templates = templates.filter(t => !userIds.includes(t[key] as string))
+                    })
+                
+                // Collect userIds for display name lookup
+                const userIds = [...new Set([
+                    ...templates.flatMap(t => [t.CreatedBy, t.LastModifiedBy].filter(Boolean)),
+                    ...resolvedTokens.filter(({ token }) => token.operator === ':').flatMap(({ userIds }) => userIds)
+                ])] as string[]
+                
+                return dataService.describeUsersByIds(userIds).then(map => ({ templates, map, resolvedTokens }))
+            })
+            .then(({ templates, map, resolvedTokens }) => {
+                // Add EQUAL/NOT_EQUAL filter users to map
+                resolvedTokens
+                    .filter(({ token }) => token.operator === '=' || token.operator === '!=')
+                    .forEach(({ token, userIds }) => {
+                        if (token.propertyKey !== USERS_SHARED_WITH_KEY) {
+                            userIds.forEach(userId => {
+                                if (userId !== token.value) map.set(userId, token.value)
+                            })
+                        }
+                    })
+                
+                setUserIdToLoginUsernameMap(prev => new Map([...prev, ...map]))
+                setLoading(false)
+                setItems(templates)
+                setPagesCount(1)
+                setTotalCount(templates.length)
+                setNextToken(null)
+            })
+            .catch(e => {
+                console.error("Failed to retrieve sessionTemplates: ", e)
                 setLoading(false);
-                setItems(r.data.SessionTemplates || []);
+                setError(true);
+                setErrorMessage(e.message);
                 setPagesCount(1);
-                setTotalCount(r.data.SessionTemplates?.length || 0);
-                setNextToken(r.data.NextToken || null);
-            }).catch(e => {
-            console.error("Failed to retrieve sessionTemplates: ", e)
-            setLoading(false);
-            setError(true);
-            setErrorMessage(e.message);
-            setPagesCount(1);
-        });
+            })
     }, [
         currentPageIndex,
         refreshKey,
@@ -303,7 +394,8 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
         currentPageIndex,
         nextToken,
         error,
-        errorMessage
+        errorMessage,
+        userIdToLoginUsernameMap
     };
 
 }

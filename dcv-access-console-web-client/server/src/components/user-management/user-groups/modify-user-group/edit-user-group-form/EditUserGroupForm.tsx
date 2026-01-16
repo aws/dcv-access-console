@@ -343,7 +343,7 @@ export default function EditUserGroupForm(
                 Value: filterString
             } as FilterToken],
             SortToken: {
-                Operator: "DESC",
+                Operator: "ASC",
                 Key: "UserId"
             },
             NextToken: nextToken,

@@ -27,6 +27,7 @@ export type DescribeResponse = {
     nextToken: string
 }
 
+export type ValueToLabelMap = Map<string, string>;
 export type FilterBarProps = {
     filteringQuery: PropertyFilterProps.Query
     handlePropertyFilteringChange: NonCancelableEventHandler<PropertyFilterProps.Query>
@@ -36,6 +37,8 @@ export type FilterBarProps = {
     searchTokenToId: Map<string, string | string[]>
     filteringPlaceholder: string
     dataAccessServiceFunction:  (request: DescribeSessionsUIRequestData | DescribeServersUIRequestData | DescribeSessionTemplatesRequestData | DescribeUsersRequestData | DescribeUserGroupsRequestData) => Promise<DescribeResponse>
+    // Optional map of property keys to value-label mappings for displaying easier to read labels in dropdown and token chips
+    propertyValueToLabelMaps?: Map<string, ValueToLabelMap>
 }
 const MEMORY_FILTER_KEYS = ["MemoryTotalBytes", "MemoryUsedBytes", "SwapTotalBytes", "SwapUsedBytes"]
 export default function FilterBar(props: FilterBarProps) {
@@ -64,6 +67,23 @@ export default function FilterBar(props: FilterBarProps) {
     }
 
     const fetchFilteringOptions = async (filteringText: string, filteringProperty: string) => {
+        // Map is built when templates are fetched for CreatedBy/LastModifiedBy (UUID→loginUsername),
+        // so use the map instead of querying backend. This shows users from the current page in dropdown.
+        const labelMap = props.propertyValueToLabelMaps?.get(filteringProperty)
+        if (labelMap && labelMap.size > 0) {
+            const options: Array<FilteringOption> = []
+            labelMap.forEach((label, value) => {
+                options.push({
+                    propertyKey: filteringProperty,
+                    value: value,
+                    label: label
+                } as FilteringOption)
+            })
+            updateFilteringOptions(filteringText, filteringProperty, options)
+            setStatus('finished')
+            return
+        }
+
         let objectProperty = props.searchTokenToId.get(filteringProperty)
         if (!objectProperty) {
             console.debug("Property {} not supported for autofill", filteringProperty)
@@ -138,10 +158,28 @@ export default function FilterBar(props: FilterBarProps) {
         await fetchFilteringOptions(detail.filteringText, detail.filteringProperty?.key)
     }
 
+    const filteringPropertiesWithFormat = FILTERING_PROPERTIES.map(prop => {
+        // Apply value→label formatting to filter chips (e.g., show loginUsername instead of UUID)
+        const labelMap = props.propertyValueToLabelMaps?.get(prop.key)
+        if (labelMap) {
+            return {
+                ...prop,
+                operators: prop.operators.map((op: string | { operator: string }) => {
+                    const operator = typeof op === 'string' ? op : op.operator
+                    return {
+                        operator,
+                        format: (value: string) => labelMap.get(value) || value
+                    }
+                })
+            }
+        }
+        return prop
+    })
+
     return (
         <PropertyFilter
             i18nStrings={PROPERTY_FILTER_I18N_STRINGS}
-            filteringProperties={FILTERING_PROPERTIES}
+            filteringProperties={filteringPropertiesWithFormat}
             filteringOptions={filteringOptions}
             query={props.filteringQuery}
             onChange={props.handlePropertyFilteringChange}

@@ -2029,7 +2029,12 @@ components:
       description: "The entity that represents the data that the user passes for describing the users"
       properties:
         UserIds:
-          description: "FilterTokens to apply for the UserId, 'OR' operator is applied for the specified tokens in the array"
+          description: "FilterTokens to apply for LoginUsername with userId fallback, 'OR' operator is applied for the specified tokens in the array"
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FilterToken"
+        InternalUserIds:
+          description: "FilterTokens to apply for internal userId lookups (matches userId field only, for system use like resolving display names), 'OR' operator is applied for the specified tokens in the array"
           type: "array"
           items:
             $ref: "#/components/schemas/FilterToken"

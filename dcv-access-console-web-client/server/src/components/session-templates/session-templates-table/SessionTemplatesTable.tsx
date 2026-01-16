@@ -6,7 +6,7 @@ import {useState} from "react";
 import Table from "@cloudscape-design/components/table";
 import Box from "@cloudscape-design/components/box";
 import {
-    SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS,
+    getSessionTemplatesTableColumnDefinitions,
 } from "@/components/session-templates/session-templates-table/SessionTemplatesTableColumnDefinitions";
 import {
     CONTENT_DISPLAY_OPTIONS
@@ -40,10 +40,11 @@ import DeleteSessionTemplateModal, {
 import {CancelableEventHandler} from "@cloudscape-design/components/internal/events";
 import {LinkProps} from "@cloudscape-design/components/link/interfaces";
 import TableWithPagination from "@/components/common/table-with-pagination/TableWithPagination";
-import FilterBar, {DescribeResponse} from "@/components/common/filter-bar/FilterBar";
+import FilterBar, {DescribeResponse, ValueToLabelMap} from "@/components/common/filter-bar/FilterBar";
 import session_template_search_tokens from "@/generated-src/client/session_template_search_tokens";
 import {PropertyFilterQuery} from "@cloudscape-design/collection-hooks";
 
+export type UserIdToLoginUsernameMap = Map<string, string>;
 export default function SessionTemplatesTable({   selectedSessionTemplates,
                                                   setSelectedSessionTemplates,
                                                   addHeader,
@@ -74,6 +75,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [deleteSessionTemplateProps, setDeleteSessionTemplateProps] = useState<DeleteSessionTemplateProps>()
     const [resetPaginationKey, setResetPaginationKey] = useState("")
+    const [userIdToLoginUsernameMap, setUserIdToLoginUsernameMap] = useState<UserIdToLoginUsernameMap>(new Map())
     const {push} = useRouter()
     const {addFlashBar} = useFlashBarContext()
     const dataAccessService = new DataAccessService()
@@ -82,6 +84,11 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         const r = await dataAccessService.describeSessionTemplates(describeSessionTemplatesRequest)
         return {"objects": r.data.SessionTemplates, "nextToken": r.data.NextToken} as DescribeResponse
     }
+
+    const propertyValueToLabelMaps = new Map<string, ValueToLabelMap>([
+        ["CreatedBy", userIdToLoginUsernameMap],
+        ["LastModifiedBy", userIdToLoginUsernameMap]
+    ])
 
     const filter = <FilterBar
         filteringQuery={query}
@@ -94,7 +101,8 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         tokenNameGroupMap={TOKEN_NAME_GROUP_MAP}
         searchTokenToId={SEARCH_TOKEN_TO_ID}
         filteringPlaceholder={FILTER_SESSION_TEMPLATES_CONSTANTS.filteringPlaceholder}
-        dataAccessServiceFunction={describeSessionTemplates}/>
+        dataAccessServiceFunction={describeSessionTemplates}
+        propertyValueToLabelMaps={propertyValueToLabelMaps}/>
 
     const viewUserDetailsButton = () => {
         return <Button variant="normal" disabled={selectedSessionTemplates?.length != 1}
@@ -216,9 +224,11 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         }
     }
 
+    const columnDefinitions = getSessionTemplatesTableColumnDefinitions(userIdToLoginUsernameMap)
+
     const table = <Table
         variant={variant}
-        columnDefinitions={SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS}
+        columnDefinitions={columnDefinitions}
         columnDisplay={preferences.contentDisplay}
         selectedItems={selectedSessionTemplates as ReadonlyArray<SessionTemplate>}
         onSelectionChange={event => setSelectedSessionTemplates(event.detail.selectedItems)}
@@ -252,7 +262,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
             <TableWithPagination
                 table={table}
                 header={header}
-                defaultSortingColumn={SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS[0]}
+                defaultSortingColumn={columnDefinitions[0]}
                 query={query}
                 dataAccessServiceFunction={dataAccessServiceFunction}
                 preferences={preferences}
@@ -262,6 +272,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
                 deleteItemsKey={deleteItemsKey}
                 resetPaginationKey={resetPaginationKey}
                 contentDisplayOptions={CONTENT_DISPLAY_OPTIONS}
+                onUserMapChange={setUserIdToLoginUsernameMap}
             />
             <DeleteSessionTemplateModal visible={modalVisible} setVisible={setModalVisible}
                                         deleteSessionTemplateProps={deleteSessionTemplateProps!}
