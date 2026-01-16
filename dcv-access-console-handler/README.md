@@ -18,10 +18,12 @@ When using external OAuth providers like Cognito, user properties like login use
 The following properties can help with this:
 * `jwt-login-username-claim-key` is the key for the login username claim key
 * `jwt-display-name-claim-key` is the key for the display name claim key
-* `jwt-role-claim-key` is the key for the user role claim. The role value must match a configured role (e.g., Admin, User, Guest). Invalid roles fall back to the default role defined in `default-role` in the Handler configuration file.
-* `jwt-default-groups-claim-key` is the key for default group assignments. Groups are only assigned on first login. Value should be comma-separated group IDs (e.g., "group1,group2"). If a group does not exist, it will be created.
 * `auth-server-well-known-uri` is the well known URI (required only if userInfo endpoint is not provided)
 * `auth-server-userinfo-endpoint` is the userInfo endpoint
+
+The following properties enable role and group assignment from OAuth claims:
+* `jwt-default-groups-claim-key` is the key that contains the default groups. Groups are only assigned on first login and subsequent group management should be done through the Access Console. The groups value should be comma-separated group IDs (e.g., "group1,group2"). If a group does not exist, it will be created.
+* `jwt-role-claim-key` is the key that contains the user's role. The role value must match a configured role (e.g., Admin, User, Guest). Invalid roles fall back to the default role defined in `default-role` in the Handler configuration file.
 
 When using MS Entra as an OAuth provider, the access token cannot be used to query the userInfo endpoint. In this case, claims can be read from the access token:
 * `auth-server-claims-from-access-token` determines whether to read claims directly from the access token instead of calling the userInfo endpoint. To enable set to true. Default is false.
