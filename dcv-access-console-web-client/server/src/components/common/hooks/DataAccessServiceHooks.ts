@@ -239,34 +239,34 @@ export function useServersService(params: DataAccessServiceParams<Server>): Data
 const USER_FILTER_KEYS = ['UsersSharedWith', 'CreatedBy', 'LastModifiedBy']
 const USERS_SHARED_WITH_KEY = 'UsersSharedWith'
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const NOT_CONTAINS_OPERATOR = '!:'
+const CONTAINS_OPERATOR = ':'
+const EQUAL_OPERATOR = '='
+const NOT_EQUAL_OPERATOR = '!='
 
-// Helper: Resolve user filter token to userIds
-const resolveUserFilter = async (token: PropertyFilterToken, dataService: DataAccessService): Promise<{ token: PropertyFilterToken, userIds: string[] }> => {
-    const isUUID = UUID_REGEX.test(token.value)
-    const isContains = token.operator === ':' || token.operator === '!:'
+const resolveUserFilters = async (tokens: PropertyFilterToken[], dataService: DataAccessService) => {
+    if (tokens.length === 0) return []
     
-    // UUID from dropdown - use directly
-    if (isUUID && isContains) {
-        return { token, userIds: [token.value] }
-    }
-    
-    // CONTAINS - query backend for matching users
-    if (isContains) {
-        try {
-            const r = await dataService.describeUsers({ UserIds: [{ Operator: FilterTokenOperatorEnum.Contains, Value: token.value }] })
-            return { token, userIds: r.data.Users?.map(u => u.UserId).filter(Boolean) || [] }
-        } catch {
-            return { token, userIds: [] }
+    // UUIDs don't need resolution
+    const results = tokens.map(token => {
+        if (UUID_REGEX.test(token.value)) {
+            return Promise.resolve({ token, userIds: [token.value] })
         }
-    }
+        
+        const isContains = SPECIAL_OPERATORS.has(token.operator)
+        const operator = isContains ? FilterTokenOperatorEnum.Contains : FilterTokenOperatorEnum.Equal
+        
+        return dataService.describeUsers({ UserIds: [{ Operator: operator, Value: token.value }] })
+            .then(r => {
+                const userIds = isContains
+                    ? r.data.Users?.map(u => u.UserId).filter(Boolean) || []
+                    : [r.data.Users?.[0]?.UserId || token.value]
+                return { token, userIds }
+            })
+            .catch(() => ({ token, userIds: isContains ? [] : [token.value] }))
+    })
     
-    // EQUAL/NOT_EQUAL - resolve single user
-    try {
-        const r = await dataService.describeUsers({ UserIds: [{ Operator: FilterTokenOperatorEnum.Equal, Value: token.value }] })
-        return { token, userIds: [r.data.Users?.[0]?.UserId || token.value] }
-    } catch {
-        return { token, userIds: [token.value] }
-    }
+    return Promise.all(results)
 }
 
 // Fetches session templates with user lookup: resolves loginUsername→userId for filtering,
@@ -319,15 +319,15 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
             }
         })
 
-        const resolveUserFilters = userFilterTokens.length > 0
-            ? Promise.all(userFilterTokens.map(token => resolveUserFilter(token, dataService)))
-            : Promise.resolve([])
-
-        resolveUserFilters
+        resolveUserFilters(userFilterTokens, dataService)
             .then(resolvedTokens => {
-                // Send non-negated filters to backend
+                // NOT_CONTAINS handled client-side because backend ORs multiple filters:
+                // Example: "admin" matches admin2 (uuid1) and admin5 (uuid2)
+                //   Backend: (CreatedBy !: uuid1) OR (CreatedBy !: uuid2)
+                //   Template by uuid1: (!: uuid1=false) OR (!: uuid2=true) = TRUE (kept incorrectly!)
+                //   Need: (CreatedBy !: uuid1) AND (CreatedBy !: uuid2) → client-side filtering
                 resolvedTokens
-                    .filter(({ token }) => token.operator !== '!:')
+                    .filter(({ token }) => token.operator !== NOT_CONTAINS_OPERATOR)
                     .forEach(({ token, userIds }) => {
                         const key = token.propertyKey as keyof DescribeSessionTemplatesRequestData
                         const operator = SPECIAL_OPERATORS.get(token.operator) || token.operator
@@ -338,10 +338,10 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
                     .then(r => ({ r, resolvedTokens }))
             })
             .then(({ r, resolvedTokens }) => {
-                // Client-side filter for NOT CONTAINS (backend OR logic doesn't support it)
+                // Client-side NOT_CONTAINS filtering (see comment above for why)
                 let templates = r.data.SessionTemplates || []
                 resolvedTokens
-                    .filter(({ token }) => token.operator === '!:')
+                    .filter(({ token }) => token.operator === NOT_CONTAINS_OPERATOR)
                     .forEach(({ token, userIds }) => {
                         const key = token.propertyKey as keyof SessionTemplate
                         templates = templates.filter(t => !userIds.includes(t[key] as string))
@@ -350,7 +350,7 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
                 // Collect userIds for display name lookup
                 const userIds = [...new Set([
                     ...templates.flatMap(t => [t.CreatedBy, t.LastModifiedBy].filter(Boolean)),
-                    ...resolvedTokens.filter(({ token }) => token.operator === ':').flatMap(({ userIds }) => userIds)
+                    ...resolvedTokens.filter(({ token }) => token.operator === CONTAINS_OPERATOR).flatMap(({ userIds }) => userIds)
                 ])] as string[]
                 
                 return dataService.describeUsersByIds(userIds).then(map => ({ templates, map, resolvedTokens }))
@@ -358,7 +358,7 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
             .then(({ templates, map, resolvedTokens }) => {
                 // Add EQUAL/NOT_EQUAL filter users to map
                 resolvedTokens
-                    .filter(({ token }) => token.operator === '=' || token.operator === '!=')
+                    .filter(({ token }) => token.operator === EQUAL_OPERATOR || token.operator === NOT_EQUAL_OPERATOR)
                     .forEach(({ token, userIds }) => {
                         if (token.propertyKey !== USERS_SHARED_WITH_KEY) {
                             userIds.forEach(userId => {
