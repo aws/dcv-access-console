@@ -137,7 +137,6 @@ export const authOptions: NextAuthOptions = {
                 if(!user) {
                     throw "Error while contacting the handler"
                 }
-                console.log(`[Auth] describeUserInfo response: usingExternalAuth=${user.UsingExternalAuth}`)
                 return {
                     UserInfo: {
                         id: user.Id,

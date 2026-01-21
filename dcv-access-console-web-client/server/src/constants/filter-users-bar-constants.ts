@@ -14,7 +14,7 @@ export const SEARCH_TOKEN_TO_ID: Map<string, string> = new Map<string, string>([
 ])
 
 export const TOKEN_NAMES_MAP: Record<string, string> = {
-    "LoginUsernames": "User ID",
+    "LoginUsernames": "User Id",
     "DisplayNames": "User name",
     "Roles": "Role",
     "IsImported": "Imported",
@@ -25,7 +25,7 @@ export const TOKEN_NAMES_MAP: Record<string, string> = {
 }
 
 export const REMOVE_USER_GROUPS_USERS_TOKEN_NAMES_MAP: Record<string, string> = {
-    "LoginUsernames": "User ID",
+    "LoginUsernames": "User Id",
     "DisplayNames": "User name",
     "Roles": "Role",
     "IsImported": "Imported",
@@ -35,7 +35,7 @@ export const REMOVE_USER_GROUPS_USERS_TOKEN_NAMES_MAP: Record<string, string> = 
 }
 
 export const TOKEN_NAME_GROUP_MAP: Record<string, string> = {
-    "LoginUsernames": "User ID values",
+    "LoginUsernames": "User Id values",
     "DisplayNames": "User name values",
     "Roles": "Role values",
     "IsImported": "Imported values",
