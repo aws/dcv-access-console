@@ -72,10 +72,10 @@ export default function FilterBar(props: FilterBarProps) {
         const labelMap = props.propertyValueToLabelMaps?.get(filteringProperty)
         if (labelMap && labelMap.size > 0) {
             const options: Array<FilteringOption> = []
-            labelMap.forEach((label, value) => {
+            labelMap.forEach((label) => {
                 options.push({
                     propertyKey: filteringProperty,
-                    value: value,
+                    value: label,
                     label: label
                 } as FilteringOption)
             })
@@ -157,29 +157,10 @@ export default function FilterBar(props: FilterBarProps) {
         setStatus('loading')
         await fetchFilteringOptions(detail.filteringText, detail.filteringProperty?.key)
     }
-
-    const filteringPropertiesWithFormat = FILTERING_PROPERTIES.map(prop => {
-        // Apply value→label formatting to filter chips (e.g., show loginUsername instead of UUID)
-        const labelMap = props.propertyValueToLabelMaps?.get(prop.key)
-        if (labelMap) {
-            return {
-                ...prop,
-                operators: prop.operators.map((op: string | { operator: string }) => {
-                    const operator = typeof op === 'string' ? op : op.operator
-                    return {
-                        operator,
-                        format: (value: string) => labelMap.get(value) || value
-                    }
-                })
-            }
-        }
-        return prop
-    })
-
     return (
         <PropertyFilter
             i18nStrings={PROPERTY_FILTER_I18N_STRINGS}
-            filteringProperties={filteringPropertiesWithFormat}
+            filteringProperties={FILTERING_PROPERTIES}
             filteringOptions={filteringOptions}
             query={props.filteringQuery}
             onChange={props.handlePropertyFilteringChange}

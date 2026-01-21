@@ -122,8 +122,8 @@ public class Filter<T, U> {
                 entry("disableRetryOnFailure", new String[]{"disableRetryOnFailure"})
             )),
             entry(DescribeUsersRequestData.class, Map.ofEntries(
-                    entry("userIds", new String[]{"loginUsername", "userId"}),
-                    entry("internalUserIds", new String[]{"userId"}),
+                    entry("loginUsernames", new String[]{"loginUsername", "userId"}),
+                    entry("userIds", new String[]{"userId"}),
                     entry("displayNames", new String[]{"displayName"}),
                     entry("roles", new String[]{"role"}),
                     entry("isDisabled", new String[]{"isDisabled"}),

@@ -92,7 +92,7 @@ export default class DataAccessService {
         if (userIds.length === 0) return map
         
         const filters = userIds.map(id => ({ Operator: FilterTokenOperatorEnum.Equal, Value: id }))
-        const response = await this.describeUsers({ InternalUserIds: filters })
+        const response = await this.describeUsers({ UserIds: filters })
         
         response.data.Users?.forEach(user => {
             if (user.UserId) {

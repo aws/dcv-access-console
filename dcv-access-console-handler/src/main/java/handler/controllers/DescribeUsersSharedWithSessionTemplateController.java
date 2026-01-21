@@ -83,7 +83,7 @@ public class DescribeUsersSharedWithSessionTemplateController implements Describ
                     .collect(Collectors.toList());
             if (!userIds.isEmpty()) {
                 DescribeUsersResponse describeUsersResponse = userService.describeUsers(
-                        new DescribeUsersRequestData().internalUserIds(userIds).nextToken(request.getNextToken()));
+                        new DescribeUsersRequestData().userIds(userIds).nextToken(request.getNextToken()));
                 log.info("DescribeUsersResponse for: {} is: {}", userIds, describeUsersResponse.getUsers());
                 response.setUsers(describeUsersResponse.getUsers().stream().map(user -> new UserWithPermissions().userId(user.getUserId()).loginUsername(user.getLoginUsername()).displayName(user.getDisplayName())).toList());
             } else {

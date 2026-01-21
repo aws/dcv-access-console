@@ -9,9 +9,12 @@ import handler.authorization.enums.ResourceType;
 import handler.authorization.enums.SystemAction;
 import handler.exceptions.BadRequestException;
 import handler.services.SessionTemplateService;
+import handler.services.UserService;
 import handler.model.SessionTemplate;
 import handler.model.DescribeSessionTemplatesRequestData;
 import handler.model.DescribeSessionTemplatesResponse;
+import handler.model.DescribeUsersResponse;
+import handler.model.User;
 import handler.utils.Filter;
 import handler.utils.Sort;
 
@@ -49,6 +52,8 @@ public class DescribeSessionTemplatesControllerTest extends BaseControllerTest {
     private Filter<DescribeSessionTemplatesRequestData, SessionTemplate> mockSessionFilter;
     @MockBean
     private Sort<DescribeSessionTemplatesRequestData, SessionTemplate> mockSessionSort;
+    @MockBean
+    private UserService mockUserService;
 
     @Value("${web-client-url}")
     private String origin;
@@ -128,5 +133,34 @@ public class DescribeSessionTemplatesControllerTest extends BaseControllerTest {
 
         verify(mockSessionTemplateService).filterByUserId(any(), any());
         verify(mockSessionTemplateService).filterByGroupId(any(), any());
+    }
+
+    @Test
+    public void describeSessionTemplatesWithLoginUsernameFilter() throws Exception {
+        List<SessionTemplate> sessionTemplates = new ArrayList<>();
+        SessionTemplate sessionTemplate = new SessionTemplate().id(testString).createdBy("uuid-123");
+        sessionTemplates.add(sessionTemplate);
+
+        // Mock user lookup: loginUsername "newuser" -> userId "uuid-123"
+        when(mockUserService.describeUsers(any())).thenReturn(
+            new DescribeUsersResponse().users(List.of(new User().userId("uuid-123").loginUsername("newuser")))
+        );
+        when(mockSessionTemplateService.describeSessionTemplates(any())).thenReturn(
+            new DescribeSessionTemplatesResponse().sessionTemplates(sessionTemplates).nextToken(null)
+        );
+        when(mockSessionFilter.getFiltered(any(), any())).thenReturn(sessionTemplates);
+        when(mockSessionSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewSessionTemplateDetails, ResourceType.SessionTemplate, testString)).thenReturn(true);
+
+        mvc.perform(
+                post(urlTemplate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.ORIGIN, origin)
+                    .content("{\"CreatedByLoginUsername\": [{\"Operator\": \"=\", \"Value\": \"newuser\"}]}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.SessionTemplates", hasSize(1)))
+            .andExpect(jsonPath("$.SessionTemplates[0].Id", is(testString)));
+
+        verify(mockUserService).describeUsers(any());
     }
 }

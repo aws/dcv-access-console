@@ -425,32 +425,32 @@ public class FilterTest {
 
         // Filter by loginUsername (EQUAL)
         FilterToken filterToken = new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value("user1");
-        userRequest.addUserIdsItem(filterToken);
+        userRequest.addLoginUsernamesItem(filterToken);
         List<User> filtered = testUserFilter.getFiltered(userRequest, users);
         assertEquals(1, filtered.size());
         assertEquals(user1, filtered.get(0));
 
         // Filter by userId when no loginUsername (EQUAL)
-        userRequest.setUserIds(null);
+        userRequest.setLoginUsernames(null);
         filterToken = new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value("uuid-2");
-        userRequest.addUserIdsItem(filterToken);
+        userRequest.addLoginUsernamesItem(filterToken);
         filtered = testUserFilter.getFiltered(userRequest, users);
         assertEquals(1, filtered.size());
         assertEquals(user2, filtered.get(0));
 
         // Filter by loginUsername (NOT_EQUAL) - excludes user1, includes user2 and user3
-        userRequest.setUserIds(null);
+        userRequest.setLoginUsernames(null);
         filterToken = new FilterToken().operator(FilterToken.OperatorEnum.NOT_EQUAL).value("user1");
-        userRequest.addUserIdsItem(filterToken);
+        userRequest.addLoginUsernamesItem(filterToken);
         filtered = testUserFilter.getFiltered(userRequest, users);
         assertEquals(2, filtered.size());
         assertEquals(user2, filtered.get(0));
         assertEquals(user3, filtered.get(1));
 
         // Filter by userId (NOT_EQUAL) on user without loginUsername
-        userRequest.setUserIds(null);
+        userRequest.setLoginUsernames(null);
         filterToken = new FilterToken().operator(FilterToken.OperatorEnum.NOT_EQUAL).value("uuid-2");
-        userRequest.addUserIdsItem(filterToken);
+        userRequest.addLoginUsernamesItem(filterToken);
         filtered = testUserFilter.getFiltered(userRequest, users);
         assertEquals(2, filtered.size());
         assertEquals(user1, filtered.get(0));

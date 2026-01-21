@@ -137,12 +137,14 @@ export const authOptions: NextAuthOptions = {
                 if(!user) {
                     throw "Error while contacting the handler"
                 }
+                console.log(`[Auth] describeUserInfo response: usingExternalAuth=${user.UsingExternalAuth}`)
                 return {
                     UserInfo: {
                         id: user.Id,
                         loginUsername: user.LoginUsername,
                         displayName: user.DisplayName,
-                        role: user.Role
+                        role: user.Role,
+                        usingExternalAuth: user.UsingExternalAuth
                     }
                 } as UserinfoResponse
             }
@@ -173,6 +175,7 @@ export const authOptions: NextAuthOptions = {
                 token.loginUsername = profile.UserInfo.loginUsername
                 token.name = profile.UserInfo.displayName
                 token.userRole = profile.UserInfo.role
+                token.usingExternalAuth = profile.UserInfo.usingExternalAuth
             }
 
             // Return previous token if the access token has not expired yet
@@ -197,6 +200,7 @@ export const authOptions: NextAuthOptions = {
             session.logout_endpoint = logoutEndpoint
             session.client_id = process.env.SM_UI_AUTH_CLIENT_ID
             session.post_logout_uri = process.env.NEXTAUTH_URL
+            session.usingExternalAuth = token.usingExternalAuth
             return session
         },
     },

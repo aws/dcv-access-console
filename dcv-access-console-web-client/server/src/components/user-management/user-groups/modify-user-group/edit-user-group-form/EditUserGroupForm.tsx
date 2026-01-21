@@ -338,7 +338,7 @@ export default function EditUserGroupForm(
 
     const getFilteredUsers = async (filterString: string, nextToken?: string | null) => {
         const describeUsersRequest: DescribeUsersRequestData = {
-            UserIds: [{
+            LoginUsernames: [{
                 Operator: "CONTAINS",
                 Value: filterString
             } as FilterToken],
