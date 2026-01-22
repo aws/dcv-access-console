@@ -10,7 +10,7 @@ export const IMPORT_USERS_CONSTANTS = {
         "userId","loginUsername","displayName","role","groups"<br/>
         <ul>
         <li>userId - This field is required.<br/></li>
-        <li>loginUsername - Only used for external OAuth. Must match the username from the OAuth provider.<br/></li>
+        <li>loginUsername - This field is optional. It will be set to the same as userId, if left empty. When using external OAuth, this should match the username from the OAuth provider.<br/></li>
         <li>displayName - This field is optional. It will be set to the same as userId, if left empty.<br/></li>
         <li>role - This field is optional, and can be set to either Admin or User. It will be set to User, if left empty.<br/></li>
         <li>groups - This field is optional. You can include multiple GroupIDs, separated by "|".</li>
