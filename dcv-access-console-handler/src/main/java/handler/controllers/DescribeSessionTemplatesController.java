@@ -36,11 +36,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static handler.errors.CommonErrorsEnum.BAD_REQUEST_ERROR;
 import static handler.errors.DescribeSessionTemplatesErrors.DESCRIBE_SESSION_TEMPLATES_DEFAULT_MESSAGE;
@@ -183,24 +186,25 @@ public class DescribeSessionTemplatesController implements DescribeSessionTempla
     }
 
     private List<FilterTokenStrict> resolveLoginUsernameFiltersForUsersSharedWith(List<FilterToken> loginUsernameFilters) {
+        DescribeUsersRequestData userRequest = new DescribeUsersRequestData();
+        userRequest.setLoginUsernames(loginUsernameFilters.stream()
+            .map(f -> new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value(f.getValue()))
+            .toList());
+
+        List<User> users = userService.describeUsers(userRequest).getUsers();
+        Map<String, String> loginToUserId = users.stream()
+            .collect(Collectors.toMap(
+                u -> u.getLoginUsername() != null ? u.getLoginUsername() : u.getUserId(),
+                User::getUserId,
+                (a, b) -> a));
+
         List<FilterTokenStrict> result = new ArrayList<>();
         for (FilterToken filter : loginUsernameFilters) {
-            DescribeUsersRequestData userRequest = new DescribeUsersRequestData();
-            userRequest.setLoginUsernames(List.of(new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value(filter.getValue())));
-            List<User> users = userService.describeUsers(userRequest).getUsers();
-
-            if (users.isEmpty()) {
-                result.add(new FilterTokenStrict()
-                    .operator(FilterTokenStrict.OperatorEnum.fromValue(filter.getOperator().getValue()))
-                    .value(filter.getValue()));
-            } else {
-                FilterTokenStrict.OperatorEnum resultOp = filter.getOperator() == FilterToken.OperatorEnum.NOT_EQUAL
-                    ? FilterTokenStrict.OperatorEnum.NOT_EQUAL
-                    : FilterTokenStrict.OperatorEnum.EQUAL;
-                for (User user : users) {
-                    result.add(new FilterTokenStrict().operator(resultOp).value(user.getUserId()));
-                }
-            }
+            String userId = loginToUserId.get(filter.getValue());
+            FilterTokenStrict.OperatorEnum resultOp = filter.getOperator() == FilterToken.OperatorEnum.NOT_EQUAL
+                ? FilterTokenStrict.OperatorEnum.NOT_EQUAL
+                : FilterTokenStrict.OperatorEnum.EQUAL;
+            result.add(new FilterTokenStrict().operator(resultOp).value(userId != null ? userId : filter.getValue()));
         }
         return result;
     }
@@ -211,26 +215,56 @@ public class DescribeSessionTemplatesController implements DescribeSessionTempla
         List<FilterToken> filters = new ArrayList<>();
         Set<String> excludedUserIds = new HashSet<>();
 
+        // Group filters by lookup operator type to batch DB calls
+        Map<FilterToken.OperatorEnum, List<FilterToken>> filtersByLookupOp = new HashMap<>();
+        filtersByLookupOp.put(FilterToken.OperatorEnum.EQUAL, new ArrayList<>());
+        filtersByLookupOp.put(FilterToken.OperatorEnum.CONTAINS, new ArrayList<>());
+
         for (FilterToken filter : loginUsernameFilters) {
             FilterToken.OperatorEnum op = filter.getOperator();
             FilterToken.OperatorEnum lookupOp = (op == FilterToken.OperatorEnum.CONTAINS || op == FilterToken.OperatorEnum.NOT_CONTAINS)
                 ? FilterToken.OperatorEnum.CONTAINS : FilterToken.OperatorEnum.EQUAL;
+            filtersByLookupOp.get(lookupOp).add(filter);
+        }
+
+
+        // Batch lookup for each operator type
+        for (var entry : filtersByLookupOp.entrySet()) {
+            if (entry.getValue().isEmpty()) continue;
+
+            FilterToken.OperatorEnum lookupOp = entry.getKey();
+            List<FilterToken> filtersForOp = entry.getValue();
 
             DescribeUsersRequestData userRequest = new DescribeUsersRequestData();
-            userRequest.setLoginUsernames(List.of(new FilterToken().operator(lookupOp).value(filter.getValue())));
+            userRequest.setLoginUsernames(filtersForOp.stream()
+                .map(f -> new FilterToken().operator(lookupOp).value(f.getValue()))
+                .toList());
+
             List<User> users = userService.describeUsers(userRequest).getUsers();
 
-            if (users.isEmpty()) {
-                if (op == FilterToken.OperatorEnum.EQUAL || op == FilterToken.OperatorEnum.CONTAINS) {
-                    filters.add(filter);
-                }
-            } else if (op == FilterToken.OperatorEnum.NOT_CONTAINS) {
-                users.forEach(u -> excludedUserIds.add(u.getUserId()));
-            } else {
-                FilterToken.OperatorEnum resultOp = (op == FilterToken.OperatorEnum.CONTAINS)
-                    ? FilterToken.OperatorEnum.EQUAL : op;
-                for (User user : users) {
-                    filters.add(new FilterToken().operator(resultOp).value(user.getUserId()));
+            for (FilterToken filter : filtersForOp) {
+                FilterToken.OperatorEnum op = filter.getOperator();
+                String filterVal = filter.getValue();
+                
+                List<User> matchingUsers = users.stream().filter(u -> {
+                    String displayName = u.getLoginUsername() != null ? u.getLoginUsername() : u.getUserId();
+                    if (displayName == null) return false;
+                    return lookupOp == FilterToken.OperatorEnum.EQUAL
+                        ? displayName.equals(filterVal)
+                        : displayName.contains(filterVal);
+                }).toList();
+
+                if (matchingUsers.isEmpty()) {
+                    if (op == FilterToken.OperatorEnum.EQUAL || op == FilterToken.OperatorEnum.CONTAINS) {
+                        filters.add(filter);
+                    }
+                } else if (op == FilterToken.OperatorEnum.NOT_CONTAINS) {
+                    matchingUsers.forEach(u -> excludedUserIds.add(u.getUserId()));
+                } else {
+                    FilterToken.OperatorEnum resultOp = (op == FilterToken.OperatorEnum.CONTAINS)
+                        ? FilterToken.OperatorEnum.EQUAL : op;
+                    matchingUsers.forEach(u -> 
+                        filters.add(new FilterToken().operator(resultOp).value(u.getUserId())));
                 }
             }
         }

@@ -37,7 +37,7 @@ export function SessionTemplatesDetailsTabs(props: SessionTemplatesDetailsTabsPr
         error: false
     })
 
-    const [userDisplayNames, setUserDisplayNames] = useState<Map<string, string>>(new Map())
+
 
     const getUsersForSessionTemplate = (sessionTemplate: SessionTemplate) => {
         // TODO: Paginate
@@ -104,10 +104,6 @@ export function SessionTemplatesDetailsTabs(props: SessionTemplatesDetailsTabsPr
         if (props.sessionTemplate) {
             getUsersForSessionTemplate(props.sessionTemplate)
             getGroupsForSessionTemplate(props.sessionTemplate)
-            const userIds = [props.sessionTemplate.CreatedBy, props.sessionTemplate.LastModifiedBy].filter(Boolean) as string[]
-            if (userIds.length > 0) {
-                dataAccessService.describeUsersByIds(userIds).then(setUserDisplayNames)
-            }
         }
     }, [props.sessionTemplate])
 
@@ -116,7 +112,7 @@ export function SessionTemplatesDetailsTabs(props: SessionTemplatesDetailsTabsPr
             {
                 label: SESSION_TEMPLATES_DETAILS_CONSTANTS.DETAILS,
                 id: "details",
-                content: <SessionTemplateOverview sessionTemplate={sessionTemplate} userDisplayNames={userDisplayNames}/>
+                content: <SessionTemplateOverview sessionTemplate={sessionTemplate}/>
             },
             {
                 label: SESSION_TEMPLATES_DETAILS_CONSTANTS.USERS,

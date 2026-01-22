@@ -6,14 +6,8 @@ import {SessionTemplate} from "@/generated-src/client";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
 import OsLabel from "@/components/session-templates/os-label/OsLabel";
 import {capitalizeFirstLetter, formatDate, formatFileSize} from "@/components/common/utils/TextUtils";
-import {UserIdToLoginUsernameMap} from "@/components/session-templates/session-templates-table/SessionTemplatesTable";
 
-const getLoginUsername = (userId: string | undefined, userIdToLoginUsernameMap: UserIdToLoginUsernameMap): string => {
-    if (!userId) return '';
-    return userIdToLoginUsernameMap.get(userId) || userId;
-};
-
-export const getSessionTemplatesTableColumnDefinitions = (userIdToLoginUsernameMap: UserIdToLoginUsernameMap): TableProps.ColumnDefinition<SessionTemplate>[] =>
+export const getSessionTemplatesTableColumnDefinitions = (): TableProps.ColumnDefinition<SessionTemplate>[] =>
     [
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.NAME_ID,
@@ -78,7 +72,7 @@ export const getSessionTemplatesTableColumnDefinitions = (userIdToLoginUsernameM
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_ID,
             header: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_HEADER,
-            cell: sessionTemplate => getLoginUsername(sessionTemplate.CreatedBy, userIdToLoginUsernameMap),
+            cell: sessionTemplate => sessionTemplate.CreatedBy,
             sortingField: SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_ID,
         },
         {
@@ -90,7 +84,7 @@ export const getSessionTemplatesTableColumnDefinitions = (userIdToLoginUsernameM
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_ID,
             header: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_HEADER,
-            cell: sessionTemplate => getLoginUsername(sessionTemplate.LastModifiedBy, userIdToLoginUsernameMap),
+            cell: sessionTemplate => sessionTemplate.LastModifiedBy,
             sortingField: SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_ID,
         },
         {

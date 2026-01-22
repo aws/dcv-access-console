@@ -229,7 +229,7 @@ export function useServersService(params: DataAccessServiceParams<Server>): Data
     };
 }
 
-export function useSessionTemplatesService(params: DataAccessServiceParams<SessionTemplate>): DataAccessServiceResult<SessionTemplate> & { userIdToLoginUsernameMap: Map<string, string> } {
+export function useSessionTemplatesService(params: DataAccessServiceParams<SessionTemplate>): DataAccessServiceResult<SessionTemplate> {
     const {data: session} = useSession()
     const usingExternalAuth = session?.usingExternalAuth === true
     const {pageSize, currentPageIndex: clientPageIndex} = params.pagination || {};
@@ -237,7 +237,6 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
     const {filteringText, filteringTokens, filteringOperation} = params.filtering || {};
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([] as SessionTemplate[]);
-    const [userIdToLoginUsernameMap, setUserIdToLoginUsernameMap] = useState(new Map<string, string>());
     const [totalCount, setTotalCount] = useState(0);
     const [currentPageIndex, setCurrentPageIndex] = useState(clientPageIndex as number);
     const [pagesCount, setPagesCount] = useState(0);
@@ -291,18 +290,11 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
         })
 
         dataService.describeSessionTemplates(describeSessionTemplatesRequest)
-            .then(r => {
+            .then(async r => {
                 const templates = r.data.SessionTemplates || []
                 if (usingExternalAuth) {
-                    const userIds = [...new Set(
-                        templates.flatMap(t => [t.CreatedBy, t.LastModifiedBy].filter(Boolean))
-                    )] as string[]
-                    return dataService.describeUsersByIds(userIds).then(map => ({ templates, map }))
+                    await dataService.replaceUserIdsWithLoginUsernames(templates)
                 }
-                return { templates, map: new Map<string, string>() }
-            })
-            .then(({ templates, map }) => {
-                setUserIdToLoginUsernameMap(prev => new Map([...prev, ...map]))
                 setLoading(false)
                 setItems(templates)
                 setPagesCount(1)
@@ -329,10 +321,8 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
         currentPageIndex,
         nextToken,
         error,
-        errorMessage,
-        userIdToLoginUsernameMap
+        errorMessage
     };
-
 }
 
 export function useUsersService(params: DataAccessServiceParams<User>): DataAccessServiceResult<User> {

@@ -25,6 +25,7 @@ import {
     ServersApi,
     SessionsApi,
     SessionScreenshotImage,
+    SessionTemplate,
     SessionTemplatesApi,
     SessionWithPermissions,
     UnpublishSessionTemplateRequestData,
@@ -100,6 +101,21 @@ export default class DataAccessService {
             }
         })
         return map
+    }
+
+    /**
+     * Replaces CreatedBy and LastModifiedBy user IDs with login usernames for display.
+     * Only call this when using external auth. Falls back to user ID if username not found.
+     */
+    public async replaceUserIdsWithLoginUsernames(templates: SessionTemplate[]): Promise<void> {
+        const userIds = [...new Set(
+            templates.flatMap(t => [t.CreatedBy, t.LastModifiedBy].filter(Boolean))
+        )] as string[]
+        const map = await this.describeUsersByIds(userIds)
+        templates.forEach(t => {
+            if (t.CreatedBy) t.CreatedBy = map.get(t.CreatedBy) || t.CreatedBy
+            if (t.LastModifiedBy) t.LastModifiedBy = map.get(t.LastModifiedBy) || t.LastModifiedBy
+        })
     }
 
     public async createSessionTemplate(createSessionTemplateRequest?: CreateSessionTemplateRequestData) {

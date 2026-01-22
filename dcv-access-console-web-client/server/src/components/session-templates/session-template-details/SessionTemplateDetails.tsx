@@ -49,7 +49,6 @@ export default function SessionTemplateDetails(props: SessionTemplateDetailsProp
         error: false
     })
 
-    const [userDisplayNames, setUserDisplayNames] = useState<Map<string, string>>(new Map())
     const [refreshKey, setRefreshKey] = useState("")
     const [resetPaginationKey, setResetPaginationKey] = useState("")
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -141,10 +140,6 @@ export default function SessionTemplateDetails(props: SessionTemplateDetailsProp
         if (props.sessionTemplate) {
             getUsersForSessionTemplate(props.sessionTemplate)
             getGroupsForSessionTemplate(props.sessionTemplate)
-            const userIds = [props.sessionTemplate.CreatedBy, props.sessionTemplate.LastModifiedBy].filter(Boolean) as string[]
-            if (userIds.length > 0) {
-                dataAccessService.describeUsersByIds(userIds).then(setUserDisplayNames)
-            }
         }
         setResetPaginationKey(Date.now().toString())
     }, [props.sessionTemplate])
@@ -213,7 +208,7 @@ export default function SessionTemplateDetails(props: SessionTemplateDetailsProp
                 header={<HeaderWithCounter actions={actionsButton()}>{getValueOrUnknown(props.sessionTemplate?.Name)}</HeaderWithCounter>}
             >
                 <SpaceBetween size={"l"}>
-                    <SessionTemplateOverview sessionTemplate={props.sessionTemplate!} userDisplayNames={userDisplayNames}/>
+                    <SessionTemplateOverview sessionTemplate={props.sessionTemplate!}/>
                     <UsersTab users={usersState.users || []} sessionTemplateId={props.sessionTemplate?.Id}/>
                     <GroupsTab groups={userGroupsState.groups || []} sessionTemplateId={props.sessionTemplate?.Id}/>
                 </SpaceBetween>

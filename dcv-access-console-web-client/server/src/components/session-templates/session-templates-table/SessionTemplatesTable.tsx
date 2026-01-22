@@ -40,11 +40,12 @@ import DeleteSessionTemplateModal, {
 import {CancelableEventHandler} from "@cloudscape-design/components/internal/events";
 import {LinkProps} from "@cloudscape-design/components/link/interfaces";
 import TableWithPagination from "@/components/common/table-with-pagination/TableWithPagination";
-import FilterBar, {DescribeResponse, ValueToLabelMap} from "@/components/common/filter-bar/FilterBar";
+import FilterBar, {DescribeResponse} from "@/components/common/filter-bar/FilterBar";
 import session_template_search_tokens from "@/generated-src/client/session_template_search_tokens";
 import {PropertyFilterQuery} from "@cloudscape-design/collection-hooks";
 
-export type UserIdToLoginUsernameMap = Map<string, string>;
+import {useSession} from "next-auth/react";
+
 export default function SessionTemplatesTable({   selectedSessionTemplates,
                                                   setSelectedSessionTemplates,
                                                   addHeader,
@@ -75,20 +76,20 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [deleteSessionTemplateProps, setDeleteSessionTemplateProps] = useState<DeleteSessionTemplateProps>()
     const [resetPaginationKey, setResetPaginationKey] = useState("")
-    const [userIdToLoginUsernameMap, setUserIdToLoginUsernameMap] = useState<UserIdToLoginUsernameMap>(new Map())
     const {push} = useRouter()
     const {addFlashBar} = useFlashBarContext()
     const dataAccessService = new DataAccessService()
+    const {data: session} = useSession()
+    const usingExternalAuth = session?.usingExternalAuth === true
 
     const describeSessionTemplates = async (describeSessionTemplatesRequest: DescribeSessionTemplatesRequestData) => {
         const r = await dataAccessService.describeSessionTemplates(describeSessionTemplatesRequest)
-        return {"objects": r.data.SessionTemplates, "nextToken": r.data.NextToken} as DescribeResponse
+        const templates = r.data.SessionTemplates || []
+        if (usingExternalAuth) {
+            await dataAccessService.replaceUserIdsWithLoginUsernames(templates)
+        }
+        return {"objects": templates, "nextToken": r.data.NextToken} as DescribeResponse
     }
-
-    const propertyValueToLabelMaps = new Map<string, ValueToLabelMap>([
-        ["CreatedBy", userIdToLoginUsernameMap],
-        ["LastModifiedBy", userIdToLoginUsernameMap]
-    ])
 
     const filter = <FilterBar
         filteringQuery={query}
@@ -101,8 +102,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         tokenNameGroupMap={TOKEN_NAME_GROUP_MAP}
         searchTokenToId={SEARCH_TOKEN_TO_ID}
         filteringPlaceholder={FILTER_SESSION_TEMPLATES_CONSTANTS.filteringPlaceholder}
-        dataAccessServiceFunction={describeSessionTemplates}
-        propertyValueToLabelMaps={propertyValueToLabelMaps}/>
+        dataAccessServiceFunction={describeSessionTemplates}/>
 
     const viewUserDetailsButton = () => {
         return <Button variant="normal" disabled={selectedSessionTemplates?.length != 1}
@@ -224,7 +224,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         }
     }
 
-    const columnDefinitions = getSessionTemplatesTableColumnDefinitions(userIdToLoginUsernameMap)
+    const columnDefinitions = getSessionTemplatesTableColumnDefinitions()
 
     const table = <Table
         variant={variant}
@@ -272,7 +272,6 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
                 deleteItemsKey={deleteItemsKey}
                 resetPaginationKey={resetPaginationKey}
                 contentDisplayOptions={CONTENT_DISPLAY_OPTIONS}
-                onUserMapChange={setUserIdToLoginUsernameMap}
             />
             <DeleteSessionTemplateModal visible={modalVisible} setVisible={setModalVisible}
                                         deleteSessionTemplateProps={deleteSessionTemplateProps!}

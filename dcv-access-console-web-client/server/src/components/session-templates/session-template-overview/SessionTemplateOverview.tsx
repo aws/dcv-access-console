@@ -14,10 +14,9 @@ import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-t
 
 type Props = {
     sessionTemplate: SessionTemplate | undefined
-    userDisplayNames?: Map<string, string>
 }
 
-export default function SessionTemplateOverview({sessionTemplate, userDisplayNames = new Map()}: Props) {
+export default function SessionTemplateOverview({sessionTemplate}: Props) {
     if (!sessionTemplate) {
         return <Box textAlign="center">{SESSION_TEMPLATES_DETAILS_CONSTANTS.EMPTY_TEXT}</Box>;
     }
@@ -41,11 +40,11 @@ export default function SessionTemplateOverview({sessionTemplate, userDisplayNam
                     <ValueWithLabel
                         label={SESSION_TEMPLATES_TABLE_CONSTANTS.CREATION_TIME_HEADER}>{formatDate(sessionTemplate?.CreationTime)}</ValueWithLabel>
                     <ValueWithLabel
-                        label={SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_HEADER}>{userDisplayNames.get(sessionTemplate?.CreatedBy) || sessionTemplate?.CreatedBy}</ValueWithLabel>
+                        label={SESSION_TEMPLATES_TABLE_CONSTANTS.CREATED_BY_HEADER}>{sessionTemplate?.CreatedBy}</ValueWithLabel>
                     <ValueWithLabel
                         label={SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_TIME_HEADER}>{formatDate(sessionTemplate?.LastModifiedTime)}</ValueWithLabel>
                     <ValueWithLabel
-                        label={SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_HEADER}>{userDisplayNames.get(sessionTemplate?.LastModifiedBy) || sessionTemplate?.LastModifiedBy}</ValueWithLabel>
+                        label={SESSION_TEMPLATES_TABLE_CONSTANTS.LAST_MODIFIED_BY_HEADER}>{sessionTemplate?.LastModifiedBy}</ValueWithLabel>
                 </SpaceBetween>
                 <SpaceBetween size="l">
                     <ValueWithLabel
