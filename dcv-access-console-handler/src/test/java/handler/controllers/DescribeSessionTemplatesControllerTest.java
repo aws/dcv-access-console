@@ -163,4 +163,118 @@ public class DescribeSessionTemplatesControllerTest extends BaseControllerTest {
 
         verify(mockUserService).describeUsers(any());
     }
+
+    @Test
+    public void describeSessionTemplatesWithNotContainsFilter_excludesMatchingTemplates() throws Exception {
+        SessionTemplate includedTemplate = new SessionTemplate().id("included").createdBy("other-user");
+        SessionTemplate excludedTemplate = new SessionTemplate().id("excluded").createdBy("uuid-admin");
+        List<SessionTemplate> allTemplates = new ArrayList<>(List.of(includedTemplate, excludedTemplate));
+
+        when(mockUserService.describeUsers(any())).thenReturn(
+            new DescribeUsersResponse().users(List.of(new User().userId("uuid-admin").loginUsername("admin")))
+        );
+        when(mockSessionTemplateService.describeSessionTemplates(any())).thenReturn(
+            new DescribeSessionTemplatesResponse().sessionTemplates(allTemplates).nextToken(null)
+        );
+        // After preFilterExclusions, only includedTemplate remains
+        when(mockSessionFilter.getFiltered(any(), any())).thenReturn(List.of(includedTemplate));
+        when(mockSessionSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(PrincipalType.User, testUser, ResourceAction.viewSessionTemplateDetails, ResourceType.SessionTemplate, "included")).thenReturn(true);
+
+        mvc.perform(
+                post(urlTemplate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.ORIGIN, origin)
+                    .content("{\"CreatedByLoginUsername\": [{\"Operator\": \"NOT_CONTAINS\", \"Value\": \"admin\"}]}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.SessionTemplates", hasSize(1)))
+            .andExpect(jsonPath("$.SessionTemplates[0].Id", is("included")));
+    }
+
+    @Test
+    public void describeSessionTemplatesWithContainsFilter_resolvesToMultipleUsers() throws Exception {
+        SessionTemplate template1 = new SessionTemplate().id("t1").createdBy("uuid-admin1");
+        SessionTemplate template2 = new SessionTemplate().id("t2").createdBy("uuid-admin2");
+        List<SessionTemplate> templates = new ArrayList<>(List.of(template1, template2));
+
+        // CONTAINS "admin" returns multiple users
+        when(mockUserService.describeUsers(any())).thenReturn(
+            new DescribeUsersResponse().users(List.of(
+                new User().userId("uuid-admin1").loginUsername("admin1"),
+                new User().userId("uuid-admin2").loginUsername("admin2")
+            ))
+        );
+        when(mockSessionTemplateService.describeSessionTemplates(any())).thenReturn(
+            new DescribeSessionTemplatesResponse().sessionTemplates(templates).nextToken(null)
+        );
+        when(mockSessionFilter.getFiltered(any(), any())).thenReturn(templates);
+        when(mockSessionSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(any(), any(), any(), any(), any())).thenReturn(true);
+
+        mvc.perform(
+                post(urlTemplate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.ORIGIN, origin)
+                    .content("{\"CreatedByLoginUsername\": [{\"Operator\": \"CONTAINS\", \"Value\": \"admin\"}]}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.SessionTemplates", hasSize(2)));
+    }
+
+    @Test
+    public void describeSessionTemplatesWithUsersSharedWithLoginUsername_batchesLookup() throws Exception {
+        SessionTemplate template = new SessionTemplate().id(testString);
+        List<SessionTemplate> templates = new ArrayList<>(List.of(template));
+
+        when(mockUserService.describeUsers(any())).thenReturn(
+            new DescribeUsersResponse().users(List.of(
+                new User().userId("uuid-1").loginUsername("user1"),
+                new User().userId("uuid-2").loginUsername("user2")
+            ))
+        );
+        when(mockSessionTemplateService.describeSessionTemplates(any())).thenReturn(
+            new DescribeSessionTemplatesResponse().sessionTemplates(templates).nextToken(null)
+        );
+        when(mockSessionFilter.getFiltered(any(), any())).thenReturn(templates);
+        when(mockSessionSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(any(), any(), (SystemAction) any())).thenReturn(true);
+        when(mockAuthorizationEngine.isAuthorized(any(), any(), any(), any(), any())).thenReturn(true);
+
+        mvc.perform(
+                post(urlTemplate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.ORIGIN, origin)
+                    .content("{\"UsersSharedWithLoginUsername\": [{\"Operator\": \"=\", \"Value\": \"user1\"}, {\"Operator\": \"=\", \"Value\": \"user2\"}]}"))
+            .andExpect(status().isOk());
+
+        // Should make only 1 batched call, not 2 separate calls
+        verify(mockUserService).describeUsers(any());
+    }
+
+    @Test
+    public void describeSessionTemplatesWithCreatedByLoginUsername_batchesByOperatorType() throws Exception {
+        SessionTemplate template = new SessionTemplate().id(testString).createdBy("uuid-1");
+        List<SessionTemplate> templates = new ArrayList<>(List.of(template));
+
+        // Mock returns user for both EQUAL and CONTAINS lookups
+        when(mockUserService.describeUsers(any())).thenReturn(
+            new DescribeUsersResponse().users(List.of(new User().userId("uuid-1").loginUsername("user1")))
+        );
+        when(mockSessionTemplateService.describeSessionTemplates(any())).thenReturn(
+            new DescribeSessionTemplatesResponse().sessionTemplates(templates).nextToken(null)
+        );
+        when(mockSessionFilter.getFiltered(any(), any())).thenReturn(templates);
+        when(mockSessionSort.getSorted(any(), any())).thenAnswer(i -> i.getArguments()[1]);
+        when(mockAuthorizationEngine.isAuthorized(any(), any(), any(), any(), any())).thenReturn(true);
+
+        // 2 EQUAL filters + 1 CONTAINS filter = max 2 DB calls (one per operator type)
+        mvc.perform(
+                post(urlTemplate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.ORIGIN, origin)
+                    .content("{\"CreatedByLoginUsername\": [{\"Operator\": \"=\", \"Value\": \"user1\"}, {\"Operator\": \"=\", \"Value\": \"user2\"}, {\"Operator\": \"CONTAINS\", \"Value\": \"user\"}]}"))
+            .andExpect(status().isOk());
+
+        // Should make 2 batched calls (EQUAL bucket + CONTAINS bucket), not 3
+        verify(mockUserService, org.mockito.Mockito.times(2)).describeUsers(any());
+    }
 }
