@@ -427,6 +427,7 @@ export default function SessionTemplatesCreateWizard({infoLinkFollow, isEditWiza
     const [errorName, setErrorName] = useState()
     const [errorRequirements, setErrorRequirements] = useState()
     const [users, setUsers] = React.useState([null])
+    const [userLabels, setUserLabels] = React.useState<string[]>([])
     const [groups, setGroups] = React.useState([null])
     const [isAwsServerAvailable, setIsAwsServerAvailable] = React.useState(false)
     const {items, addFlashBar} = useFlashBarContext()
@@ -781,12 +782,15 @@ export default function SessionTemplatesCreateWizard({infoLinkFollow, isEditWiza
                         sessionTemplateId={existingSessionTemplateId!}
                         handleUsersChange={(users: [OptionDefinition]) => {
                             let userIds: [string] = []
+                            let labels: string[] = []
                             users.forEach(user => {
                                 if (user.value != null) {
                                     userIds.push(user.value)
+                                    labels.push(user.label || user.value)
                                 }
                             })
                             setUsers(userIds)
+                            setUserLabels(labels)
                         }}
                         handleGroupsChange={(groups: [OptionDefinition]) => {
                             let groupIds: [string] = []
@@ -906,7 +910,7 @@ export default function SessionTemplatesCreateWizard({infoLinkFollow, isEditWiza
                                         >
                                             <SpaceBetween size="s">
                                                 <ValueWithLabel label={SESSION_TEMPLATES_CREATE_CONSTANTS.USERS}>
-                                                    {getCleanArray(users).join(', ') || "Not specified"}
+                                                    {getCleanArray(userLabels).join(', ') || "Not specified"}
                                                 </ValueWithLabel>
                                             </SpaceBetween>
                                             <SpaceBetween size="s">

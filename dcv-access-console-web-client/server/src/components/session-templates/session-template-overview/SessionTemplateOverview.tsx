@@ -12,7 +12,11 @@ import OsLabel from "@/components/session-templates/os-label/OsLabel";
 import {SESSION_TEMPLATES_CREATE_CONSTANTS} from "@/constants/session-templates-create-constants";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
 
-export default function SessionTemplateOverview({sessionTemplate}: { sessionTemplate: SessionTemplate | undefined }) {
+type Props = {
+    sessionTemplate: SessionTemplate | undefined
+}
+
+export default function SessionTemplateOverview({sessionTemplate}: Props) {
     if (!sessionTemplate) {
         return <Box textAlign="center">{SESSION_TEMPLATES_DETAILS_CONSTANTS.EMPTY_TEXT}</Box>;
     }

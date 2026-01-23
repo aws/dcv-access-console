@@ -37,6 +37,8 @@ export function SessionTemplatesDetailsTabs(props: SessionTemplatesDetailsTabsPr
         error: false
     })
 
+
+
     const getUsersForSessionTemplate = (sessionTemplate: SessionTemplate) => {
         // TODO: Paginate
         const describeUsersSharedWithSessionTemplateRequest: DescribeUsersSharedWithSessionTemplateRequestData = {

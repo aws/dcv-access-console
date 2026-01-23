@@ -4,7 +4,7 @@
 import {FILTER_CONSTANTS} from "@/constants/generic-search-bar-constants";
 
 export const SEARCH_TOKEN_TO_ID: Map<string, string> = new Map<string, string>([
-    ["UserIds", "UserId"],
+    ["LoginUsernames", "LoginUsername"],
     ["DisplayNames", "DisplayName"],
     ["Roles", "Role"],
     ["IsImported", "IsImported"],
@@ -14,7 +14,7 @@ export const SEARCH_TOKEN_TO_ID: Map<string, string> = new Map<string, string>([
 ])
 
 export const TOKEN_NAMES_MAP: Record<string, string> = {
-    "UserIds": "User Id",
+    "LoginUsernames": "User Id",
     "DisplayNames": "User name",
     "Roles": "Role",
     "IsImported": "Imported",
@@ -25,7 +25,7 @@ export const TOKEN_NAMES_MAP: Record<string, string> = {
 }
 
 export const REMOVE_USER_GROUPS_USERS_TOKEN_NAMES_MAP: Record<string, string> = {
-    "UserIds": "User Id",
+    "LoginUsernames": "User Id",
     "DisplayNames": "User name",
     "Roles": "Role",
     "IsImported": "Imported",
@@ -35,7 +35,7 @@ export const REMOVE_USER_GROUPS_USERS_TOKEN_NAMES_MAP: Record<string, string> = 
 }
 
 export const TOKEN_NAME_GROUP_MAP: Record<string, string> = {
-    "UserIds": "User Id values",
+    "LoginUsernames": "User Id values",
     "DisplayNames": "User name values",
     "Roles": "Role values",
     "IsImported": "Imported values",

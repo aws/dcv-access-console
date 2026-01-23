@@ -141,6 +141,10 @@ export default function TableWithPagination<T>(
         resetPagination();
     }, [preferences.pageSize, resetPaginationKey])
 
+    useEffect(() => {
+        resetPagination();
+    }, [sortingColumn, sortingDescending])
+
     const handleSortingChange = event => {
         setSortingDescending(event.detail.isDescending)
         setSortingColumn(event.detail.sortingColumn)

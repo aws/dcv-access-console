@@ -27,6 +27,7 @@ import DataAccessService from "@/components/common/utils/DataAccessService";
 import {TableProps} from "@cloudscape-design/components";
 import {SPECIAL_OPERATORS} from "@/components/common/utils/SearchUtils";
 import {PropertyFilterQuery, PropertyFilterToken} from "@cloudscape-design/collection-hooks";
+import {useSession} from "next-auth/react";
 
 export type FILTER_TOKEN = FilterToken | FilterStateToken | FilterDateToken
 export type FILTER_TOKEN_OPERATOR = FilterTokenOperatorEnum | FilterDateTokenOperatorEnum | FilterStateTokenOperatorEnum
@@ -229,6 +230,8 @@ export function useServersService(params: DataAccessServiceParams<Server>): Data
 }
 
 export function useSessionTemplatesService(params: DataAccessServiceParams<SessionTemplate>): DataAccessServiceResult<SessionTemplate> {
+    const {data: session} = useSession()
+    const usingExternalAuth = session?.usingExternalAuth === true
     const {pageSize, currentPageIndex: clientPageIndex} = params.pagination || {};
     const {sortingDescending, sortingColumn} = params.sorting || {};
     const {filteringText, filteringTokens, filteringOperation} = params.filtering || {};
@@ -262,9 +265,21 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
             NextToken: params.pagination?.nextToken
         } as DescribeSessionTemplatesRequestData
 
+        // Map user filter keys to backend LoginUsername filter keys for external auth
+        const loginUsernameFilterKeys: Record<string, string> = {
+            'CreatedBy': 'CreatedByLoginUsername',
+            'LastModifiedBy': 'LastModifiedByLoginUsername',
+            'UsersSharedWith': 'UsersSharedWithLoginUsername'
+        }
+
         params.filtering?.filteringTokens.forEach(token => {
             let key = token.propertyKey as keyof DescribeSessionTemplatesRequestData
             let operator: string = SPECIAL_OPERATORS.get(token.operator) || token.operator;
+
+            const loginUsernameKey = loginUsernameFilterKeys[token.propertyKey as string]
+            if (loginUsernameKey && usingExternalAuth) {
+                key = loginUsernameKey as keyof DescribeSessionTemplatesRequestData
+            }
 
             let tokenArray: Array<FILTER_TOKEN> = describeSessionTemplatesRequest[key] as Array<FILTER_TOKEN> || []
             tokenArray.push({
@@ -274,22 +289,25 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
             describeSessionTemplatesRequest[key] = tokenArray
         })
 
-        console.log("describeSessionTemplatesRequest: ", describeSessionTemplatesRequest)
         dataService.describeSessionTemplates(describeSessionTemplatesRequest)
-            .then(r => {
-                r.data.SessionTemplates
+            .then(async r => {
+                const templates = r.data.SessionTemplates || []
+                if (usingExternalAuth) {
+                    await dataService.replaceUserIdsWithLoginUsernames(templates)
+                }
+                setLoading(false)
+                setItems(templates)
+                setPagesCount(1)
+                setTotalCount(templates.length)
+                setNextToken(null)
+            })
+            .catch(e => {
+                console.error("Failed to retrieve sessionTemplates: ", e)
                 setLoading(false);
-                setItems(r.data.SessionTemplates || []);
+                setError(true);
+                setErrorMessage(e.message);
                 setPagesCount(1);
-                setTotalCount(r.data.SessionTemplates?.length || 0);
-                setNextToken(r.data.NextToken || null);
-            }).catch(e => {
-            console.error("Failed to retrieve sessionTemplates: ", e)
-            setLoading(false);
-            setError(true);
-            setErrorMessage(e.message);
-            setPagesCount(1);
-        });
+            })
     }, [
         currentPageIndex,
         refreshKey,
@@ -305,7 +323,6 @@ export function useSessionTemplatesService(params: DataAccessServiceParams<Sessi
         error,
         errorMessage
     };
-
 }
 
 export function useUsersService(params: DataAccessServiceParams<User>): DataAccessServiceResult<User> {

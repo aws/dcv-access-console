@@ -54,9 +54,11 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
+            boolean usingExternalAuth = false;
             if ((StringUtils.isNotEmpty(loginUsernameKey) || StringUtils.isNotEmpty(displayNameKey) 
                     || StringUtils.isNotEmpty(roleKey) || StringUtils.isNotEmpty(defaultGroupsKey))
                     && authServerClientService != null) {
+                usingExternalAuth = true;
                 updateUserFromAuthServer(username);
             }
 
@@ -70,7 +72,8 @@ public class DescribeUserInfoController implements DescribeUserInfoApi {
                     .id(username)
                     .loginUsername(loginUsername)
                     .displayName(displayName)
-                    .role(role);
+                    .role(role)
+                    .usingExternalAuth(usingExternalAuth);
             return new ResponseEntity<>(describeCurrentUserResponse, HttpStatus.OK);
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

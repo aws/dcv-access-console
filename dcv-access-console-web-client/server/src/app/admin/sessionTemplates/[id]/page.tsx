@@ -19,6 +19,7 @@ import {useFlashBarContext} from "@/context-providers/FlashBarContext";
 import SessionTemplateDetails from "@/components/session-templates/session-template-details/SessionTemplateDetails";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
+import {useSession} from "next-auth/react";
 
 export default function SessionTemplate({params}: { params: { id: string } }) {
     const [sessionTemplate, setSessionTemplate] = useState<SessionTemplate>()
@@ -26,6 +27,8 @@ export default function SessionTemplate({params}: { params: { id: string } }) {
     const [error, setError] = useState(false);
     const {items, addFlashBar} = useFlashBarContext()
     const {loading: pageLoading, userSession} = usePageLoading()
+    const {data: session} = useSession()
+    const usingExternalAuth = session?.usingExternalAuth === true
 
     const getSessionTemplate = () => {
         const dataAccessService = new DataAccessService();
@@ -38,20 +41,25 @@ export default function SessionTemplate({params}: { params: { id: string } }) {
             ],
             MaxResults: 1
         }
-        dataAccessService.describeSessionTemplates(describeSessionTemplatesRequest).then(r => {
-            if (r.data.SessionTemplates) {
-                setSessionTemplate(r.data.SessionTemplates[0])
-                setLoading(false)
-            } else {
+        dataAccessService.describeSessionTemplates(describeSessionTemplatesRequest)
+            .then(async r => {
+                if (r.data.SessionTemplates && r.data.SessionTemplates.length > 0) {
+                    const template = r.data.SessionTemplates[0]
+                    if (usingExternalAuth) {
+                        await dataAccessService.replaceUserIdsWithLoginUsernames([template])
+                    }
+                    setSessionTemplate(template)
+                    setLoading(false)
+                } else {
+                    setLoading(false)
+                    setError(true)
+                }
+            }).catch(() => {
                 setLoading(false)
                 setError(true)
-            }
-        }).catch(() => {
-            setLoading(false)
-            setError(true)
-        })
+            })
     }
-    useEffect(() => getSessionTemplate(), [])
+    useEffect(() => getSessionTemplate(), [usingExternalAuth])
 
     if(pageLoading) return <LoadingSkeleton/>
     return (

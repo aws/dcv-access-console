@@ -16,13 +16,26 @@ import java.util.List;
 
 @Component
 public class Sort<T, U> {
+    private static final String USER_ID_KEY = "UserId";
+    private static final String LOGIN_USERNAME_PROPERTY = "loginUsername";
+    private static final String USER_ID_PROPERTY = "userId";
+
     @AllArgsConstructor
     private class ValueComparator implements Comparator<U> {
         private SortToken sortToken;
         @Override
         public int compare(U o1, U o2) {
-            Object propertyValue1 = PropertyAccessorFactory.forBeanPropertyAccess(o1).getPropertyValue(sortToken.getKey());
-            Object propertyValue2 = PropertyAccessorFactory.forBeanPropertyAccess(o2).getPropertyValue(sortToken.getKey());
+            Object propertyValue1;
+            Object propertyValue2;
+            
+            if (USER_ID_KEY.equals(sortToken.getKey())) {
+                propertyValue1 = getLoginUsernameOrUserId(o1);
+                propertyValue2 = getLoginUsernameOrUserId(o2);
+            } else {
+                propertyValue1 = PropertyAccessorFactory.forBeanPropertyAccess(o1).getPropertyValue(sortToken.getKey());
+                propertyValue2 = PropertyAccessorFactory.forBeanPropertyAccess(o2).getPropertyValue(sortToken.getKey());
+            }
+            
             if(propertyValue1 == null && propertyValue2 == null) {
                 return 0;
             }
@@ -45,6 +58,12 @@ public class Sort<T, U> {
                 return value1.compareTo((Boolean) propertyValue2);
             }
             throw new UnsupportedOperationException("Failed to sort: Sorting not defined for " + propertyValue1.getClass());
+        }
+        
+        private Object getLoginUsernameOrUserId(U obj) {
+            Object loginUsername = PropertyAccessorFactory.forBeanPropertyAccess(obj).getPropertyValue(LOGIN_USERNAME_PROPERTY);
+            if (loginUsername != null) return loginUsername;
+            return PropertyAccessorFactory.forBeanPropertyAccess(obj).getPropertyValue(USER_ID_PROPERTY);
         }
     }
 

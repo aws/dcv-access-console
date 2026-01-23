@@ -3,7 +3,7 @@
 
 import {CollectionPreferencesProps} from "@cloudscape-design/components";
 import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-table-constants";
-import {SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS} from "@/components/session-templates/session-templates-table/SessionTemplatesTableColumnDefinitions";
+import {getSessionTemplatesTableColumnDefinitions} from "@/components/session-templates/session-templates-table/SessionTemplatesTableColumnDefinitions";
 
 const DEFAULT_DISPLAY_COLUMNS = [
     SESSION_TEMPLATES_TABLE_CONSTANTS.NAME_ID,
@@ -20,21 +20,24 @@ const CREATE_SESSION_COLUMNS = [
     SESSION_TEMPLATES_TABLE_CONSTANTS.HOST_NUM_OF_CPUS_ID
 ]
 
-export const CONTENT_DISPLAY_OPTIONS: ReadonlyArray<CollectionPreferencesProps.ContentDisplayOption> = SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS.map(column => {
+// Use empty map for static column definitions (preferences don't need user mapping)
+const STATIC_COLUMN_DEFINITIONS = getSessionTemplatesTableColumnDefinitions(new Map())
+
+export const CONTENT_DISPLAY_OPTIONS: ReadonlyArray<CollectionPreferencesProps.ContentDisplayOption> = STATIC_COLUMN_DEFINITIONS.map(column => {
     return {
         id: column.id!,
         label: column.header
     }
 })
 
-const DEFAULT_CONTENT_DISPLAY: ReadonlyArray<CollectionPreferencesProps.ContentDisplayItem> = SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS.map(column => {
+const DEFAULT_CONTENT_DISPLAY: ReadonlyArray<CollectionPreferencesProps.ContentDisplayItem> = STATIC_COLUMN_DEFINITIONS.map(column => {
     return {
         id: column.id!,
         visible: DEFAULT_DISPLAY_COLUMNS.includes(column.id!)
     }
 })
 
-const CREATE_SESSION_DISPLAY: ReadonlyArray<CollectionPreferencesProps.ContentDisplayItem> = SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS.map(column => {
+const CREATE_SESSION_DISPLAY: ReadonlyArray<CollectionPreferencesProps.ContentDisplayItem> = STATIC_COLUMN_DEFINITIONS.map(column => {
     return {
         id: column.id!,
         visible: CREATE_SESSION_COLUMNS.includes(column.id!)

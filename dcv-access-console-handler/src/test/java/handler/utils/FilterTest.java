@@ -44,6 +44,8 @@ import handler.model.State;
 import handler.model.Type;
 import handler.model.UnavailabilityReason;
 import handler.model.SessionTemplate;
+import handler.model.User;
+import handler.model.DescribeUsersRequestData;
 
 @ExtendWith(MockitoExtension.class)
 public class FilterTest {
@@ -55,6 +57,8 @@ public class FilterTest {
     private Filter<DescribeSessionTemplatesRequestData, SessionTemplate> testSessionTemplateFilter;
     @InjectMocks
     private Filter<GetSessionScreenshotsUIRequestData, Session> badTestFilter;
+    @InjectMocks
+    private Filter<DescribeUsersRequestData, User> testUserFilter;
     private static List<Session> unfilteredSessions;
     private static List<Session> firstFilteredSession;
     private static List<Session> secondFilteredSession;
@@ -404,5 +408,52 @@ public class FilterTest {
         filterBooleanToken = new FilterBooleanToken().operator(FilterBooleanToken.OperatorEnum.NOT_EQUAL).value(false);
         filteredSessionTemplates = testSessionTemplateFilter.getFiltered(sessionTemplateRequest.addDcvGlEnabledItem(filterBooleanToken), unfilteredSessionTemplates);
         assertEquals(filteredSessionTemplate, filteredSessionTemplates);
+    }
+
+    @Test
+    public void testUserFilterWithFallback() {
+        User user1 = new User().loginUsername("user1").userId("uuid-1");
+        User user2 = new User().userId("uuid-2");
+        User user3 = new User().loginUsername("user3").userId("uuid-3");
+
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+
+        DescribeUsersRequestData userRequest = new DescribeUsersRequestData();
+
+        // Filter by loginUsername (EQUAL)
+        FilterToken filterToken = new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value("user1");
+        userRequest.addLoginUsernamesItem(filterToken);
+        List<User> filtered = testUserFilter.getFiltered(userRequest, users);
+        assertEquals(1, filtered.size());
+        assertEquals(user1, filtered.get(0));
+
+        // Filter by userId when no loginUsername (EQUAL)
+        userRequest.setLoginUsernames(null);
+        filterToken = new FilterToken().operator(FilterToken.OperatorEnum.EQUAL).value("uuid-2");
+        userRequest.addLoginUsernamesItem(filterToken);
+        filtered = testUserFilter.getFiltered(userRequest, users);
+        assertEquals(1, filtered.size());
+        assertEquals(user2, filtered.get(0));
+
+        // Filter by loginUsername (NOT_EQUAL) - excludes user1, includes user2 and user3
+        userRequest.setLoginUsernames(null);
+        filterToken = new FilterToken().operator(FilterToken.OperatorEnum.NOT_EQUAL).value("user1");
+        userRequest.addLoginUsernamesItem(filterToken);
+        filtered = testUserFilter.getFiltered(userRequest, users);
+        assertEquals(2, filtered.size());
+        assertEquals(user2, filtered.get(0));
+        assertEquals(user3, filtered.get(1));
+
+        // Filter by userId (NOT_EQUAL) on user without loginUsername
+        userRequest.setLoginUsernames(null);
+        filterToken = new FilterToken().operator(FilterToken.OperatorEnum.NOT_EQUAL).value("uuid-2");
+        userRequest.addLoginUsernamesItem(filterToken);
+        filtered = testUserFilter.getFiltered(userRequest, users);
+        assertEquals(2, filtered.size());
+        assertEquals(user1, filtered.get(0));
+        assertEquals(user3, filtered.get(1));
     }
 }

@@ -7,7 +7,7 @@ import {SESSION_TEMPLATES_TABLE_CONSTANTS} from "@/constants/session-templates-t
 import OsLabel from "@/components/session-templates/os-label/OsLabel";
 import {capitalizeFirstLetter, formatDate, formatFileSize} from "@/components/common/utils/TextUtils";
 
-export const SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS: TableProps.ColumnDefinition<SessionTemplate>[] =
+export const getSessionTemplatesTableColumnDefinitions = (): TableProps.ColumnDefinition<SessionTemplate>[] =>
     [
         {
             id: SESSION_TEMPLATES_TABLE_CONSTANTS.NAME_ID,

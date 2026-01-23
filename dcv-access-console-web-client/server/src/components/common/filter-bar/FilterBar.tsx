@@ -137,7 +137,6 @@ export default function FilterBar(props: FilterBarProps) {
         setStatus('loading')
         await fetchFilteringOptions(detail.filteringText, detail.filteringProperty?.key)
     }
-
     return (
         <PropertyFilter
             i18nStrings={PROPERTY_FILTER_I18N_STRINGS}

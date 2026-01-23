@@ -6,7 +6,7 @@ import {useState} from "react";
 import Table from "@cloudscape-design/components/table";
 import Box from "@cloudscape-design/components/box";
 import {
-    SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS,
+    getSessionTemplatesTableColumnDefinitions,
 } from "@/components/session-templates/session-templates-table/SessionTemplatesTableColumnDefinitions";
 import {
     CONTENT_DISPLAY_OPTIONS
@@ -44,6 +44,8 @@ import FilterBar, {DescribeResponse} from "@/components/common/filter-bar/Filter
 import session_template_search_tokens from "@/generated-src/client/session_template_search_tokens";
 import {PropertyFilterQuery} from "@cloudscape-design/collection-hooks";
 
+import {useSession} from "next-auth/react";
+
 export default function SessionTemplatesTable({   selectedSessionTemplates,
                                                   setSelectedSessionTemplates,
                                                   addHeader,
@@ -77,10 +79,16 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
     const {push} = useRouter()
     const {addFlashBar} = useFlashBarContext()
     const dataAccessService = new DataAccessService()
+    const {data: session} = useSession()
+    const usingExternalAuth = session?.usingExternalAuth === true
 
     const describeSessionTemplates = async (describeSessionTemplatesRequest: DescribeSessionTemplatesRequestData) => {
         const r = await dataAccessService.describeSessionTemplates(describeSessionTemplatesRequest)
-        return {"objects": r.data.SessionTemplates, "nextToken": r.data.NextToken} as DescribeResponse
+        const templates = r.data.SessionTemplates || []
+        if (usingExternalAuth) {
+            await dataAccessService.replaceUserIdsWithLoginUsernames(templates)
+        }
+        return {"objects": templates, "nextToken": r.data.NextToken} as DescribeResponse
     }
 
     const filter = <FilterBar
@@ -216,9 +224,11 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
         }
     }
 
+    const columnDefinitions = getSessionTemplatesTableColumnDefinitions()
+
     const table = <Table
         variant={variant}
-        columnDefinitions={SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS}
+        columnDefinitions={columnDefinitions}
         columnDisplay={preferences.contentDisplay}
         selectedItems={selectedSessionTemplates as ReadonlyArray<SessionTemplate>}
         onSelectionChange={event => setSelectedSessionTemplates(event.detail.selectedItems)}
@@ -252,7 +262,7 @@ export default function SessionTemplatesTable({   selectedSessionTemplates,
             <TableWithPagination
                 table={table}
                 header={header}
-                defaultSortingColumn={SESSION_TEMPLATES_TABLE_COLUMN_DEFINITIONS[0]}
+                defaultSortingColumn={columnDefinitions[0]}
                 query={query}
                 dataAccessServiceFunction={dataAccessServiceFunction}
                 preferences={preferences}

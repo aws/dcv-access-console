@@ -169,12 +169,12 @@ export default function AssignUsersGroups({
 
     const getFilteredUsers = async (filterString: string, nextToken?: string | null) => {
         const describeUsersRequest: DescribeUsersRequestData = {
-            UserIds: [{
+            LoginUsernames: [{
                 Operator: "CONTAINS",
                 Value: filterString
             } as FilterToken],
             SortToken: {
-                Operator: "DESC",
+                Operator: "ASC",
                 Key: "UserId"
             },
             NextToken: nextToken,

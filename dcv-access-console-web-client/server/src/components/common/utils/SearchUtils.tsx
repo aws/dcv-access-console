@@ -130,6 +130,12 @@ export const getFieldValues = (object: any, fieldName: string | string[]): strin
         const list = reduceFieldValues(object, fieldName[0]) as []
         return list.map(item => {return reduceFieldValues(item, fieldName[1])})
     }
+    if (fieldName === 'LoginUsername') {
+        const loginUsername = reduceFieldValues(object, 'LoginUsername')
+        if (loginUsername != null) return [loginUsername]
+        const userId = reduceFieldValues(object, 'UserId')
+        return userId != null ? [userId] : []
+    }
     return [reduceFieldValues(object, fieldName as string)]
 }
 

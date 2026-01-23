@@ -5,7 +5,9 @@ package handler.utils;
 
 import handler.model.Session;
 import handler.model.Server;
+import handler.model.User;
 import handler.model.DescribeSessionsUIRequestData;
+import handler.model.DescribeUsersRequestData;
 import handler.model.GetSessionScreenshotsUIRequestData;
 import handler.model.SortToken;
 import handler.exceptions.BadRequestException;
@@ -28,6 +30,8 @@ public class SortTest {
     private Sort<DescribeSessionsUIRequestData, Session> testSort;
     @InjectMocks
     private Sort<GetSessionScreenshotsUIRequestData, Session> testBadRequestTypeSort;
+    @InjectMocks
+    private Sort<DescribeUsersRequestData, User> testUserSort;
     private static List<Session> unsortedSessions;
     private static List<Session> sortedAscSessions;
     private static SortToken token;
@@ -113,5 +117,35 @@ public class SortTest {
         request.setSortToken(null);
         sorted = testSort.getSorted(request, unsortedSessions);
         assertEquals(unsortedSessions, sorted);
+    }
+
+    @Test
+    public void testUserSortByUserIdWithFallback() {
+        User user1 = new User().loginUsername("user1").userId("uuid-1");
+        User user2 = new User().userId("user2");
+        User user3 = new User().loginUsername("user3").userId("uuid-3");
+
+        List<User> users = new ArrayList<>();
+        users.add(user3);
+        users.add(user1);
+        users.add(user2);
+
+        SortToken userToken = new SortToken();
+        userToken.setOperator(SortToken.OperatorEnum.ASC);
+        userToken.setKey("UserId");
+
+        DescribeUsersRequestData userRequest = new DescribeUsersRequestData();
+        userRequest.setSortToken(userToken);
+
+        List<User> sorted = testUserSort.getSorted(userRequest, users);
+        assertEquals(user1, sorted.get(0));
+        assertEquals(user2, sorted.get(1));
+        assertEquals(user3, sorted.get(2));
+
+        userToken.setOperator(SortToken.OperatorEnum.DESC);
+        sorted = testUserSort.getSorted(userRequest, users);
+        assertEquals(user3, sorted.get(0));
+        assertEquals(user2, sorted.get(1));
+        assertEquals(user1, sorted.get(2));
     }
 }

@@ -18,13 +18,14 @@ import {
     DescribeUsersRequestData,
     DescribeUsersSharedWithSessionTemplateRequestData, DescribeUsersSharedWithSessionTemplateResponse,
     EditSessionTemplateRequestData,
-    EditUserGroupRequestData, GetSessionConnectionDataUIResponse,
+    EditUserGroupRequestData, FilterTokenOperatorEnum, GetSessionConnectionDataUIResponse,
     GetSessionScreenshotsUIRequestData,
     PublishSessionTemplateRequestData,
     RemoveFromUserGroupRequestData,
     ServersApi,
     SessionsApi,
     SessionScreenshotImage,
+    SessionTemplate,
     SessionTemplatesApi,
     SessionWithPermissions,
     UnpublishSessionTemplateRequestData,
@@ -85,6 +86,36 @@ export default class DataAccessService {
     }
     public async describeUsers(describeUsersRequest?: DescribeUsersRequestData) {
         return (await this.getUsersApi()).describeUsers(describeUsersRequest)
+    }
+
+    public async describeUsersByIds(userIds: string[]): Promise<Map<string, string>> {
+        const map = new Map<string, string>()
+        if (userIds.length === 0) return map
+        
+        const filters = userIds.map(id => ({ Operator: FilterTokenOperatorEnum.Equal, Value: id }))
+        const response = await this.describeUsers({ UserIds: filters })
+        
+        response.data.Users?.forEach(user => {
+            if (user.UserId) {
+                map.set(user.UserId, user.LoginUsername || user.UserId)
+            }
+        })
+        return map
+    }
+
+    /**
+     * Replaces CreatedBy and LastModifiedBy user IDs with login usernames for display.
+     * Only call this when using external auth. Falls back to user ID if username not found.
+     */
+    public async replaceUserIdsWithLoginUsernames(templates: SessionTemplate[]): Promise<void> {
+        const userIds = [...new Set(
+            templates.flatMap(t => [t.CreatedBy, t.LastModifiedBy].filter(Boolean))
+        )] as string[]
+        const map = await this.describeUsersByIds(userIds)
+        templates.forEach(t => {
+            if (t.CreatedBy) t.CreatedBy = map.get(t.CreatedBy) || t.CreatedBy
+            if (t.LastModifiedBy) t.LastModifiedBy = map.get(t.LastModifiedBy) || t.LastModifiedBy
+        })
     }
 
     public async createSessionTemplate(createSessionTemplateRequest?: CreateSessionTemplateRequestData) {

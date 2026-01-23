@@ -122,6 +122,7 @@ public class Filter<T, U> {
                 entry("disableRetryOnFailure", new String[]{"disableRetryOnFailure"})
             )),
             entry(DescribeUsersRequestData.class, Map.ofEntries(
+                    entry("loginUsernames", new String[]{"loginUsername", "userId"}),
                     entry("userIds", new String[]{"userId"}),
                     entry("displayNames", new String[]{"displayName"}),
                     entry("roles", new String[]{"role"}),
@@ -320,9 +321,6 @@ public class Filter<T, U> {
     private boolean isFiltered(U obj, String[] property, Object filter) {
         try {
             Object object = PropertyAccessorFactory.forBeanPropertyAccess(obj).getPropertyValue(property[0]);
-            if(object == null) {
-                return false;
-            }
             if(object instanceof List objects) {
                 for(Object objectProperty: objects) {
                     if(objectProperty != null) {
@@ -342,7 +340,13 @@ public class Filter<T, U> {
                 return false;
             }
             else {
-                return filter(object, filter);
+                for (String prop : property) {
+                    Object value = PropertyAccessorFactory.forBeanPropertyAccess(obj).getPropertyValue(prop);
+                    if (value != null) {
+                        return filter(value, filter);
+                    }
+                }
+                return false;
             }
         }
         catch(NullValueInNestedPathException e) {
