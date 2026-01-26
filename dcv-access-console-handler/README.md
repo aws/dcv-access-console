@@ -22,7 +22,7 @@ The following properties can help with this:
 * `auth-server-userinfo-endpoint` is the userInfo endpoint
 
 The following properties enable role and group assignment from OAuth claims:
-* `jwt-default-groups-claim-key` is the key that contains the default groups. Groups are only assigned on first login and subsequent group management should be done through the Access Console. The groups value should be comma-separated group IDs (e.g., "group1,group2"). If a group does not exist, it will be created.
+* `jwt-default-groups-claim-key` is the key that contains the default groups. To enable access to session templates on first login, create groups and assign them session templates through the Access Console, then use the group IDs in your external OAuth configuration. Groups are only assigned on first login and subsequent group management should be done through the Access Console. The groups value should be comma-separated group IDs (e.g., "group1,group2"). If a group does not exist, it will be created.
 * `jwt-role-claim-key` is the key that contains the user's role. The role value must match a configured role (e.g., Admin, User, Guest). Invalid roles fall back to the default role defined in `default-role` in the Handler configuration file.
 
 When using MS Entra as an OAuth provider, the access token cannot be used to query the userInfo endpoint. In this case, claims can be read from the access token:
