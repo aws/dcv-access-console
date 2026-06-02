@@ -87,7 +87,7 @@ spotless {
 }
 
 node {
-    version.set("16.14.0")
+    version.set("18.18.0")
     download.set(true)
     nodeProjectDir.set(file("${project.projectDir}/src/static-pages"))
 }
