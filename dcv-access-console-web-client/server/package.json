@@ -38,7 +38,7 @@
     "msw-auto-mock": "^0.14.0",
     "next": "14.2.35",
     "next-auth": "4.24.13",
-    "postcss": "8.5.1",
+    "postcss": "8.5.18",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "swr": "^2.1.5",
