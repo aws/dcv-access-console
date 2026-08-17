@@ -9,7 +9,7 @@ import {
     FilterTokenOperatorEnum,
     User
 } from "@/generated-src/client";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import UserDetails from "@/components/user-management/users/user-details/UserDetails";
 import TopNavBar from "@/components/common/top-nav-bar/TopNavBar";
 import * as React from "react";
@@ -20,7 +20,8 @@ import {useFlashBarContext} from "@/context-providers/FlashBarContext";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 
-export default function User({params}: { params: { id: string } }) {
+export default function User({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [user, setUser] = useState<User | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -32,7 +33,7 @@ export default function User({params}: { params: { id: string } }) {
         const describeUsersRequest: DescribeUsersRequestData = {
             UserIds: [{
                 Operator: FilterTokenOperatorEnum.Equal,
-                Value: decodeURIComponent(params.id)
+                Value: decodeURIComponent(id)
             }],
             MaxResults: 1
         }
