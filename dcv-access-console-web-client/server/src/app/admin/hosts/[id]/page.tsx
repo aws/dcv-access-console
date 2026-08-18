@@ -5,7 +5,7 @@
 
 import DataAccessService from "@/components/common/utils/DataAccessService";
 import {DescribeServersUIRequestData, FilterTokenOperatorEnum, Server} from "@/generated-src/client";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import ServerDetails from "@/components/servers/server-details/ServerDetails";
 import TopNavBar from "@/components/common/top-nav-bar/TopNavBar";
 import * as React from "react";
@@ -16,7 +16,8 @@ import {useFlashBarContext} from "@/context-providers/FlashBarContext";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 
-export default function Host({params}: { params: { id: string } }) {
+export default function Host({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [server, setServer] = useState(undefined as Server);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -29,7 +30,7 @@ export default function Host({params}: { params: { id: string } }) {
             Ids: [
                 {
                     Operator: FilterTokenOperatorEnum.Equal,
-                    Value: decodeURIComponent(params.id)
+                    Value: decodeURIComponent(id)
                 }
             ],
             MaxResults: 1

@@ -2,16 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { StorybookConfig } from "@storybook/nextjs";
-import {WebpackConfiguration} from "@storybook/core-webpack";
 const path = require("path");
 
-const config: { webpackFinal: (config) => | WebpackConfiguration; staticDirs: string[]; stories: string[]; framework: { name: string; options: {} }; docs: { autodocs: string }; addons: string[] } = {
+const config: StorybookConfig = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-    addons: [
-        "@storybook/addon-links",
-        "@storybook/addon-essentials",
-        "@storybook/addon-interactions",
-    ],
+    addons: [],
     framework: {
         name: "@storybook/nextjs",
         options: {},

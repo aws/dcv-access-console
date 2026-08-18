@@ -9,7 +9,7 @@ import {
     FilterTokenOperatorEnum,
     UserGroup
 } from "@/generated-src/client";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import UserGroupDetails from "@/components/user-management/user-groups/user-group-details/UserGroupDetails";
 import TopNavBar from "@/components/common/top-nav-bar/TopNavBar";
 import * as React from "react";
@@ -20,7 +20,8 @@ import {useFlashBarContext} from "@/context-providers/FlashBarContext";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 
-export default function Group({params}: { params: { id: string } }) {
+export default function Group({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [group, setGroup] = useState<UserGroup | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -32,7 +33,7 @@ export default function Group({params}: { params: { id: string } }) {
         const describeUserGroupsRequest: DescribeUserGroupsRequestData = {
             UserGroupIds: [{
                 Operator: FilterTokenOperatorEnum.Equal,
-                Value: decodeURIComponent(params.id)
+                Value: decodeURIComponent(id)
             }],
             MaxResults: 1
         }

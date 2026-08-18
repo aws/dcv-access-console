@@ -7,7 +7,7 @@ import {Session} from "next-auth";
 import {FlashBarContextProvider} from "@/context-providers/FlashBarContext";
 import {headers} from "next/headers";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   session
 }: {
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
     // Call this to force a server side render for each page to add nonce
     // There doesn't seem to be another way to make all pages render dynamically
-    headers()
+    await headers()
     
     return (
         <html lang="en">

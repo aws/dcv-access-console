@@ -76,6 +76,8 @@ npm run storybook
 ```
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the stories.
 
+> **Note:** Storybook 9 requires Node.js >=20 to run. This project's build/runtime otherwise targets Node 18; use a separate Node 20 environment (e.g. via `nvm`, `mise`, or `asdf`) specifically when running Storybook locally.
+
 ## Add a new component
 1. Create a new folder in `kebab-case` naming convention with the name of the component
 2. Create a new `.tsx` file with the component name, currently using `PascalCase` for naming files
