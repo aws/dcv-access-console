@@ -16,10 +16,8 @@ build-backend = "setuptools.build_meta"
 name = "dcv_access_console_config_wizard"
 version = "1.0"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 classifiers = [
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
