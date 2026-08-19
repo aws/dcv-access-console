@@ -12,14 +12,15 @@ import SessionTemplatesCreateWizard
     from "@/components/session-templates/create-wizard/SessionTemplatesCreateWizard";
 import SessionTemplatesConfigureInfo
     from "@/components/info-panels/SessionTemplatesConfigureInfo";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {useFlashBarContext} from "@/context-providers/FlashBarContext";
 import {SESSION_TEMPLATES_CREATE_CONSTANTS} from "@/constants/session-templates-create-constants";
 import DataAccessService from "@/components/common/utils/DataAccessService";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 
-export default function EditSessionTemplate({params}: { params: { id: string } }) {
+export default function EditSessionTemplate({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [tools, setTools] = useState<>(<SessionTemplatesConfigureInfo/>)
     const [sessionTemplateName, setSessionTemplateName] = useState<string>()
     const [alert, setAlert] = useState<JSX.Element>()
@@ -27,7 +28,7 @@ export default function EditSessionTemplate({params}: { params: { id: string } }
 
     useEffect(() => {
         new DataAccessService().describeUsersSharedWithSessionTemplate({
-            SessionTemplateId: params.id
+            SessionTemplateId: id
         }).then(result => {
             if (result.data.Users?.length) {
                 setAlert(<Alert statusIconAriaLabel="Warning" type="warning"> {SESSION_TEMPLATES_CREATE_CONSTANTS.EDIT_ALERT} </Alert>)
@@ -35,7 +36,7 @@ export default function EditSessionTemplate({params}: { params: { id: string } }
         })
 
         new DataAccessService().describeUserGroupsSharedWithSessionTemplate({
-            SessionTemplateId: params.id
+            SessionTemplateId: id
         }).then(result => {
             if (result.data.UserGroups?.length) {
                 setAlert(<Alert statusIconAriaLabel="Warning" type="warning"> {SESSION_TEMPLATES_CREATE_CONSTANTS.EDIT_ALERT} </Alert>)
@@ -54,7 +55,7 @@ export default function EditSessionTemplate({params}: { params: { id: string } }
         <div>
             <TopNavBar session={userSession}/>
             <AppLayout
-                breadcrumbs={sessionTemplateName ? <Breadcrumb id={params.id} name={sessionTemplateName}/> : undefined}
+                breadcrumbs={sessionTemplateName ? <Breadcrumb id={id} name={sessionTemplateName}/> : undefined}
                 notifications={<div>
                     <Flashbar items={items} stackItems/>
                     {alert}
@@ -64,7 +65,7 @@ export default function EditSessionTemplate({params}: { params: { id: string } }
                 }
                 maxContentWidth={Number.MAX_VALUE}
                 content={
-                    <SessionTemplatesCreateWizard infoLinkFollow={() => setToolsOpen(true)} setSessionTemplateName={setSessionTemplateName} existingSessionTemplateId={params.id} isEditWizard={true} setTools={setTools}/>
+                    <SessionTemplatesCreateWizard infoLinkFollow={() => setToolsOpen(true)} setSessionTemplateName={setSessionTemplateName} existingSessionTemplateId={id} isEditWizard={true} setTools={setTools}/>
                 }
                 tools={tools}
                 toolsOpen={toolsOpen}

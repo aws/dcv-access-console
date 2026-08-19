@@ -16,7 +16,7 @@ import {
 } from "@cloudscape-design/components";
 import Breadcrumb from "@/components/common/breadcrumb/Breadcrumb";
 import ConsoleHeader from "@/components/common/console-header/ConsoleHeader";
-import {useEffect, useRef, useState} from "react";
+import {use, useEffect, useRef, useState} from "react";
 import Button from "@cloudscape-design/components/button";
 import {useRouter} from "next/navigation";
 import Box from "@cloudscape-design/components/box";
@@ -53,7 +53,8 @@ export function publishSessionTemplate(sessionTemplateId: string, users: [string
     return dataService.publishSessionTemplate(publishSessionTemplateRequestData)
 }
 
-export default function AssignUsers({params}: { params: { id: string } }) {
+export default function AssignUsers({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [errorUsers, setErrorUsers] = useState()
     const [users, setUsers] = React.useState([null])
     const [groups, setGroups] = React.useState([null])
@@ -67,17 +68,17 @@ export default function AssignUsers({params}: { params: { id: string } }) {
         new DataAccessService().describeSessionTemplates({
             Ids: [{
                 Operator: FilterTokenOperatorEnum.Equal,
-                Value: params.id
+                Value: id
             }]
         }).then(result => {
             if (result.data.SessionTemplates?.length != 1) {
-                addFlashBar("error", params.id, SESSION_TEMPLATES_CREATE_CONSTANTS.ASSIGN_USERS_ERROR)
+                addFlashBar("error", id, SESSION_TEMPLATES_CREATE_CONSTANTS.ASSIGN_USERS_ERROR)
                 push(GLOBAL_CONSTANTS.SESSION_TEMPLATES_URL)
             } else {
                 sessionTemplateName = result.data.SessionTemplates[0].Name
             }
         }).catch(result => {
-            addFlashBar("error", params.id, SESSION_TEMPLATES_CREATE_CONSTANTS.ASSIGN_USERS_ERROR)
+            addFlashBar("error", id, SESSION_TEMPLATES_CREATE_CONSTANTS.ASSIGN_USERS_ERROR)
             push(GLOBAL_CONSTANTS.SESSION_TEMPLATES_URL)
         })
         setLoading(false)
@@ -86,7 +87,7 @@ export default function AssignUsers({params}: { params: { id: string } }) {
     const assignUsersContainer = <Container>
         <FormField errorText={errorUsers}>
             <AssignUsersGroups
-                sessionTemplateId={params.id}
+                sessionTemplateId={id}
                 handleUsersChange={(users: [OptionDefinition]) => {
                     let userIds: [string] = []
                     users.forEach(user => {
@@ -106,7 +107,7 @@ export default function AssignUsers({params}: { params: { id: string } }) {
                     setGroups(groupIds)
                 }}
                 handleError={(error: string) => {
-                    addFlashBar("error", params.id, 'Error while retrieving users and/or groups assigned to "' + sessionTemplateName + '".')
+                    addFlashBar("error", id, 'Error while retrieving users and/or groups assigned to "' + sessionTemplateName + '".')
                 }}
             />
         </FormField>
@@ -124,7 +125,7 @@ export default function AssignUsers({params}: { params: { id: string } }) {
             <TopNavBar session={userSession}/>
             <AppLayout
                 toolsHide={true}
-                breadcrumbs={sessionTemplateName ? <Breadcrumb id={params.id} name={sessionTemplateName}/> : undefined}
+                breadcrumbs={sessionTemplateName ? <Breadcrumb id={id} name={sessionTemplateName}/> : undefined}
                 notifications={<Flashbar items={items} stackItems/>}
                 navigation={
                     <SideNavPanel session={userSession}/>
@@ -145,21 +146,21 @@ export default function AssignUsers({params}: { params: { id: string } }) {
                                     }}>Cancel</Button>
                                     <Button variant={"primary"} disabled={!getCleanArray(users)?.length && !getCleanArray(groups)?.length} onClick={() => {
                                         setLoading(true)
-                                        publishSessionTemplate(params.id, users, groups).then(result => {
+                                        publishSessionTemplate(id, users, groups).then(result => {
                                             console.log("SessionTemplate published", result.data)
                                             if (result.data.UnsuccessfulUsersList?.length > 0) {
-                                                addFlashBar("error", params.id + "errorUsers", 'Error while assigning users [' + getCleanArray(result.data.UnsuccessfulUsersList!) + '] to "' + sessionTemplateName + '".')
+                                                addFlashBar("error", id + "errorUsers", 'Error while assigning users [' + getCleanArray(result.data.UnsuccessfulUsersList!) + '] to "' + sessionTemplateName + '".')
                                             }
                                             if (result.data.UnsuccessfulGroupsList?.length > 0) {
-                                                addFlashBar("error", params.id + "errorGroups", 'Error while assigning groups [' + getCleanArray(result.data.UnsuccessfulGroupsList!) + '] to "' + sessionTemplateName + '".')
+                                                addFlashBar("error", id + "errorGroups", 'Error while assigning groups [' + getCleanArray(result.data.UnsuccessfulGroupsList!) + '] to "' + sessionTemplateName + '".')
                                             }
                                             if ((!result.data.UnsuccessfulUsersList || !result.data.UnsuccessfulUsersList?.length)  && ((!result.data.UnsuccessfulGroupsList || !result.data.UnsuccessfulGroupsList?.length))) {
-                                                addFlashBar("success", params.id + "success", 'Successfully assigned users and/or groups to "' + sessionTemplateName + '".')
+                                                addFlashBar("success", id + "success", 'Successfully assigned users and/or groups to "' + sessionTemplateName + '".')
                                                 push(GLOBAL_CONSTANTS.SESSION_TEMPLATES_URL)
                                             }
                                         }).catch(e => {
                                             console.error("Failed to publish sessionTemplate: ", e)
-                                            addFlashBar("error", params.id, 'Error while assigning users and/or groups to "' + sessionTemplateName + '".')
+                                            addFlashBar("error", id, 'Error while assigning users and/or groups to "' + sessionTemplateName + '".')
                                         }).finally(() => {
                                             setLoading(false)
                                             }

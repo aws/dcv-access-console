@@ -9,7 +9,7 @@ import {
     FilterTokenOperatorEnum,
     SessionTemplate
 } from "@/generated-src/client";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import TopNavBar from "@/components/common/top-nav-bar/TopNavBar";
 import * as React from "react";
 import {AppLayout, Flashbar} from "@cloudscape-design/components";
@@ -21,7 +21,8 @@ import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 import {useSession} from "next-auth/react";
 
-export default function SessionTemplate({params}: { params: { id: string } }) {
+export default function SessionTemplate({params}: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [sessionTemplate, setSessionTemplate] = useState<SessionTemplate>()
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -36,7 +37,7 @@ export default function SessionTemplate({params}: { params: { id: string } }) {
             Ids: [
                 {
                     Operator: FilterTokenOperatorEnum.Equal,
-                    Value: decodeURIComponent(params.id)
+                    Value: decodeURIComponent(id)
                 }
             ],
             MaxResults: 1

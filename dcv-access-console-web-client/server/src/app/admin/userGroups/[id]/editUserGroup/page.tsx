@@ -3,7 +3,7 @@
 
 'use client'
 
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {DescribeUserGroupsRequestData, FilterTokenOperatorEnum, UserGroup} from "@/generated-src/client";
 import DataAccessService from "@/components/common/utils/DataAccessService";
 import EditUserGroup from "@/components/user-management/user-groups/modify-user-group/edit-user-group/EditUserGroup";
@@ -18,7 +18,8 @@ import {GLOBAL_CONSTANTS} from "@/constants/global-constants";
 import usePageLoading from "@/components/common/hooks/PageLoadingHook";
 import LoadingSkeleton from "@/components/common/loadingSkeleton/LoadingSkeleton";
 
-export default function EditGroup({params}:  {params: {id: string}}) {
+export default function EditGroup({params}:  {params: Promise<{id: string}>}) {
+    const { id } = use(params);
     const [group, setGroup] = useState<UserGroup>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
@@ -32,7 +33,7 @@ export default function EditGroup({params}:  {params: {id: string}}) {
             UserGroupIds: [
                 {
                     Operator: FilterTokenOperatorEnum.Equal,
-                    Value: decodeURIComponent(params.id)
+                    Value: decodeURIComponent(id)
                 }
             ],
             MaxResults: 1
@@ -51,8 +52,8 @@ export default function EditGroup({params}:  {params: {id: string}}) {
         })
     }
     useEffect(() => {
-        params.id && getGroup()
-    }, [params.id])
+        id && getGroup()
+    }, [id])
 
     const redirectToUserGroupsPageFunction = () => {
         console.log("Pushing to view user groups page")
@@ -69,7 +70,7 @@ export default function EditGroup({params}:  {params: {id: string}}) {
         <div>
             <TopNavBar session={userSession}/>
             <AppLayout
-                breadcrumbs={group ? <Breadcrumb id={params.id} name={group?.DisplayName}/> : undefined}
+                breadcrumbs={group ? <Breadcrumb id={id} name={group?.DisplayName}/> : undefined}
                 notifications={<Flashbar items={items} stackItems/>}
                 maxContentWidth={Number.MAX_VALUE}
 
