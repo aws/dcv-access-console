@@ -3,7 +3,7 @@
 Put your notes on developing for/contributing to this package here.
 
 ## Running
-This project requires `Python >= 3.8` to be installed on the system. The easiest way to manage different python
+This project requires `Python >= 3.10` to be installed on the system. The easiest way to manage different python
 installations is by using `mise`.
 
 Once you are using a valid version of Python, you need to build the environment with
