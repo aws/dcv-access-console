@@ -32,13 +32,13 @@
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "10.4.14",
     "encoding": "^0.1.13",
-    "eslint": "8.39.0",
+    "eslint": "8.57.1",
     "eslint-config-next": "15.5.23",
     "moment": "^2.29.4",
     "msw-auto-mock": "^0.14.0",
     "next": "15.5.23",
     "next-auth": "4.24.15",
-    "postcss": "8.5.1",
+    "postcss": "^8.5.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.1.5",
@@ -85,7 +85,12 @@
   },
   "overrides": {
     "esbuild": ">=0.24.3",
-    "shell-quote": "1.10.0"
+    "shell-quote": "1.10.0",
+    "postcss": "^8.5.23",
+    "sharp": "0.35.3",
+    "msw@^1.2.1": {
+      "cookie": "0.7.2"
+    }
   },
   "bundledDependencies": true
 }
