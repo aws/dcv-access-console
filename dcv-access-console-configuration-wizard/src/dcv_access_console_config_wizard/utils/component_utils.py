@@ -16,6 +16,16 @@ from dcv_access_console_config_wizard.constants.constants import PRODUCT_NAME
 from dcv_access_console_config_wizard.utils import logger
 
 os_package_manager_priority_list = ["dnf", "yum", "apt"]
+# Amazon Linux only ships versioned MariaDB server packages, keyed by the kernel release tag
+amazon_linux_mariadb_packages = {"amzn2023": "mariadb105-server", "amzn2027": "mariadb1011-server"}
+
+
+def get_amazon_linux_release():
+    for release in amazon_linux_mariadb_packages:
+        if release in platform.release():
+            return release
+    return None
+
 
 component_names = ["auth-server", "web-client", "handler"]
 
@@ -38,7 +48,7 @@ except (ImportError, AttributeError):
 def update_installed_packages():
     log.info("Updating installed packages...")
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
-        if "amzn2023" in platform.release():
+        if get_amazon_linux_release():
             if (
                 subprocess.run(
                     ["sudo", "dnf", "-y", "update"],
@@ -84,16 +94,18 @@ def update_installed_packages():
 def install_mariadb_with_package_manager():
     log.info("Installing MariaDB...")
     with open(logger.get_verbose_logging_file(), "a+") as logging_file:
-        if "amzn2023" in platform.release():
+        amazon_linux_release = get_amazon_linux_release()
+        if amazon_linux_release:
+            mariadb_package = amazon_linux_mariadb_packages[amazon_linux_release]
             if (
                 subprocess.run(
-                    ["sudo", "dnf", "install", "-y", "mariadb105-server"],
+                    ["sudo", "dnf", "install", "-y", mariadb_package],
                     stdout=logging_file,
                     stderr=logging_file,
                 ).returncode
                 != 0
             ):
-                log.error("Unable to install mariadb105-server with dnf")
+                log.error(f"Unable to install {mariadb_package} with dnf")
                 return False
         else:
             for package_manager in os_package_manager_priority_list:
